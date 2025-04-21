@@ -38,6 +38,7 @@ table tr:hover {
 .contest-list {
     list-style-type: none;
     padding: 0;
+    width: 100%;
 }
 
 .contest-list li {
