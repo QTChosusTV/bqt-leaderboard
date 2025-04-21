@@ -38,7 +38,6 @@ table tr:hover {
 .contest-list {
     list-style-type: none;
     padding: 0;
-    width: 100%;
 }
 
 .contest-list li {
@@ -46,6 +45,7 @@ table tr:hover {
     padding: 10px;
     margin: 5px 0;
     border-radius: 5px;
+    width: 100%;
 }
 
 /* Elo color classes */
