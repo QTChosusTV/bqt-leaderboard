@@ -13,52 +13,62 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-        const response = await fetch("rank.txt");
-        const text = await response.text();
+        // Fetch contest history
+        const response = await fetch("contest_history.json");
+        const data = await response.json();
 
-        const rows = text.split("\n");
+        // Extract users and their latest Elo ratings
+        const users = Object.keys(data).map(username => {
+            const history = data[username];
+            // Get the latest Elo (from the last contest in history)
+            const latestElo = history.length > 0 ? history[history.length - 1].elo : 0;
+            return { username, elo: latestElo };
+        });
+
+        // Sort users by Elo in descending order
+        users.sort((a, b) => b.elo - a.elo);
+
+        // Populate the leaderboard table
         const tbody = document.querySelector("#leaderboard tbody");
 
-        rows.forEach((row, index) => {
-            const [username, elo] = row.split(" ");
+        users.forEach((user, index) => {
+            const { username, elo } = user;
 
-            if (username && elo) {
-                const tr = document.createElement("tr");
+            const tr = document.createElement("tr");
 
-                // Determine the CSS class and text label based on Elo
-                let eloClass = getEloClass(elo);
-                let char = "";
+            // Determine the CSS class and text label based on Elo
+            let eloClass = getEloClass(elo);
+            let char = "";
 
-                const eloNum = parseFloat(elo);
-                if (eloNum >= 2400) char = "[Grandmaster]";
-                else if (eloNum >= 2200) char = "[Master]";
-                else if (eloNum >= 1900) char = "[Candidate master]";
-                else if (eloNum >= 1600) char = "[Expert]";
-                else if (eloNum >= 1400) char = "[Specialist]";
-                else if (eloNum >= 1200) char = "[Pupil]";
-                else if (eloNum >= 0) char = "[Newbie]";
+            const eloNum = parseFloat(elo);
+            if (eloNum >= 2400) char = "[Grandmaster]";
+            else if (eloNum >= 2200) char = "[Master]";
+            else if (eloNum >= 1900) char = "[Candidate master]";
+            else if (eloNum >= 1600) char = "[Expert]";
+            else if (eloNum >= 1400) char = "[Specialist]";
+            else if (eloNum >= 1200) char = "[Pupil]";
+            else if (eloNum >= 0) char = "[Newbie]";
 
-                // Add top-100 class for bold text
-                const top100Class = index < 100 ? "elo-top-100" : "";
+            // Add top-100 class for bold text
+            const top100Class = index < 100 ? "elo-top-100" : "";
 
-                // Combine classes for username
-                const usernameClassList = [eloClass, top100Class].filter(cls => cls).join(" ");
-                // Use eloClass for Elo cell
-                const eloClassList = eloClass;
+            // Combine classes for username
+            const usernameClassList = [eloClass, top100Class].filter(cls => cls).join(" ");
+            // Use eloClass for Elo cell
+            const eloClassList = eloClass;
 
-                // Add the text label to the username and wrap in a link
-                const formattedUsername = char ? `${username} ${char}` : username;
+            // Add the text label to the username and wrap in a link
+            const formattedUsername = char ? `${username} ${char}` : username;
 
-                // Create clickable username linking to user.html with correct username
-                tr.innerHTML = `
-                    <td class="${usernameClassList}">
-                        <a href="user.html?username=${encodeURIComponent(username)}" class="${usernameClassList}">${formattedUsername}</a>
-                    </td>
-                    <td class="${eloClassList}">${elo}</td>
-                `;
+            // Create clickable username linking to user.html with correct username
+            tr.innerHTML = `
+                <td class="${usernameClassList}">
+                    <a href="user.html?username=${encodeURIComponent(username)}" class="${usernameClassList}">${formattedUsername}</a>
+                </td>
+                <td class="${eloClassList}">${elo}</td>
+            `;
 
-                tbody.appendChild(tr);
-            }
+            tbody.appendChild(tr);
         });
     } catch (error) {
         console.error("Error fetching or parsing data:", error);
