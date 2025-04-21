@@ -138,9 +138,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             // Calculate y-axis bounds for better visibility
             const minElo = Math.min(...eloData);
             const maxElo = Math.max(...eloData);
-            const padding = userHistory.length === 1 ? 100 : 50; // More padding for single point
-            const yMin = Math.max(0, Math.floor((minElo - padding) / 100) * 100);
-            const yMax = Math.ceil((maxElo + padding) / 100) * 100;
+            const padding = userHistory.length === 1 ? 250 : 100; // More padding for single point
+            const yMin = Math.max(0, Math.floor((minElo - padding) / 10) * 10);
+            const yMax = Math.ceil((maxElo + padding) / 10) * 10;
 
             // Define Elo ranges with transition bands
             const transitionWidth = 50; // 25 Elo points below and above each threshold
