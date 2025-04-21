@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Function to determine the color shade for rating change
     function getRatingChangeColor(ratingChange) {
-        const maxChange = 500; // Assume 500 is the max rating change for scaling
+        const maxChange = 250; // Assume 1000 is the max rating change for scaling
         const absChange = Math.abs(ratingChange);
         // Scale lightness between 30% (dark) and 70% (light) based on magnitude
         const lightness = 70 - (absChange / maxChange) * 40;
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const yMax = Math.ceil((maxElo + padding) / 100) * 100;
 
             // Define Elo ranges with transition bands
-            const transitionWidth = 50; // 25 Elo points below and above each threshold
+            const transitionWidth = 30; // 15 Elo points below and above each threshold
             const eloRanges = [
                 { start: 0, end: 1200, color: '#aaaaaa' }, // Gray
                 { start: 1200, end: 1400, color: '#00aa00' }, // Green
