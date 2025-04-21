@@ -239,8 +239,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     datasets: [{
                         label: "Elo Rating",
                         data: eloData,
-                        borderColor: pointColors.length > 0 ? pointColors[pointColors.length - 1] : '#e0e0e0',
-                        backgroundColor: "rgba(255, 85, 85, 0.2)",
+                        borderColor: '#f1f1f1',
+                        backgroundColor: pointColors.length > 0 ? pointColors[pointColors.length - 1] : '#e0e0e0',
                         pointBackgroundColor: pointColors,
                         pointBorderColor: "#ffffff",
                         pointRadius: 5,
