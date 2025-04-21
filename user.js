@@ -143,14 +143,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             const yMax = Math.ceil((maxElo + padding) / 10) * 10;
 
             // Define Elo ranges with transition bands
-            const transitionWidth = 50; // 25 Elo points below and above each threshold
+            const transitionWidth = 100; // 50 Elo points below and above each threshold
             const eloRanges = [
-                { start: 0, end: 1200, color: '#aaaaaa' }, // Gray
-                { start: 1200, end: 1400, color: '#00aa00' }, // Green
-                { start: 1400, end: 1600, color: '#00aaaa' }, // Cyan
-                { start: 1600, end: 1900, color: '#55aaff' }, // Blue
-                { start: 1900, end: 2200, color: '#aa00aa' }, // Purple
-                { start: 2200, end: 2400, color: '#ffaa00' }, // Orange
+                { start: 0, end: 1200 - (transitionWidth / 2), color: '#aaaaaa' }, // Gray
+                { start: 1200, end: 1400 - (transitionWidth / 2), color: '#00aa00' }, // Green
+                { start: 1400, end: 1600 - (transitionWidth / 2), color: '#00aaaa' }, // Cyan
+                { start: 1600, end: 1900 - (transitionWidth / 2), color: '#55aaff' }, // Blue
+                { start: 1900, end: 2200 - (transitionWidth / 2), color: '#aa00aa' }, // Purple
+                { start: 2200, end: 2400 - (transitionWidth / 2), color: '#ffaa00' }, // Orange
                 { start: 2400, end: Infinity, color: '#ff5555' } // Red
             ];
 
