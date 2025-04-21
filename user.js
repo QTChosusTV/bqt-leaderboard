@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             };
 
             Chart.register(gradientPlugin);
-
+            
             new Chart(document.getElementById("eloChart"), {
                 type: "line",
                 data: {
@@ -239,9 +239,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     datasets: [{
                         label: "Elo Rating",
                         data: eloData,
-                        borderColor: "#ff5555",
+                        borderColor: pointColors.slice(0, -1).length > 0 ? pointColors.slice(0, -1) : '#e0e0e0',
                         backgroundColor: "rgba(255, 85, 85, 0.2)",
-                        pointBackgroundColor: pointColors, // Use the array of colors for each point
+                        pointBackgroundColor: pointColors,
                         pointBorderColor: "#ffffff",
                         pointRadius: 5,
                         pointHoverRadius: 7,
