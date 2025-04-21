@@ -29,6 +29,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    // Function to get the color for a given Elo rating
+    function getEloColor(elo) {
+        const eloNum = parseFloat(elo);
+        if (eloNum >= 2400) return '#ff5555'; // Red
+        if (eloNum >= 2200) return '#ffaa00'; // Orange
+        if (eloNum >= 1900) return '#aa00aa'; // Purple
+        if (eloNum >= 1600) return '#55aaff'; // Blue
+        if (eloNum >= 1400) return '#00aaaa'; // Cyan
+        if (eloNum >= 1200) return '#00aa00'; // Green
+        if (eloNum >= 0) return '#aaaaaa'; // Gray
+        return '#aaaaaa'; // Default to gray
+    }
+
     try {
         // Get username from URL query parameter
         const urlParams = new URLSearchParams(window.location.search);
@@ -119,6 +132,103 @@ document.addEventListener("DOMContentLoaded", async () => {
                 elo: contest.elo
             }));
 
+            // Calculate y-axis bounds for better visibility
+            const minElo = Math.min(...eloData);
+            const maxElo = Math.max(...eloData);
+            const padding = userHistory.length === 1 ? 100 : 50; // More padding for single point
+            const yMin = Math.max(0, Math.floor((minElo - padding) / 100) * 100);
+            const yMax = Math.ceil((maxElo + padding) / 100) * 100;
+
+            // Define Elo ranges with transition bands
+            const transitionWidth = 50; // 25 Elo points below and above each threshold
+            const eloRanges = [
+                { start: 0, end: 1200, color: '#aaaaaa' }, // Gray
+                { start: 1200, end: 1400, color: '#00aa00' }, // Green
+                { start: 1400, end: 1600, color: '#00aaaa' }, // Cyan
+                { start: 1600, end: 1900, color: '#55aaff' }, // Blue
+                { start: 1900, end: 2200, color: '#aa00aa' }, // Purple
+                { start: 2200, end: 2400, color: '#ffaa00' }, // Orange
+                { start: 2400, end: Infinity, color: '#ff5555' } // Red
+            ];
+
+            // Register a plugin for the banded gradient background
+            const gradientPlugin = {
+                id: 'gradientBackground',
+                beforeDraw(chart) {
+                    const { ctx, chartArea: { top, bottom, left, right }, scales: { y } } = chart;
+                    const gradient = ctx.createLinearGradient(0, bottom, 0, top);
+
+                    // Get the actual yMin and yMax from the chart's y-axis
+                    const chartYMin = y.min;
+                    const chartYMax = y.max;
+                    const yRange = chartYMax - chartYMin;
+
+                    // Create an array of points for the gradient (solid bands and transitions)
+                    const points = [];
+
+                    // Add points for each range within the visible y-axis
+                    eloRanges.forEach((range, index) => {
+                        if (range.end < chartYMin || range.start > chartYMax) return; // Skip if range is outside visible area
+
+                        const prevRange = eloRanges[index - 1];
+                        const nextRange = eloRanges[index + 1];
+
+                        // Calculate the start and end of the solid color band
+                        const solidStart = Math.max(chartYMin, range.start);
+                        const solidEnd = Math.min(chartYMax, range.end);
+
+                        // Adjust for transition bands
+                        let bandStart = solidStart;
+                        let bandEnd = solidEnd;
+
+                        // Check for transition from previous range
+                        if (prevRange && solidStart === range.start) {
+                            const transitionStart = Math.max(chartYMin, range.start - transitionWidth / 2);
+                            const transitionEnd = Math.min(chartYMax, range.start + transitionWidth / 2);
+                            if (transitionStart < chartYMax && transitionEnd > chartYMin) {
+                                points.push({ elo: transitionStart, color: prevRange.color });
+                                points.push({ elo: transitionEnd, color: range.color });
+                                bandStart = transitionEnd;
+                            }
+                        }
+
+                        // Add the solid color band
+                        if (bandStart < chartYMax && bandEnd > chartYMin) {
+                            points.push({ elo: bandStart, color: range.color });
+                            points.push({ elo: bandEnd, color: range.color });
+                        }
+
+                        // Check for transition to next range
+                        if (nextRange && solidEnd === range.end) {
+                            const transitionStart = Math.max(chartYMin, range.end - transitionWidth / 2);
+                            const transitionEnd = Math.min(chartYMax, range.end + transitionWidth / 2);
+                            if (transitionStart < chartYMax && transitionEnd > chartYMin) {
+                                points.push({ elo: transitionStart, color: range.color });
+                                points.push({ elo: transitionEnd, color: nextRange.color });
+                            }
+                        }
+                    });
+
+                    // Sort points by Elo
+                    points.sort((a, b) => a.elo - b.elo);
+
+                    // Add color stops for each point
+                    points.forEach(point => {
+                        const position = (point.elo - chartYMin) / yRange;
+                        if (position >= 0 && position <= 1) {
+                            gradient.addColorStop(position, point.color);
+                        }
+                    });
+
+                    ctx.save();
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(left, top, right - left, bottom - top);
+                    ctx.restore();
+                }
+            };
+
+            Chart.register(gradientPlugin);
+
             new Chart(document.getElementById("eloChart"), {
                 type: "line",
                 data: {
@@ -148,6 +258,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                             title: { display: true, text: "Elo Rating", color: "#e0e0e0", font: { size: 14 } },
                             ticks: { color: "#e0e0e0" },
                             grid: { color: "#444" },
+                            min: yMin,
+                            max: yMax,
                             beginAtZero: false
                         }
                     },
