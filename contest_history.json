@@ -1,0 +1,47 @@
+{
+  "yhtnfct31001": [
+    {
+      "contestId": 1,
+      "name": "BQT Newbies Selection Contest #01",
+      "date": "2025-04-21",
+      "rank": 1,
+      "elo": 1628
+    }
+  ],
+  "Trinh_Ngoc_Tri": [
+    {
+      "contestId": 1,
+      "name": "BQT Newbies Selection Contest #01",
+      "date": "2025-04-21",
+      "rank": 2,
+      "elo": 1564
+    }
+  ],
+  "haoanh": [
+    {
+      "contestId": 1,
+      "name": "BQT Newbies Selection Contest #01",
+      "date": "2025-04-21",
+      "rank": 3,
+      "elo": 1500
+    }
+  ],
+  "Phon": [
+    {
+      "contestId": 1,
+      "name": "BQT Newbies Selection Contest #01",
+      "date": "2025-04-21",
+      "rank": 4,
+      "elo": 1436
+    }
+  ],
+  "romzzr": [
+    {
+      "contestId": 1,
+      "name": "BQT Newbies Selection Contest #01",
+      "date": "2025-04-21",
+      "rank": 5,
+      "elo": 1372
+    }
+  ]
+}
