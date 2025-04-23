@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Chat (Beta)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Community Chat (Beta)</h1>
+        <nav>
+            <a href="index.html">Leaderboard</a> | 
+            <a href="user.html">User Profile</a> | 
+            <a href="chat.html">Chat</a>
+        </nav>
+    </header>
+    <main>
+        <div>
+            <h2>Chat with the Community</h2>
+            <div id="chatMessages"></div>
+            <input type="text" id="chatInput" placeholder="Type a message..." aria-label="Chat message input">
+            <button onclick="postMessage()">Send</button>
+        </div>
+    </main>
+    <script src="chat.js"></script>
+</body>
+</html>
