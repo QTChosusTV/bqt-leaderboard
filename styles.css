@@ -67,3 +67,12 @@ table tr:hover {
 
 /* Top 100 users in leaderboard */
 .elo-top-100 { font-weight: bold; }
+
+#leaderboard a {
+    text-decoration: none; /* Remove underline by default */
+}
+
+/* Add underline on hover */
+#leaderboard a:hover {
+    text-decoration: underline; /* Show underline on hover */
+}
