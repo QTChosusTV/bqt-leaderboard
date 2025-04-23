@@ -171,3 +171,48 @@ table tr:hover {
         left: 150%;
     }
 }
+
+/* Chat styles */
+#chatMessages {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #444;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #222;
+    color: #e0e0e0;
+}
+
+#chatMessages p {
+    margin: 5px 0;
+}
+
+#chatMessages strong {
+    color: #55aaff; /* Blue for usernames, consistent with Elo colors */
+}
+
+#chatInput {
+    width: 70%;
+    padding: 5px;
+    margin-right: 10px;
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+#chatInput:focus {
+    outline: none;
+    border-color: #55aaff;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #55aaff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4488cc;
+}
