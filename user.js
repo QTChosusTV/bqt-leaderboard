@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const maxElo = Math.max(...eloData);
         const padding = userHistory.length === 1 ? 250 : 100;
         const yMin = Math.max(0, Math.floor((minElo - padding) / 10) * 10);
-        const yMax = Math.ceil((maxElo + padding) / 10) * 10);
+        const yMax = Math.ceil(((maxElo + padding) / 10) * 10);
 
         const transitionWidth = 100;
         const eloRanges = [
