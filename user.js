@@ -157,13 +157,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const transitionWidth = 100;
         const eloRanges = [
-            { start: 0, end: 1200 - (transitionWidth / 4), color: '#aaaaaa' },
-            { start: 1200, end: 1400 - (transitionWidth / 4), color: '#00aa00' },
-            { start: 1400, end: 1600 - (transitionWidth / 4), color: '#00aaaa' },
-            { start: 1600, end: 1900 - (transitionWidth / 4), color: '#55aaff' },
-            { start: 1900, end: 2200 - (transitionWidth / 4), color: '#aa00aa' },
-            { start: 2200, end: 2400 - (transitionWidth / 4), color: '#ffaa00' },
-            { start: 2400, end: Infinity, color: '#ff5555' }
+            { start: 0,    end: 1200 - (transitionWidth / 4), color: "#aaaaaa" },
+            { start: 1200, end: 1400 - (transitionWidth / 4), color: "#00aa00" },
+            { start: 1400, end: 1600 - (transitionWidth / 4), color: "#00aaaa" },
+            { start: 1600, end: 1900 - (transitionWidth / 4), color: "#55aaff" },
+            { start: 1900, end: 2100 - (transitionWidth / 4), color: "#aa00aa" },
+            { start: 2100, end: 2300 - (transitionWidth / 4), color: "#fbff00" },
+            { start: 2300, end: 2500 - (transitionWidth / 4), color: "#ffaa00" },
+            { start: 2500, end: 2700 - (transitionWidth / 4), color: "#ff7575" },
+            { start: 2700, end: 3000 - (transitionWidth / 4), color: "#ff0000" },
+            { start: 3000, end: 99999999, color: "#8b0000" }
         ];
 
         const gradientPlugin = {
