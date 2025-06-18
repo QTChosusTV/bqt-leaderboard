@@ -283,16 +283,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                 },
                 options: {
                     responsive: true,
+                    layout: {
+                        padding: 10 // 🔧 Added to avoid edge clipping
+                    },
                     scales: {
                         x: {
                             title: { display: true, text: "Contests", color: "#e0e0e0", font: { size: 14 } },
                             ticks: { color: "#e0e0e0" },
-                            grid: { color: "#444" }
+                            grid: { color: "#666" } // 🔧 Changed from #444 to #666 for better visibility
                         },
                         y: {
                             title: { display: true, text: "Elo Rating", color: "#e0e0e0", font: { size: 14 } },
                             ticks: { color: "#e0e0e0" },
-                            grid: { color: "#444" },
+                            grid: {
+                                color: "#666", // 🔧 Changed for contrast
+                                lineWidth: 1.2 // 🔧 Slightly bolder grid lines
+                            },
                             min: yMin,
                             max: yMax,
                             beginAtZero: false
