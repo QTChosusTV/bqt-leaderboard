@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     label: "Elo Rating",
                     data: eloData,
                     borderColor: '#f1f1f1',
-                    backgroundColor: 'rgba(255, 85, 85, 0.2)', 
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
                     pointBackgroundColor: pointColors,
                     pointBorderColor: "#ffffff",
                     pointRadius: 5,
