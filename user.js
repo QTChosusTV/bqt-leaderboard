@@ -204,24 +204,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const gradientPlugin = {
                 id: 'gradientBackground',
-                beforeDraw(chart) {
+                beforeDatasetsDraw(chart) {
                     const { ctx, chartArea: { top, bottom, left, right }, scales: { y } } = chart;
                     const gradient = ctx.createLinearGradient(0, bottom, 0, top);
                     const chartYMin = y.min;
                     const chartYMax = y.max;
                     const yRange = chartYMax - chartYMin;
                     const points = [];
-
+            
                     eloRanges.forEach((range, index) => {
                         if (range.end < chartYMin || range.start > chartYMax) return;
-
+            
                         const prevRange = eloRanges[index - 1];
                         const nextRange = eloRanges[index + 1];
                         const solidStart = Math.max(chartYMin, range.start);
                         const solidEnd = Math.min(chartYMax, range.end);
                         let bandStart = solidStart;
                         let bandEnd = solidEnd;
-
+            
                         if (prevRange && solidStart === range.start) {
                             const transitionStart = Math.max(chartYMin, range.start - transitionWidth / 2);
                             const transitionEnd = Math.min(chartYMax, range.start + transitionWidth / 2);
@@ -231,12 +231,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 bandStart = transitionEnd;
                             }
                         }
-
+            
                         if (bandStart < chartYMax && bandEnd > chartYMin) {
                             points.push({ elo: bandStart, color: range.color });
                             points.push({ elo: bandEnd, color: range.color });
                         }
-
+            
                         if (nextRange && solidEnd === range.end) {
                             const transitionStart = Math.max(chartYMin, range.end - transitionWidth / 2);
                             const transitionEnd = Math.min(chartYMax, range.end + transitionWidth / 2);
@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             }
                         }
                     });
-
+            
                     points.sort((a, b) => a.elo - b.elo);
                     points.forEach(point => {
                         const position = (point.elo - chartYMin) / yRange;
@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             gradient.addColorStop(position, point.color);
                         }
                     });
-
+            
                     ctx.save();
                     ctx.fillStyle = gradient;
                     ctx.fillRect(left, top, right - left, bottom - top);
@@ -278,7 +278,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                         pointRadius: 5,
                         pointHoverRadius: 7,
                         fill: true,
-                        tension: 0.3
+                        tension: 0.3,
+                        order: 1
                     }]
                 },
                 options: {
