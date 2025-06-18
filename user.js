@@ -235,14 +235,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     label: "Elo Rating",
                     data: eloData,
                     borderColor: '#f1f1f1',
-                    backgroundColor: pointColors.length > 0 ? pointColors[pointColors.length - 1] : '#e0e0e0',
+                    backgroundColor: 'transparent', // ✅ Transparent fill
                     pointBackgroundColor: pointColors,
                     pointBorderColor: "#ffffff",
                     pointRadius: 5,
                     pointHoverRadius: 7,
-                    fill: true,
-                    tension: 0.3,
-                    order: 1 // draw over grid lines
+                    fill: false, // ✅ No area fill
+                    tension: 0.3
                 }]
             },
             options: {
