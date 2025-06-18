@@ -240,8 +240,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     pointBorderColor: "#ffffff",
                     pointRadius: 5,
                     pointHoverRadius: 7,
-                    fill: true,
-                    tension: 0.3
+                    fill: false,
+                    tension: 0.3,
+                    order: 1
                 }]
             },
             options: {
