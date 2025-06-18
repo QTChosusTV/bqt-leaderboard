@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    // Function to determine Elo color class
     function getEloClass(elo) {
         const eloNum = parseFloat(elo);
         if (eloNum >= 3000) return "elo-3000-plus";
@@ -30,13 +29,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return "";
     }
 
-    // Function to determine the color shade for rating change
     function getRatingChangeColor(ratingChange) {
-        const maxChange = 500; // Assume 500 is the max rating change for scaling
+        const maxChange = 500;
         const absChange = Math.abs(ratingChange);
         const lightness = 70 - (absChange / maxChange) * 40;
         const clampedLightness = Math.max(30, Math.min(70, lightness));
-        
+
         if (ratingChange >= 0) {
             return `hsl(120, 100%, ${clampedLightness}%)`;
         } else {
@@ -44,7 +42,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Function to get the color for a given Elo rating
     function getEloColor(elo) {
         const eloNum = parseFloat(elo);
         if (eloNum >= 3000) return '#8b0000';
@@ -59,55 +56,40 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (eloNum >= 0) return '#aaaaaa';
     }
 
-    // Initialize elements with defaults in case of failure
     const usernameElement = document.getElementById("username");
     const ratingElement = document.getElementById("currentRating");
     const titleElement = document.getElementById("userTitle");
 
-    // Default values
     let username = "Unknown";
     let currentRating = 0;
     let userHistory = [];
 
     try {
-        // Get username from URL query parameter
         const urlParams = new URLSearchParams(window.location.search);
         username = urlParams.get("username");
-        console.log("Username from URL:", username);
         if (!username) {
-            console.log("No username provided in URL");
             usernameElement.textContent = "No username provided";
             titleElement.textContent = " [Error]";
             ratingElement.textContent = "(N/A)";
-            titleElement.classList.add("elo-0-1200"); // Gray for error state
+            titleElement.classList.add("elo-0-1200");
             return;
         }
 
-        // Set initial values while fetching data
         usernameElement.textContent = ` ${username}`;
         titleElement.textContent = " [Loading]";
         ratingElement.textContent = "(Loading)";
 
-        // Fetch contest history
-        console.log("Fetching contest_history.json...");
         const response = await fetch("contest_history.json");
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Fetched data:", data);
-        userHistory = data[username] || [];
-        console.log("User history for", username, ":", userHistory);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-        // Set current rating (from the latest contest)
+        const data = await response.json();
+        userHistory = data[username] || [];
+
         const currentRatingRaw = userHistory.length ? userHistory[userHistory.length - 1].elo : 0;
         currentRating = parseFloat(currentRatingRaw);
-        console.log("Current rating:", currentRating);
 
-        // Apply title and rating
         const eloClass = getEloClass(currentRating);
         const title = getEloTitle(currentRating);
-        console.log("Elo class:", eloClass, "Title:", title);
 
         ratingElement.textContent = userHistory.length ? `(${currentRating})` : "(N/A)";
         usernameElement.textContent = ` ${username}`;
@@ -117,12 +99,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             usernameElement.classList.add(eloClass);
             ratingElement.classList.add(eloClass);
             titleElement.classList.add(eloClass);
-            console.log(`Applied class ${eloClass} to usernameElement:`, usernameElement.className);
-            console.log(`Applied class ${eloClass} to ratingElement:`, ratingElement.className);
-            console.log(`Applied class ${eloClass} to titleElement:`, titleElement.className);
         }
 
-        // Populate contest list
         const contestList = document.getElementById("contestList");
         userHistory.forEach(contest => {
             const li = document.createElement("li");
@@ -130,7 +108,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             contestList.appendChild(li);
         });
 
-        // Populate contest history table with rating changes and colors
         const tbody = document.querySelector("#history tbody");
         let previousElo = 0;
         userHistory.forEach(contest => {
@@ -151,9 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             previousElo = currentElo;
         });
 
-        // Check if Chart.js is loaded
         if (typeof Chart === "undefined") {
-            console.error("Chart.js failed to load. Ensure chart.min.js is the correct UMD bundle (chart.umd.min.js from Chart.js 4.4.2).");
             document.getElementById("eloChart").style.display = "none";
             const errorDiv = document.createElement("div");
             errorDiv.textContent = "Error: Unable to load graph library.";
@@ -161,179 +136,159 @@ document.addEventListener("DOMContentLoaded", async () => {
             errorDiv.style.textAlign = "center";
             document.getElementById("eloChart").parentNode.appendChild(errorDiv);
             return;
-        } else {
-            console.log("Chart.js loaded successfully.");
         }
 
-        // Render Codeforces-like Elo graph if there is data
-        if (userHistory.length === 0) {
-            document.getElementById("eloChart").style.display = "none";
-            const noDataDiv = document.createElement("div");
-            noDataDiv.textContent = "No contest history available to display graph.";
-            noDataDiv.style.color = "#e0e0e0";
-            noDataDiv.style.textAlign = "center";
-            document.getElementById("eloChart").parentNode.appendChild(noDataDiv);
-        } else {
-            const labels = userHistory.map(contest => `${contest.name} (#${contest.contestId})`);
-            const eloData = userHistory.map(contest => contest.elo);
-            const tooltips = userHistory.map(contest => ({
-                contestId: contest.contestId,
-                name: contest.name,
-                date: contest.date,
-                rank: contest.rank,
-                elo: contest.elo
-            }));
+        const labels = userHistory.map(contest => `${contest.name} (#${contest.contestId})`);
+        const eloData = userHistory.map(contest => contest.elo);
+        const tooltips = userHistory.map(contest => ({
+            contestId: contest.contestId,
+            name: contest.name,
+            date: contest.date,
+            rank: contest.rank,
+            elo: contest.elo
+        }));
 
-            const pointColors = eloData.map(elo => getEloColor(elo));
-            const minElo = Math.min(...eloData);
-            const maxElo = Math.max(...eloData);
-            const padding = userHistory.length === 1 ? 250 : 100;
-            const yMin = Math.max(0, Math.floor((minElo - padding) / 10) * 10);
-            const yMax = Math.ceil((maxElo + padding) / 10) * 10;
+        const pointColors = eloData.map(elo => getEloColor(elo));
+        const minElo = Math.min(...eloData);
+        const maxElo = Math.max(...eloData);
+        const padding = userHistory.length === 1 ? 250 : 100;
+        const yMin = Math.max(0, Math.floor((minElo - padding) / 10) * 10);
+        const yMax = Math.ceil((maxElo + padding) / 10) * 10);
 
-            const transitionWidth = 100;
-            const eloRanges = [
-                { start: 0, end: 1200 - (transitionWidth / 4), color: '#aaaaaa' },
-                { start: 1200, end: 1400 - (transitionWidth / 4), color: '#00aa00' },
-                { start: 1400, end: 1600 - (transitionWidth / 4), color: '#00aaaa' },
-                { start: 1600, end: 1900 - (transitionWidth / 4), color: '#55aaff' },
-                { start: 1900, end: 2200 - (transitionWidth / 4), color: '#aa00aa' },
-                { start: 2200, end: 2400 - (transitionWidth / 4), color: '#ffaa00' },
-                { start: 2400, end: Infinity, color: '#ff5555' }
-            ];
+        const transitionWidth = 100;
+        const eloRanges = [
+            { start: 0, end: 1200 - (transitionWidth / 4), color: '#aaaaaa' },
+            { start: 1200, end: 1400 - (transitionWidth / 4), color: '#00aa00' },
+            { start: 1400, end: 1600 - (transitionWidth / 4), color: '#00aaaa' },
+            { start: 1600, end: 1900 - (transitionWidth / 4), color: '#55aaff' },
+            { start: 1900, end: 2200 - (transitionWidth / 4), color: '#aa00aa' },
+            { start: 2200, end: 2400 - (transitionWidth / 4), color: '#ffaa00' },
+            { start: 2400, end: Infinity, color: '#ff5555' }
+        ];
 
-            const gradientPlugin = {
-                id: 'gradientBackground',
-                beforeDatasetsDraw(chart) {
-                    const { ctx, chartArea: { top, bottom, left, right }, scales: { y } } = chart;
-                    const gradient = ctx.createLinearGradient(0, bottom, 0, top);
-                    const chartYMin = y.min;
-                    const chartYMax = y.max;
-                    const yRange = chartYMax - chartYMin;
-                    const points = [];
-            
-                    eloRanges.forEach((range, index) => {
-                        if (range.end < chartYMin || range.start > chartYMax) return;
-            
-                        const prevRange = eloRanges[index - 1];
-                        const nextRange = eloRanges[index + 1];
-                        const solidStart = Math.max(chartYMin, range.start);
-                        const solidEnd = Math.min(chartYMax, range.end);
-                        let bandStart = solidStart;
-                        let bandEnd = solidEnd;
-            
-                        if (prevRange && solidStart === range.start) {
-                            const transitionStart = Math.max(chartYMin, range.start - transitionWidth / 2);
-                            const transitionEnd = Math.min(chartYMax, range.start + transitionWidth / 2);
-                            if (transitionStart < chartYMax && transitionEnd > chartYMin) {
-                                points.push({ elo: transitionStart, color: prevRange.color });
-                                points.push({ elo: transitionEnd, color: range.color });
-                                bandStart = transitionEnd;
-                            }
-                        }
-            
-                        if (bandStart < chartYMax && bandEnd > chartYMin) {
-                            points.push({ elo: bandStart, color: range.color });
-                            points.push({ elo: bandEnd, color: range.color });
-                        }
-            
-                        if (nextRange && solidEnd === range.end) {
-                            const transitionStart = Math.max(chartYMin, range.end - transitionWidth / 2);
-                            const transitionEnd = Math.min(chartYMax, range.end + transitionWidth / 2);
-                            if (transitionStart < chartYMax && transitionEnd > chartYMin) {
-                                points.push({ elo: transitionStart, color: range.color });
-                                points.push({ elo: transitionEnd, color: nextRange.color });
-                            }
-                        }
-                    });
-            
-                    points.sort((a, b) => a.elo - b.elo);
-                    points.forEach(point => {
-                        const position = (point.elo - chartYMin) / yRange;
-                        if (position >= 0 && position <= 1) {
-                            gradient.addColorStop(position, point.color);
-                        }
-                    });
-            
-                    ctx.save();
-                    ctx.fillStyle = gradient;
-                    ctx.fillRect(left, top, right - left, bottom - top);
-                    ctx.restore();
-                }
-            };
+        const gradientPlugin = {
+            id: 'gradientBackground',
+            beforeDatasetsDraw(chart) {
+                const { ctx, chartArea: { top, bottom, left, right }, scales: { y } } = chart;
+                const gradient = ctx.createLinearGradient(0, bottom, 0, top);
+                const chartYMin = y.min;
+                const chartYMax = y.max;
+                const yRange = chartYMax - chartYMin;
+                const points = [];
 
-            Chart.register(gradientPlugin);
-            
-            new Chart(document.getElementById("eloChart"), {
-                type: "line",
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Elo Rating",
-                        data: eloData,
-                        borderColor: '#f1f1f1',
-                        backgroundColor: pointColors.length > 0 ? pointColors[pointColors.length - 1] : '#e0e0e0',
-                        pointBackgroundColor: pointColors,
-                        pointBorderColor: "#ffffff",
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
-                        fill: true,
-                        tension: 0.3,
-                        order: 1
-                    }]
+                eloRanges.forEach((range, index) => {
+                    if (range.end < chartYMin || range.start > chartYMax) return;
+                    const prevRange = eloRanges[index - 1];
+                    const nextRange = eloRanges[index + 1];
+                    const solidStart = Math.max(chartYMin, range.start);
+                    const solidEnd = Math.min(chartYMax, range.end);
+                    let bandStart = solidStart;
+                    let bandEnd = solidEnd;
+
+                    if (prevRange && solidStart === range.start) {
+                        const transitionStart = Math.max(chartYMin, range.start - transitionWidth / 2);
+                        const transitionEnd = Math.min(chartYMax, range.start + transitionWidth / 2);
+                        if (transitionStart < chartYMax && transitionEnd > chartYMin) {
+                            points.push({ elo: transitionStart, color: prevRange.color });
+                            points.push({ elo: transitionEnd, color: range.color });
+                            bandStart = transitionEnd;
+                        }
+                    }
+
+                    if (bandStart < chartYMax && bandEnd > chartYMin) {
+                        points.push({ elo: bandStart, color: range.color });
+                        points.push({ elo: bandEnd, color: range.color });
+                    }
+
+                    if (nextRange && solidEnd === range.end) {
+                        const transitionStart = Math.max(chartYMin, range.end - transitionWidth / 2);
+                        const transitionEnd = Math.min(chartYMax, range.end + transitionWidth / 2);
+                        if (transitionStart < chartYMax && transitionEnd > chartYMin) {
+                            points.push({ elo: transitionStart, color: range.color });
+                            points.push({ elo: transitionEnd, color: nextRange.color });
+                        }
+                    }
+                });
+
+                points.sort((a, b) => a.elo - b.elo);
+                points.forEach(point => {
+                    const position = (point.elo - chartYMin) / yRange;
+                    if (position >= 0 && position <= 1) {
+                        gradient.addColorStop(position, point.color);
+                    }
+                });
+
+                ctx.save();
+                ctx.fillStyle = gradient;
+                ctx.fillRect(left, top, right - left, bottom - top);
+                ctx.restore();
+            }
+        };
+
+        Chart.register(gradientPlugin);
+
+        new Chart(document.getElementById("eloChart"), {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Elo Rating",
+                    data: eloData,
+                    borderColor: '#f1f1f1',
+                    backgroundColor: pointColors.length > 0 ? pointColors[pointColors.length - 1] : '#e0e0e0',
+                    pointBackgroundColor: pointColors,
+                    pointBorderColor: "#ffffff",
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    fill: true,
+                    tension: 0.3,
+                    order: 1 // draw over grid lines
+                }]
+            },
+            options: {
+                responsive: true,
+                layout: { padding: 10 },
+                scales: {
+                    x: {
+                        title: { display: true, text: "Contests", color: "#e0e0e0", font: { size: 14 } },
+                        ticks: { color: "#e0e0e0" },
+                        grid: { color: "#666" }
+                    },
+                    y: {
+                        title: { display: true, text: "Elo Rating", color: "#e0e0e0", font: { size: 14 } },
+                        ticks: { color: "#e0e0e0" },
+                        grid: { color: "#666", lineWidth: 1.2 },
+                        min: yMin,
+                        max: yMax,
+                        beginAtZero: false
+                    }
                 },
-                options: {
-                    responsive: true,
-                    layout: {
-                        padding: 10 // 🔧 Added to avoid edge clipping
-                    },
-                    scales: {
-                        x: {
-                            title: { display: true, text: "Contests", color: "#e0e0e0", font: { size: 14 } },
-                            ticks: { color: "#e0e0e0" },
-                            grid: { 
-                                color: "#666"
-                                  } // 🔧 Changed from #444 to #666 for better visibility
-                        },
-                        y: {
-                            title: { display: true, text: "Elo Rating", color: "#e0e0e0", font: { size: 14 } },
-                            ticks: { color: "#e0e0e0" },
-                            grid: {
-                                color: "#666", // 🔧 Changed for contrast
-                                lineWidth: 1.2 // 🔧 Slightly bolder grid lines
-                            },
-                            min: yMin,
-                            max: yMax,
-                            beginAtZero: false
-                        }
-                    },
-                    plugins: {
-                        legend: { labels: { color: "#e0e0e0", font: { size: 14 } } },
-                        tooltip: {
-                            enabled: true,
-                            callbacks: {
-                                title: context => context[0].label,
-                                label: context => {
-                                    const { contestId, name, date, rank, elo } = tooltips[context.dataIndex];
-                                    return [
-                                        `Contest: ${name} (#${contestId})`,
-                                        `Date: ${date}`,
-                                        `Rank: ${rank}`,
-                                        `Elo: ${elo}`
-                                    ];
-                                }
+                plugins: {
+                    legend: { labels: { color: "#e0e0e0", font: { size: 14 } } },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            title: context => context[0].label,
+                            label: context => {
+                                const { contestId, name, date, rank, elo } = tooltips[context.dataIndex];
+                                return [
+                                    `Contest: ${name} (#${contestId})`,
+                                    `Date: ${date}`,
+                                    `Rank: ${rank}`,
+                                    `Elo: ${elo}`
+                                ];
                             }
                         }
                     }
                 }
-            });
-        }
+            }
+        });
     } catch (error) {
         console.error("Error fetching or rendering data:", error);
         usernameElement.textContent = ` ${username} (Error loading history)`;
         titleElement.textContent = " [Error]";
         ratingElement.textContent = "(N/A)";
-        titleElement.classList.add("elo-0-1200"); // Gray for error state
+        titleElement.classList.add("elo-0-1200");
         ratingElement.classList.add("elo-0-1200");
     }
 });
