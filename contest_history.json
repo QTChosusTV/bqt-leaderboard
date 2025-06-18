@@ -6,6 +6,13 @@
       "date": "2025-04-18",
       "rank": 1,
       "elo": 1661
+    },
+    {
+      "contestId": 2,
+      "name": "BQT Newbies Regular Contest 02",
+      "date": "2025-06-08",
+      "rank": 1,
+      "elo": 1716
     }
   ],
   "yhtnfct31001": [
@@ -33,6 +40,13 @@
       "date": "2025-04-18",
       "rank": 4,
       "elo": 1496
+    },
+    {
+      "contestId": 2,
+      "name": "BQT Newbies Regular Contest 02",
+      "date": "2025-06-08",
+      "rank": 2,
+      "elo": 1531
     }
   ],
   "Phon": [
@@ -51,6 +65,15 @@
       "date": "2025-04-18",
       "rank": 6,
       "elo": 1389
+    }
+  ],
+  "chikien": [
+    {
+      "contestId": 2,
+      "name": "BQT Newbies Regular Contest 02",
+      "date": "2025-06-08",
+      "rank": 3,
+      "elo": 1471
     }
   ]
 }
