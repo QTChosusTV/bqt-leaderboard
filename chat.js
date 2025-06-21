@@ -32,7 +32,7 @@
     }
 
     // Post a new message
-    window.postMessage = async () => {
+    window.sendChatMessage = async () => {
       const message = input.value.trim();
       if (!message) return;
 
@@ -56,7 +56,7 @@
     // Send message on Enter key
     input.addEventListener("keypress", (event) => {
       if (event.key === "Enter") {
-        postMessage();
+        sendChatMessage();
       }
     });
 
