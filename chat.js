@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml6bGlzeHlyeWNxenVpZWJ4dWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MTI1NjksImV4cCI6MjA2NjA4ODU2OX0.TWgwtAkRzRCE2ak0i-UyL-SKjUg6j8ZNLCcnP_kTHZQ';
 
   // ✅ Initialize Supabase inside DOMContentLoaded
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const urlParams = new URLSearchParams(window.location.search);
   const username = urlParams.get("username") || "Anonymous";
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Load and display messages
   async function loadMessages() {
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from("global-messages")
       .select("*")
       .order("time", { ascending: true });
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const message = input.value.trim();
     if (!message) return;
 
-    const { error } = await supabase
+    const { error } = await client
       .from("global-messages")
       .insert([{ user: username, text: message }]);
 
