@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   // ✅ Safe Supabase config (can be in GitHub)
-  const SUPABASE_URL = 'https://your-project.supabase.co';
-  const SUPABASE_ANON_KEY = 'your-anon-key';
+  const SUPABASE_URL = 'https://izlisxyrycqzuiebxuim.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml6bGlzeHlyeWNxenVpZWJ4dWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MTI1NjksImV4cCI6MjA2NjA4ODU2OX0.TWgwtAkRzRCE2ak0i-UyL-SKjUg6j8ZNLCcnP_kTHZQ';
 
   // ✅ Initialize Supabase inside DOMContentLoaded
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
