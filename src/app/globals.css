@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1e1e1e;
+    --foreground: #ffffff;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Fira Code, sans-serif;
+}
+
+.bqtoj {
+  color: #d900ff;
+  font-weight: bold;
+  font-size: 25px;
+  font-family: Fira Code, sans-serif;
+  text-shadow: 1px 1px 2px black;
+}
+
+.auth-button {
+  padding: 3px 10px;
+  border: 1px outset buttonborder;
+  border-radius: 10px;
+  color: #444444;
+  background-color: #aaaaaa;
+  text-decoration: none;
+  font-size: 15px;
+  text-align: center;
+  margin-block: auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.redirect-button {
+  padding: 3px 10px;
+  border: 1px outset buttonborder;
+  border-radius: 10px;
+  color: #444444;
+  background-color: #aaaaaa;
+  text-decoration: none;
+  font-size: 15px;
+  text-align: center;
+  justify-content: flex-start;
+  margin: 10px;
+  gap: 10px;
+}
+
+.main-top {
+  color: #444444;
+  background-color: #474747;
+}
