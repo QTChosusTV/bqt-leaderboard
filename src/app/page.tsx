@@ -21,7 +21,8 @@ export default function HomePage() {
       }
 
       const id = user.id
-      //const email = user.email ?? null
+      const email = user.email ?? null // eslint-disable-line @typescript-eslint/no-unused-vars
+
 
       const { data: userData, error: fetchError } = await supabase
         .from("users")
