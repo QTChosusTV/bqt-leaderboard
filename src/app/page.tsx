@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
-import { isNull } from 'util'
+import Link from 'next/link';
 
 export default function HomePage() {
   const [email, setEmail] = useState<string | null>(null)
@@ -63,11 +63,11 @@ export default function HomePage() {
   return (
     <main className="p-6">
       <nav style={{marginTop: '0px', marginLeft: '-15px', marginBottom: '0px'}}>
-        <a href="/leaderboard" className="redirect-button">Leaderboard</a>
+        <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
         {username && (
-          <a href={`/user?username=${username}`} className="redirect-button">User Profile</a>
+          <Link href={`/user?username=${username}`} className="redirect-button">User Profile</Link>
         )}  
-        <a href="/chat" className="redirect-button">Chat</a>
+        <Link href="/chat" className="redirect-button">Chat</Link>
       </nav>
       <h1 style={{marginTop: '20px'}} className="text-2xl font-bold mb-4">Welcome to BQT Online Judge! Created by BanhQuyTeam, BQTOJ promise a convenient experience to learn, compete and improve your competitive programming skill!</h1>
       {email ? (
@@ -76,7 +76,7 @@ export default function HomePage() {
           Username: <strong>{username}</strong>
         </p>
       ) : (
-        <p><a href="/login" className="text-blue-500 underline">Log in</a> to continue</p>
+        <p><Link href="/login" className="text-blue-500 underline">Log in</Link> to continue</p>
       )}
     </main>
   )

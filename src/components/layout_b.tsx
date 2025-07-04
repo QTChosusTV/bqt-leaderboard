@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/utils/supabaseClient';
+import Link from 'next/link';
 
 export default function AuthButtons() {
   const [username, setUsername] = useState('');
@@ -29,15 +30,15 @@ export default function AuthButtons() {
   if (!username) {
     return (
       <>
-        <a href="/login" className="auth-button">Login</a>
-        <a href="/register" className="auth-button">Register</a>
+        <Link href="/login" className="auth-button">Login</Link>
+        <Link href="/register" className="auth-button">Register</Link>
       </>
     );
   }
 
   return (
     <>
-      <a href={`/user?username=${username}`} className="auth-button">Profile</a>
+      <Link href={`/user?username=${username}`} className="auth-button">Profile</Link>
       <button onClick={logout} className="auth-button">Logout</button>
     </>
   );

@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import './user.css';
+import type { Chart } from 'chart.js';
 
 interface Contest {
   contestId: number;
@@ -27,7 +28,7 @@ ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip,
 
 const gradientBackgroundPlugin = {
   id: "gradientBackground",
-  beforeDraw(chart: any) {
+  beforeDraw(chart: Chart) {
     const { ctx, chartArea: { top, bottom, left, right }, scales: { y } } = chart;
     const gradient = ctx.createLinearGradient(0, bottom, 0, top);
     const chartYMin = y.min;
@@ -161,7 +162,7 @@ export default function UserPage() {
         .maybeSingle();
 
     
-      console.log(data)
+      // console.log(data)
 
       if (data && data.history) {
         setHistory(data.history);
@@ -185,7 +186,7 @@ export default function UserPage() {
 
     const stepSizeChart = Math.ceil((yMax - yMin) / 100) * 10;
 
-    console.log("Calculated step:", stepSizeChart, " with 2 val(s): ", yMin, ", ", yMax);
+    // console.log("Calculated step:", stepSizeChart, " with 2 val(s): ", yMin, ", ", yMax);
 
     const chartData = {
     labels,
@@ -211,10 +212,10 @@ export default function UserPage() {
       legend: { labels: { color: '#e0e0e0' } },
       tooltip: {
         callbacks: {
-          label: (ctx: any) => {
-            const c = history[ctx.dataIndex];
-            return [`Contest: ${c.name}`, `Date: ${c.date}`, `Rank: ${c.rank}`, `Elo: ${c.elo}`];
-          }
+            label: (ctx: { dataIndex: number }) => {
+                const c = history[ctx.dataIndex];
+                return [`Contest: ${c.name}`, `Date: ${c.date}`, `Rank: ${c.rank}`, `Elo: ${c.elo}`];
+            }
         }
       }
     },
@@ -229,7 +230,7 @@ export default function UserPage() {
         ticks: {
             color: '#e0e0e0',
             stepSize: stepSizeChart, 
-            callback: function(this: any, tickValue: number | string, index: number, ticks: any[]): string {
+            callback: function(this: unknown, tickValue: number | string): string {
   return `${tickValue}`;
 }
         },

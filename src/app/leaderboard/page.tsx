@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import './leaderboard.css'
+import Link from 'next/link';
 
 interface User {
   username: string
@@ -116,11 +117,11 @@ export default function LeaderboardPage() {
   return (
     <main>
       <nav style={{marginTop: '20px', marginLeft: '15px', marginBottom: '-20px'}}>
-        <a href="/leaderboard" className="redirect-button">Leaderboard</a>
+        <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
         {username && (
-          <a href={`/user?username=${username}`} className="redirect-button">User Profile</a>
+          <Link href={`/user?username=${username}`} className="redirect-button">User Profile</Link>
         )}  
-        <a href="/chat" className="redirect-button">Chat</a>
+        <Link href="/chat" className="redirect-button">Chat</Link>
       </nav>
       <div style={{ padding: '20px' }}>
         <table id="leaderboard">
@@ -133,7 +134,7 @@ export default function LeaderboardPage() {
           </thead>
           <tbody>
             {users.map((user, index) => {
-              console.log(user.history)
+              /// console.log(user.history)
               const rank = index + 1
               const eloClass = getEloClass(user.elo)
               const title = getEloTitle(user.elo)
@@ -144,9 +145,9 @@ export default function LeaderboardPage() {
                 <tr key={user.username}>
                   <td>{rank}</td>
                   <td className={usernameClassList}>
-                    <a href={`/user?username=${encodeURIComponent(user.username)}`} className={usernameClassList}>
+                    <Link href={`/user?username=${encodeURIComponent(user.username)}`} className={usernameClassList}>
                       {title} {user.username}
-                    </a>
+                    </Link>
                   </td>
                   <td className={eloClass}>{user.elo}</td>
                 </tr>
