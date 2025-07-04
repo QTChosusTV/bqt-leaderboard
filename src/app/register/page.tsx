@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, FormEvent } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 
 export default function RegisterPage() {
@@ -10,14 +10,14 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError('')
     setSuccess('')
 
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
-      password,
+      password
     })
 
     if (signUpError) {
@@ -25,35 +25,13 @@ export default function RegisterPage() {
       return
     }
 
-    const id = signUpData.user?.id
-    if (!id) {
-      setError('User created but ID is missing. Please try again.')
+    if (!signUpData.user) {
+      setError('Account created, but waiting for confirmation. Please check your email.')
       return
     }
 
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('username', username)
-      .single()
-
-    if (existingUser) {
-      setError('This username is already taken. Please choose another.')
-      return
-    }
-
-    const { error: insertError } = await supabase
-      .from('users')
-      .insert([{ id, email, username }])
-
-    if (insertError) {
-      console.error(insertError)
-      setError('User created, but failed to save username. Possibly due to database rule or duplicate key.')
-    } else {
-      setSuccess('Account created successfully!')
-    }
+    setSuccess('Check your Gmail and confirm before continuing setup!')
   }
-
 
   return (
     <main className="max-w-md mx-auto mt-16 p-6 bg-gray-800 shadow rounded">
@@ -93,7 +71,7 @@ export default function RegisterPage() {
         {error && <p className="text-red-500 text-sm">{error}</p>}
         {success && <p className="text-green-600 text-sm">{success}</p>}
         <button
-          type="submit" 
+          type="submit"
           className="w-full bg-blue-600 text-gray-800 py-2 rounded hover:bg-blue-700"
         >
           Register
