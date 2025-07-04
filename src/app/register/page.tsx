@@ -15,6 +15,8 @@ export default function RegisterPage() {
     setError('')
     setSuccess('')
 
+    localStorage.setItem('pending_username', username)
+
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password
