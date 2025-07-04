@@ -8,6 +8,8 @@ export default function PostRegisterPage() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
+  console.log("Inserting username:", username)
+
   const handleFinalizeAccount = async () => {
     const { data: userData, error: userError } = await supabase.auth.getUser()
 
