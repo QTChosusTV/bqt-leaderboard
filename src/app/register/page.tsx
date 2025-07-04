@@ -15,26 +15,45 @@ export default function RegisterPage() {
     setError('')
     setSuccess('')
 
-    const { data, error } = await supabase.auth.signUp({
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
     })
 
-    if (error) {
-        setError(error.message)
-    } else {
-        const id = data.user?.id
-        if (id) {
-            const insertRes = await supabase
-            .from('users')
-            .insert([{ id, email, username }])
+    if (signUpError) {
+      setError(signUpError.message)
+      return
+    }
 
-            if (insertRes.error) {
-                setError('User created, but failed to save username. Possibly due to duplicate username or DB rule.')
-            }
-        }
+    const id = signUpData.user?.id
+    if (!id) {
+      setError('User created but ID is missing. Please try again.')
+      return
+    }
+
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('username', username)
+      .single()
+
+    if (existingUser) {
+      setError('This username is already taken. Please choose another.')
+      return
+    }
+
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert([{ id, email, username }])
+
+    if (insertError) {
+      console.error(insertError)
+      setError('User created, but failed to save username. Possibly due to database rule or duplicate key.')
+    } else {
+      setSuccess('Account created successfully!')
     }
   }
+
 
   return (
     <main className="max-w-md mx-auto mt-16 p-6 bg-gray-800 shadow rounded">
