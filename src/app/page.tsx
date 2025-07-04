@@ -21,9 +21,8 @@ export default function HomePage() {
       }
 
       const id = user.id
-      const email = user.email ?? null
+      //const email = user.email ?? null
 
-      // Try to fetch username from users table
       const { data: userData, error: fetchError } = await supabase
         .from("users")
         .select("username")
@@ -54,11 +53,6 @@ export default function HomePage() {
 
     checkUser()
   }, [])
-
-  const logout = async () => {
-    await supabase.auth.signOut();
-    window.location.reload();   
-  };
 
   return (
     <main className="p-6">

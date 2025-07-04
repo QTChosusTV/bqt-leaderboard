@@ -58,7 +58,7 @@ const gradientBackgroundPlugin = {
       const next = eloRanges[index + 1];
 
       let bandStart = Math.max(chartYMin, range.start);
-      let bandEnd = Math.min(chartYMax, range.end);
+      const bandEnd = Math.min(chartYMax, range.end);
 
       if (prev && bandStart === range.start) {
         const ts = Math.max(chartYMin, range.start - transitionWidth / 2);

@@ -2,10 +2,8 @@
 
 import { useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
-import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
-  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
