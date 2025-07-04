@@ -19,7 +19,10 @@ export default function RegisterPage() {
 
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
-      password
+      password,
+      options: {
+        emailRedirectTo: 'https://bqt-leaderboard.vercel.app/post-register'
+      }
     })
 
     if (signUpError) {
