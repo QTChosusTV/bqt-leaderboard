@@ -14,7 +14,7 @@ interface Problem {
   statement: string
   constrains: string
   examples: string
-  testcases: any
+  testcases: { input: number[], output: number[] }[] // eslint-disable-line @typescript-eslint/no-explicit-any
   created_at: Timestamp
 }
 
