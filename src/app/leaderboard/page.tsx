@@ -20,7 +20,7 @@ type HistoryEntry = {
 export default function LeaderboardPage() {
   const [users, setUsers] = useState<User[]>([])
   const [email, setEmail] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
-  const [username, setUsername] = useState<string | null>(null)
+  const [username, setUsername] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
 
   useEffect(() => {
     const fetchData = async () => {
