@@ -9,37 +9,65 @@ interface Message {
   user: string;
   text: string;
   time: string;
+  title: string;
 }
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [username, setUsername] = useState('');
+  const [elo, setElo] = useState<number>(0);
+
+  const getEloTitle = (elo: number) => {
+    if (elo >= 3000) return 'Legendary master';
+    if (elo >= 2700) return 'Grandmaster';
+    if (elo >= 2500) return 'International master';
+    if (elo >= 2300) return 'National master';
+    if (elo >= 2100) return 'Master';
+    if (elo >= 1900) return 'Candidate master';
+    if (elo >= 1750) return 'Semi master';
+    if (elo >= 1600) return 'Expert';
+    if (elo >= 1500) return 'Semi expert';
+    if (elo >= 1400) return 'Specialist';
+    if (elo >= 1200) return 'Pupil';
+    return 'Newbie';
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user || !user.id) {
-        console.error("Auth error or user not found:", userError);
+      if (userError || !user?.id) {
+        console.error('Auth error or user not found:', userError);
         return;
       }
 
-      const { data: userData, error } = await supabase
+      // Get username
+      const { data: userData, error: userFetchError } = await supabase
         .from('users')
         .select('username')
         .eq('id', user.id)
         .maybeSingle();
 
-      if (error) {
-        console.error("Error fetching user data:", error);
+      if (userFetchError || !userData?.username) {
+        console.error('Error fetching username:', userFetchError);
         return;
       }
 
-      if (userData?.username) {
-        setUsername(userData.username);
-      } else {
-        console.warn("Username not found for current user.");
+      setUsername(userData.username);
+
+      // Get elo from leaderboard
+      const { data: lbData, error: lbError } = await supabase
+        .from('leaderboard')
+        .select('elo')
+        .eq('username', userData.username)
+        .maybeSingle();
+
+      if (lbError) {
+        console.error('Error fetching elo:', lbError);
+        return;
       }
+
+      setElo(lbData?.elo ?? 0);
     };
 
     fetchUser();
@@ -53,7 +81,7 @@ export default function ChatPage() {
         .order('time', { ascending: true });
 
       if (error) {
-        console.error("Error loading messages:", error);
+        console.error('Error loading messages:', error);
         return;
       }
 
@@ -61,7 +89,7 @@ export default function ChatPage() {
     };
 
     loadMessages();
-    const interval = setInterval(loadMessages, 100);
+    const interval = setInterval(loadMessages, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -72,10 +100,11 @@ export default function ChatPage() {
       user: username,
       text: input.trim(),
       time: new Date().toISOString(),
+      title: `[${getEloTitle(elo)}]`,
     });
 
     if (error) {
-      console.error("Failed to send message:", error);
+      console.error('Failed to send message:', error);
       return;
     }
 
@@ -89,7 +118,7 @@ export default function ChatPage() {
       <div className="border p-3 rounded-md max-h-[60vh] overflow-y-auto bg-gray-900 text-white">
         {messages.map((msg) => (
           <p key={msg.id}>
-            <strong>{msg.user}</strong>: {msg.text}{' '}
+            <strong>{msg.title} {msg.user}</strong>: {msg.text}{' '}
             <span className="text-xs text-gray-400">
               ({new Date(msg.time).toLocaleString()})
             </span>
@@ -100,7 +129,7 @@ export default function ChatPage() {
       <div className="mt-4 flex gap-2">
         <input
           type="text"
-          className="flex-1 border rounded px-3 py-2 text-gray-400  "
+          className="flex-1 border rounded px-3 py-2 text-gray-400"
           placeholder="Type your message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}

@@ -39,8 +39,10 @@ const gradientBackgroundPlugin = {
     const eloRanges = [
       { start: 0, end: 1175, color: "#aaaaaa" },
       { start: 1200, end: 1375, color: "#00aa00" },
-      { start: 1400, end: 1575, color: "#00aaaa" },
-      { start: 1600, end: 1875, color: "#55aaff" },
+      { start: 1400, end: 1475, color: "#00aaaa" },
+      { start: 1500, end: 1575, color: "#4bdbff" },
+      { start: 1600, end: 1725, color: "#55aaff" },
+      { start: 1750, end: 1875, color: "#7900fa" },
       { start: 1900, end: 2075, color: "#aa00aa" },
       { start: 2100, end: 2275, color: "#fbff00" },
       { start: 2300, end: 2475, color: "#ffaa00" },
@@ -94,31 +96,35 @@ const gradientBackgroundPlugin = {
 
 ChartJS.register(gradientBackgroundPlugin);
 
-const getEloClass = (elo: number) => {
-  if (elo >= 3000) return "elo-3000-plus";
-  if (elo >= 2700) return "elo-2700-3000";
-  if (elo >= 2500) return "elo-2500-2700";
-  if (elo >= 2300) return "elo-2300-2500";
-  if (elo >= 2100) return "elo-2100-2300";
-  if (elo >= 1900) return "elo-1900-2100";
-  if (elo >= 1600) return "elo-1600-1900";
-  if (elo >= 1400) return "elo-1400-1600";
-  if (elo >= 1200) return "elo-1200-1400";
-  return "elo-0-1200";
-};
+  const getEloClass = (elo: number) => {
+    if (elo >= 3000) return 'elo-3000-plus'
+    if (elo >= 2700) return 'elo-2700-3000'
+    if (elo >= 2500) return 'elo-2500-2700'
+    if (elo >= 2300) return 'elo-2300-2500'
+    if (elo >= 2100) return 'elo-2100-2300'
+    if (elo >= 1900) return 'elo-1900-2100'
+    if (elo >= 1750) return 'elo-1750-1900'
+    if (elo >= 1600) return 'elo-1600-1750'
+    if (elo >= 1500) return 'elo-1500-1600'
+    if (elo >= 1400) return 'elo-1400-1500'
+    if (elo >= 1200) return 'elo-1200-1400'
+    return 'elo-0-1200'
+  }
 
-const getEloTitle = (elo: number) => {
-  if (elo >= 3000) return "[Legendary master]";
-  if (elo >= 2700) return "[Grandmaster]";
-  if (elo >= 2500) return "[International master]";
-  if (elo >= 2300) return "[National master]";
-  if (elo >= 2100) return "[Master]";
-  if (elo >= 1900) return "[Candidate master]";
-  if (elo >= 1600) return "[Expert]";
-  if (elo >= 1400) return "[Specialist]";
-  if (elo >= 1200) return "[Pupil]";
-  return "[Newbie]";
-};
+  const getEloTitle = (elo: number) => {
+    if (elo >= 3000) return '[Legendary master]'
+    if (elo >= 2700) return '[Grandmaster]'
+    if (elo >= 2500) return '[International master]'
+    if (elo >= 2300) return '[National master]'
+    if (elo >= 2100) return '[Master]'
+    if (elo >= 1900) return '[Candidate master]'
+    if (elo >= 1750) return '[Semi master]'
+    if (elo >= 1600) return '[Expert]'
+    if (elo >= 1500) return '[Semi expert]'
+    if (elo >= 1400) return '[Specialist]'
+    if (elo >= 1200) return '[Pupil]'
+    return '[Newbie]'
+  }
 
 const getEloColor = (elo: number) => {
   if (elo >= 3000) return '#8b0000';
@@ -127,7 +133,9 @@ const getEloColor = (elo: number) => {
   if (elo >= 2300) return '#ffaa00';
   if (elo >= 2100) return '#fbff00';
   if (elo >= 1900) return '#aa00aa';
+  if (elo >= 1750) return '#7900fa';
   if (elo >= 1600) return '#55aaff';
+  if (elo >= 1500) return '#15d0ff';
   if (elo >= 1400) return '#00aaaa';
   if (elo >= 1200) return '#00aa00';
   return '#aaaaaa';
