@@ -61,7 +61,7 @@ export default function PostRegisterPage() {
   }
 
   return (
-    <main className="max-w-md mx-auto mt-16 p-6 bg-gray-400 text-white shadow rounded">
+    <main className="max-w-md mx-auto mt-16 p-6 bg-gray-800 text-white shadow rounded">
       <h1 className="text-2xl font-bold mb-4">Finalize Account</h1>
       <div className="space-y-4">
         <input

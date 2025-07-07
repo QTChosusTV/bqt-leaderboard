@@ -73,6 +73,11 @@ export default function HomePage() {
       ) : (
         <p><Link href="/login" className="text-blue-500 underline">Log in</Link> to continue</p>
       )}
+      <br />
+      <p>Wanna solve your first problems? <strong>Go to Problemset!</strong></p>
+      <nav style={{marginTop: '5  px', marginLeft: '-15px'}}>
+        <Link href="/problemset" className="redirect-button">Problemset</Link>
+      </nav>
     </main>
   )
 }

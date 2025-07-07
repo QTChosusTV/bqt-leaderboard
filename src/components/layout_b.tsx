@@ -16,7 +16,9 @@ export default function AuthButtons() {
           .select('username')
           .eq('id', user.id)
           .maybeSingle();
-        if (data?.username) setUsername(data.username);
+        if (data?.username) {
+          setUsername(data.username);
+        }
       }
     };
     fetch();
