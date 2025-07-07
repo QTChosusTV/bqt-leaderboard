@@ -30,12 +30,13 @@ export default function ProblemsetList() {
         error: problemsError,
       } = await supabase
         .from('problems')
-        .select('id, title, difficulty, statement, tags, constrains, examples, testcases, created_at')
+        .select('id, title, difficulty, statement, tags, constrains, examples, testcases, created_at, explaination')
+        .order('id', { ascending: true })
 
       if (problemsError) {
         console.error('Failed to fetch problems')
       } else {
-        console.log('Fetched problems: ', problems)
+        //console.log('Fetched problems: ', problems)
         setProblems(problems ?? [])
       }
     }

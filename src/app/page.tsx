@@ -63,6 +63,7 @@ export default function HomePage() {
           <Link href={`/user?username=${username}`} className="redirect-button">User Profile</Link>
         )}  
         <Link href="/chat" className="redirect-button">Chat</Link>
+        <Link href="/problemset" className="redirect-button">Problemset</Link>
       </nav>
       <h1 style={{marginTop: '20px'}} className="text-2xl font-bold mb-4">Welcome to BQT Online Judge! Created by BanhQuyTeam, BQTOJ promise a convenient experience to learn, compete and improve your competitive programming skill!</h1>
       {email ? (
@@ -75,9 +76,6 @@ export default function HomePage() {
       )}
       <br />
       <p>Wanna solve your first problems? <strong>Go to Problemset!</strong></p>
-      <nav style={{marginTop: '5  px', marginLeft: '-15px'}}>
-        <Link href="/problemset" className="redirect-button">Problemset</Link>
-      </nav>
     </main>
   )
 }

@@ -126,6 +126,7 @@ export default function LeaderboardPage() {
           <Link href={`/user?username=${username}`} className="redirect-button">User Profile</Link>
         )}  
         <Link href="/chat" className="redirect-button">Chat</Link>
+        <Link href="/problemset" className="redirect-button">Problemset</Link>
       </nav>
       <div style={{ padding: '20px' }}>
         <table id="leaderboard">
