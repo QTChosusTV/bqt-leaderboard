@@ -19,8 +19,8 @@ interface Problem {
 }
 
 export default function ProblemsetList() {
-  const [email, setEmail] = useState<string | null>(null)
-  const [username, setUsername] = useState<string | null>(null)
+  const [email, setEmail] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars 
+  const [username, setUsername] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
   const [problems, setProblems] = useState<Problem[]>([])
 
   useEffect(() => {
