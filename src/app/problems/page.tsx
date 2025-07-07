@@ -1,5 +1,7 @@
-import ClientProblemViewPage from './ProblemViewPage'
+export const dynamic = 'force-dynamic'; // This is key
+
+import ProblemViewPage from './ProblemViewPage';
 
 export default function Page() {
-  return <ClientProblemViewPage />
+  return <ProblemViewPage />;
 }
