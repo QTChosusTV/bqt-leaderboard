@@ -120,11 +120,8 @@ export default function LeaderboardPage() {
 
   return (
     <main>
-      <nav style={{marginTop: '20px', marginLeft: '15px', marginBottom: '-20px'}}>
+      <nav style={{marginTop: '24px', marginLeft: '9px', marginBottom: '-20px'}}>
         <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
-        {username && (
-          <Link href={`/user?username=${username}`} className="redirect-button">User Profile</Link>
-        )}  
         <Link href="/chat" className="redirect-button">Chat</Link>
         <Link href="/problemset" className="redirect-button">Problemset</Link>
       </nav>

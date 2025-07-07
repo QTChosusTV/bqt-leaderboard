@@ -59,9 +59,6 @@ export default function HomePage() {
     <main className="p-6">
       <nav style={{marginTop: '0px', marginLeft: '-15px', marginBottom: '0px'}}>
         <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
-        {username && (
-          <Link href={`/user?username=${username}`} className="redirect-button">User Profile</Link>
-        )}  
         <Link href="/chat" className="redirect-button">Chat</Link>
         <Link href="/problemset" className="redirect-button">Problemset</Link>
       </nav>

@@ -104,6 +104,11 @@ export default function ProblemsetList() {
 
   return (
     <main className="p-6">
+      <nav style={{marginTop: '0px', marginLeft: '-15px', marginBottom: '-20px'}}>
+        <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
+        <Link href="/chat" className="redirect-button">Chat</Link>
+        <Link href="/problemset" className="redirect-button">Problemset</Link>
+      </nav>
       <nav style={{ marginTop: '0px', marginLeft: '-15px', marginBottom: '0px' }}>
         <div style={{ padding: '20px' }}>
           <table id="problemlist" className="eloClass">
