@@ -55,7 +55,6 @@ export default function LeaderboardPage() {
       const id = user.id
       const email = user.email ?? null
 
-      // Try to fetch username from users table
       const { data: userData, error: fetchError } = await supabase
         .from("users")
         .select("username")
