@@ -55,6 +55,18 @@ function SubmissionContent() {
   if (loading) return <p className="p-6">Loading...</p>
   if (!submission) return <p className="p-6 text-red-500">Submission not found.</p>
 
+  const hasTLE = submission.results.some(r => r.status === 'TLE')
+  let statusText: string
+  if (hasTLE) {
+    statusText = 'Time Limit Exceeded'
+  } else if (submission.percentage_correct === 1) {
+    statusText = 'Accepted'
+  } else if (submission.percentage_correct > 0) {
+    statusText = 'Partially Correct'
+  } else {
+    statusText = 'Wrong Answer'
+  }
+
   return (
     <main className="max-w-4xl mx-auto p-6">
       <h1 className="text-xl font-bold mb-4">Submission #{submission.id}</h1>
@@ -66,8 +78,7 @@ function SubmissionContent() {
         <strong>Problem ID:</strong> {submission.problem_id}
       </div>
       <div className="mb-4">
-        <strong>Status:</strong>{' '}
-        {submission.percentage_correct >= 1 ? 'Accepted' : 'Partially Correct'}
+        <strong>Status:</strong> {statusText}
       </div>
 
       <div className="mb-4">
