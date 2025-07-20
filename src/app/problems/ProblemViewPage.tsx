@@ -18,6 +18,7 @@ interface Problem {
   testcases: { input: number[], output: number[] }[]
   created_at: string
   explaination: string
+  time_out: number
 }
 
 const renderInlineWithLatex = (text: string, keyPrefix = '') => {
@@ -83,6 +84,7 @@ export default function ProblemViewPage() {
       <Link href="/problemset" className="text-blue-600 underline text-sm mb-4 inline-block">← Back to problem list</Link>
       <h1 className="text-2xl font-bold mb-2">{problem.title}</h1>
       <p className="text-gray-300 text-sm mb-4">Estimated Elo: <strong>{problem.difficulty}</strong></p>
+      <p className="text-gray-300 text-sm mb-4">Time limit: <strong>{problem.time_out}</strong>ms</p>
       <div className="mb-4">
         {problem.tags?.map(tag => (
           <span key={tag.tagName} className="inline-block bg-blue-600 text-white px-2 py-1 rounded mr-1 text-xs">
