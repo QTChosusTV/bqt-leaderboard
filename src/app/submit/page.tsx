@@ -7,7 +7,7 @@ import { supabase } from '@/utils/supabaseClient'
 type UserMetadata = {
   username?: string
 }
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export default function SubmitPage() {
   const searchParams = useSearchParams()
@@ -135,3 +135,5 @@ export default function SubmitPage() {
     </main>
   )
 }
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
