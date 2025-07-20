@@ -113,9 +113,12 @@ export default function ChatPage() {
   };
 
   return (
+
+    
+
     <div className="p-4 max-w-10xl mx-auto">
 
-      <nav style={{marginTop: '24px', marginLeft: '9px', marginBottom: '-20px'}}>
+      <nav style={{marginTop: '-10px', marginLeft: '-10px', marginBottom: '20px'}}>
         <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
         <Link href="/chat" className="redirect-button">Chat</Link>
         <Link href="/problemset" className="redirect-button">Problemset</Link>
