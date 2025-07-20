@@ -42,7 +42,7 @@ function SubmissionContent() {
         .eq('id', submissionId)
         .single()
 
-      if (error) console.error('Error fetching submission:', error)
+      if (error) console.error('Error fetching submission:', error.message, error.details, error.hint)
       else setSubmission(data)
 
       setLoading(false)
