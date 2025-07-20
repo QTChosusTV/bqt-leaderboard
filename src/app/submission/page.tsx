@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 
 type Verdict = 'Accepted' | 'Wrong Answer' | 'Time Limit Exceeded' | 'Runtime Error'
@@ -17,8 +17,7 @@ type Submission = {
   results: Record<string, Verdict>
 }
 
-
-export default function SubmissionPage() {
+function SubmissionContent() {
   const searchParams = useSearchParams()
   const submissionId = searchParams.get('id')
 
@@ -76,5 +75,13 @@ export default function SubmissionPage() {
         </pre>
       </div>
     </main>
+  )
+}
+
+export default function SubmissionPage() {
+  return (
+    <Suspense fallback={<p className="p-6">Loading...</p>}>
+      <SubmissionContent />
+    </Suspense>
   )
 }
