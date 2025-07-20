@@ -56,7 +56,7 @@ function SubmissionContent() {
 
   let statusText: string
 
-  if (!submission.results || submission.results.length === 0) {
+  if (!submission.results) {
     statusText = 'Judging...'
   } else if (submission.results.some(r => r.status === 'TLE')) {
     statusText = 'Time Limit Exceeded'
@@ -64,6 +64,8 @@ function SubmissionContent() {
     statusText = 'Accepted'
   } else if (submission.percentage_correct > 0) {
     statusText = 'Partially Correct'
+  } else if (submission.results && submission.results.length === 0) {
+    statusText = 'Compile Error'
   } else {
     statusText = 'Wrong Answer'
   }
