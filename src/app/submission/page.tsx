@@ -4,18 +4,27 @@ import { useSearchParams } from 'next/navigation'
 import { useEffect, useState, Suspense } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 
-type Verdict = 'Accepted' | 'Wrong Answer' | 'Time Limit Exceeded' | 'Runtime Error'
+type Verdict = 'AC' | 'WA' | 'TLE' | 'MLE' | 'RE' | 'CE' | 'Pending'
+
+type TestResult = {
+  test: number
+  status: Verdict
+  expected?: string
+  got?: string
+}
 
 type Submission = {
   id: string
-  user: string
+  username: string
   problem_id: string
   code: string
   language: string
   created_at: string
   percentage_correct: number
-  results: Record<string, Verdict>
+  results: TestResult[]
+  overall: Verdict
 }
+
 
 function SubmissionContent() {
   const searchParams = useSearchParams()
@@ -51,7 +60,7 @@ function SubmissionContent() {
       <h1 className="text-xl font-bold mb-4">Submission #{submission.id}</h1>
 
       <div className="mb-4">
-        <strong>User:</strong> {submission.user}
+        <strong>Username:</strong> {submission.username}
       </div>
       <div className="mb-4">
         <strong>Problem ID:</strong> {submission.problem_id}
@@ -68,12 +77,17 @@ function SubmissionContent() {
         </pre>
       </div>
 
-      <div>
-        <strong>Results:</strong>
-        <pre className="whitespace-pre-wrap bg-gray-800 text-white p-4 rounded mt-2 text-sm">
-          {JSON.stringify(submission.results, null, 2)}
-        </pre>
-      </div>
+      {submission?.results?.map((r) => (
+        <div key={r.test} className="mb-2">
+          <p>Test #{r.test}: {r.status}</p>
+          {r.status === 'WA' && (
+            <p>Output: {r.got}</p>
+          )}
+          <p>Expected: {r.expected}</p>
+        </div>
+      ))}
+
+
     </main>
   )
 }

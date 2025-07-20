@@ -77,6 +77,11 @@ function SubmitPageContent() {
       return
     }
 
+    if (!username) {
+      console.error("Username not loaded. Please wait...");
+      return;
+    }
+
     const submissionId = inserted?.id
     if (!submissionId) {
       console.error('Submission insert returned no ID.')
