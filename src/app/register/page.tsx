@@ -6,7 +6,6 @@ import { supabase } from '@/utils/supabaseClient'
 export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [username, setUsername] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
@@ -14,8 +13,6 @@ export default function RegisterPage() {
     e.preventDefault()
     setError('')
     setSuccess('')
-
-    localStorage.setItem('pending_username', username)
 
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
@@ -42,16 +39,6 @@ export default function RegisterPage() {
     <main className="max-w-md mx-auto mt-16 p-6 bg-gray-800 shadow rounded">
       <h1 className="text-2xl font-bold mb-4">Register</h1>
       <form onSubmit={handleRegister} className="space-y-4">
-        <div>
-          <label className="block text-sm mb-1">Username</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
         <div>
           <label className="block text-sm mb-1">Email (Gmail)</label>
           <input
