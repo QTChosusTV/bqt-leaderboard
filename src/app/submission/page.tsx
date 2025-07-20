@@ -4,11 +4,25 @@ import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 
+type Verdict = 'Accepted' | 'Wrong Answer' | 'Time Limit Exceeded' | 'Runtime Error'
+
+type Submission = {
+  id: string
+  user: string
+  problem_id: string
+  code: string
+  language: string
+  created_at: string
+  percentage_correct: number
+  results: Record<string, Verdict>
+}
+
+
 export default function SubmissionPage() {
   const searchParams = useSearchParams()
   const submissionId = searchParams.get('id')
 
-  const [submission, setSubmission] = useState<any>(null)
+  const [submission, setSubmission] = useState<Submission | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
