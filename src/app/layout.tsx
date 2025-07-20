@@ -5,6 +5,7 @@ import "./globals.css";
 import Image from 'next/image'
 import AuthButtons from '@/components/layout_b'; 
 import Link from 'next/link';
+import '@pitininja/cap-react-widget/dist/index.css';
 
 // const firaCode = Fira_Code({ subsets: ['latin'], variable: '--font-fira', weight: ['400', '500', '700'] })
 
