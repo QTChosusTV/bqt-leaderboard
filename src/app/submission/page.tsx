@@ -80,9 +80,7 @@ function SubmissionContent() {
       {submission?.results?.map((r) => (
         <div key={r.test} className="mb-2">
           <p>Test #{r.test}: {r.status}</p>
-          {r.status === 'WA' && (
-            <p>Output: {r.got}</p>
-          )}
+          <p>Output: {r.got}</p>
           <p>Expected: {r.expected}</p>
         </div>
       ))}
