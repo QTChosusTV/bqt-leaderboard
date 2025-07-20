@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, FormEvent, useRef } from 'react';
+import { useState, FormEvent } from 'react';
 import { supabase } from '@/utils/supabaseClient';
 import dynamic from 'next/dynamic';
 import React from 'react';
