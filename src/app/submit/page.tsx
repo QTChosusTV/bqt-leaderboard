@@ -4,6 +4,11 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 
+type UserMetadata = {
+  username?: string
+}
+
+
 export default function SubmitPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -19,6 +24,11 @@ export default function SubmitPage() {
       const {
         data: { user },
       } = await supabase.auth.getUser()
+      const metadata = user?.user_metadata as UserMetadata | undefined
+      if (metadata?.username) {
+        setUsername(metadata.username)
+        return
+      }
 
       if (user?.user_metadata?.username) {
         setUsername(user.user_metadata.username)
@@ -34,6 +44,8 @@ export default function SubmitPage() {
 
         if (data?.username) setUsername(data.username)
         else setUsername(user.email)
+
+        console.log(error)
       }
     }
 
