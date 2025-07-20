@@ -1,8 +1,12 @@
 'use client'
 
-import { useState, FormEvent, useEffect, useRef } from 'react';
+import { useState, FormEvent, useRef } from 'react';
 import { supabase } from '@/utils/supabaseClient';
+import dynamic from 'next/dynamic';
 import React from 'react';
+const CapWidget = dynamic(() => import('@pitininja/cap-react-widget').then((mod) => mod.CapWidget), {
+  ssr: false,
+});
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -10,33 +14,6 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const captchaRef = useRef<HTMLElement | null>(null); 
-
-  useEffect(() => {
-    const handleCaptchaSuccess = (event: CustomEvent) => {
-      setCaptchaToken(event.detail.token);
-    };
-
-    window.addEventListener('cap-success', handleCaptchaSuccess as EventListener);
-    return () => {
-      window.removeEventListener('cap-success', handleCaptchaSuccess as EventListener);
-    };
-  }, []);
-
-  useEffect(() => {
-    const widget = captchaRef.current;
-    if (widget) {
-      const handleSolve = (e: CustomEvent) => {
-        const token = e.detail.token;
-        setCaptchaToken(token); 
-      };
-
-      widget.addEventListener('solve', handleSolve as EventListener);
-      return () => {
-        widget.removeEventListener('solve', handleSolve as EventListener);
-      };
-    }
-  }, []);
 
   const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -115,11 +92,17 @@ export default function RegisterPage() {
           />
         </div>
         <div className="flex flex-col items-center">
-          <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script>
-          {React.createElement('cap-widget', {
-            'data-cap-api-endpoint': 'https://capdashboard.anhwaivo.xyz/ee25efb360/',
-            ref: captchaRef, 
-          })}
+          <CapWidget
+            endpoint="https://capdashboard.anhwaivo.xyz/ee25efb360/"
+            theme="dark"
+            onSolve={(token: string) => {
+              setCaptchaToken(token);
+            }}
+            onError={(message: string) => {
+              setError(`Captcha error: ${message}`);
+              setCaptchaToken(null);
+            }}
+          />
           {error && <p className="text-red-500 text-sm">{error}</p>}
           {success && <p className="text-green-600 text-sm">{success}</p>}
         </div>
