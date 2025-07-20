@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
     const instanceUrl = 'https://capdashboard.anhwaivo.xyz/'; 
     const siteKey = 'ee25efb360'; 
-    const secretKey = process.env.CAPTCHA_SECRET_KEY;
+    const secretKey = process.env.CAPTCHA_SECRET;
 
     if (!secretKey) {
       return NextResponse.json({ success: false, error: 'Server configuration error' }, { status: 500 });
