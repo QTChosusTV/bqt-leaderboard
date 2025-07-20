@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/utils/supabaseClient';
 import './chat.css';
+import Link from 'next/link';
 
 interface Message {
   id: number;
@@ -113,6 +114,13 @@ export default function ChatPage() {
 
   return (
     <div className="p-4 max-w-10xl mx-auto">
+
+      <nav style={{marginTop: '24px', marginLeft: '9px', marginBottom: '-20px'}}>
+        <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
+        <Link href="/chat" className="redirect-button">Chat</Link>
+        <Link href="/problemset" className="redirect-button">Problemset</Link>
+      </nav>
+
       <h1 className="text-2xl font-bold mb-4">Community Chat</h1>
 
       <div className="border p-3 rounded-md max-h-[60vh] overflow-y-auto bg-gray-900 text-white">
