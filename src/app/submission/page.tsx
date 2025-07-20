@@ -21,10 +21,9 @@ type Submission = {
   language: string
   created_at: string
   percentage_correct: number
-  results: TestResult[]
+  results?: TestResult[]
   overall: Verdict
 }
-
 
 function SubmissionContent() {
   const searchParams = useSearchParams()
@@ -55,9 +54,11 @@ function SubmissionContent() {
   if (loading) return <p className="p-6">Loading...</p>
   if (!submission) return <p className="p-6 text-red-500">Submission not found.</p>
 
-  const hasTLE = submission.results.some(r => r.status === 'TLE')
   let statusText: string
-  if (hasTLE) {
+
+  if (!submission.results || submission.results.length === 0) {
+    statusText = 'Judging...'
+  } else if (submission.results.some(r => r.status === 'TLE')) {
     statusText = 'Time Limit Exceeded'
   } else if (submission.percentage_correct === 1) {
     statusText = 'Accepted'
@@ -88,15 +89,17 @@ function SubmissionContent() {
         </pre>
       </div>
 
-      {submission?.results?.map((r) => (
+      {submission.results?.map((r) => (
         <div key={r.test} className="mb-2">
           <p>Test #{r.test}: {r.status}</p>
-          <p>Output: {r.got}</p>
-          <p>Expected: {r.expected}</p>
+          {r.status === 'WA' && (
+            <>
+              <p className="text-yellow-400">Expected: {r.expected}</p>
+              <p className="text-red-400">Got: {r.got}</p>
+            </>
+          )}
         </div>
       ))}
-
-
     </main>
   )
 }
