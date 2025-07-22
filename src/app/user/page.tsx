@@ -37,18 +37,18 @@ const gradientBackgroundPlugin = {
 
     const transitionWidth = 50;
     const eloRanges = [
-      { start: 0, end: 1150, color: "#aaaaaa" },
-      { start: 1175, end: 1350, color: "#00aa00" },
-      { start: 1375, end: 1450, color: "#00aaaa" },
-      { start: 1475, end: 1550, color: "#4bdbff" },
-      { start: 1575, end: 1700, color: "#55aaff" },
-      { start: 1725, end: 1850, color: "#7900fa" },
-      { start: 1875, end: 2050, color: "#aa00aa" },
-      { start: 2075, end: 2250, color: "#fbff00" },
-      { start: 2275, end: 2450, color: "#ffaa00" },
-      { start: 2475, end: 2650, color: "#ff7575" },
-      { start: 2675, end: 2950, color: "#ff0000" },
-      { start: 2975, end: 9999999, color: "#8b0000" }
+      { start: 0, end: 1200, color: "#aaaaaa" },
+      { start: 1200, end: 1400-transitionWidth/2, color: "#00aa00" },
+      { start: 1400, end: 1500-transitionWidth/2, color: "#00aaaa" },
+      { start: 1500, end: 1600-transitionWidth/2, color: "#4bdbff" },
+      { start: 1600, end: 1750-transitionWidth/2, color: "#55aaff" },
+      { start: 1750, end: 1900-transitionWidth/2, color: "#7900fa" },
+      { start: 1900, end: 2100-transitionWidth/2, color: "#aa00aa" },
+      { start: 2100, end: 2300-transitionWidth/2, color: "#fbff00" },
+      { start: 2300, end: 2500-transitionWidth/2, color: "#ffaa00" },
+      { start: 2500, end: 2700-transitionWidth/2, color: "#ff7575" },
+      { start: 2700, end: 3000-transitionWidth/2, color: "#ff0000" },
+      { start: 3000, end: 9999999, color: "#8b0000" }
     ];
 
     const points: { elo: number, color: string }[] = [];
