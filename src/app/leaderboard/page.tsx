@@ -102,7 +102,7 @@ export default function LeaderboardPage() {
     return 'elo-0-1200'
   }
 
-  const getEloTitle = (elo: number) => {
+  /*const getEloTitle = (elo: number) => {
     if (elo >= 3000) return '[Legendary master]'
     if (elo >= 2700) return '[Grandmaster]'
     if (elo >= 2500) return '[International master]'
@@ -115,7 +115,7 @@ export default function LeaderboardPage() {
     if (elo >= 1400) return '[Specialist]'
     if (elo >= 1200) return '[Pupil]'
     return '[Newbie]'
-  }
+  }*/
 
   return (
     <main>

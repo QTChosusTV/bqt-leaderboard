@@ -111,7 +111,7 @@ ChartJS.register(gradientBackgroundPlugin);
     return 'elo-0-1200'
   }
 
-  const getEloTitle = (elo: number) => {
+  /*const getEloTitle = (elo: number) => {
     if (elo >= 3000) return '[Legendary master]'
     if (elo >= 2700) return '[Grandmaster]'
     if (elo >= 2500) return '[International master]'
@@ -124,7 +124,7 @@ ChartJS.register(gradientBackgroundPlugin);
     if (elo >= 1400) return '[Specialist]'
     if (elo >= 1200) return '[Pupil]'
     return '[Newbie]'
-  }
+  }*/
 
 const getEloColor = (elo: number) => {
   if (elo >= 3000) return '#8b0000';
@@ -255,7 +255,7 @@ export default function UserPage() {
   };
 
   const eloClass = getEloClass(elo);
-  const title = getEloTitle(elo);
+  //const title = getEloTitle(elo);
 
   return (
     <div style={{padding: '20px'}}>
