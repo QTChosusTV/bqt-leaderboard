@@ -35,10 +35,6 @@ export default function AuthButtons() {
     window.location.reload();
   };
 
-  const reload = async () => {
-    window.location.reload();
-  }
-
   if (!username) {
     return (
       <>
