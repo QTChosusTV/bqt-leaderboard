@@ -45,11 +45,9 @@ export default function AuthButtons() {
   }
 
   return (
-    <div>
-      <button onClick={handleProfileClick} className="auth-button">
-         Profile
-      </button>
-      <button onClick={logout} className="auth-button">Logout</button>
+    <div className="auth-button">
+      <button onClick={handleProfileClick}>Profile</button>
+      <button onClick={logout}>Logout</button>
     </div>
   );
 }
