@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@pitininja/cap-react-widget": "^1.1.2",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "chart.js": "^4.5.0",
     "katex": "^0.16.22",
@@ -20,8 +19,8 @@
     "react-katex": "^3.1.0"
   },
   "devDependencies": {
-    "@pitininja/cap-react-widget": "^1.1.2",
     "@eslint/eslintrc": "^3",
+    "@pitininja/cap-react-widget": "^1.1.2",
     "@tailwindcss/postcss": "^4",
     "@types/katex": "^0.16.7",
     "@types/node": "^20",

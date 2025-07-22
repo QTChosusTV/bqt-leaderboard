@@ -79,11 +79,26 @@ export default function ProblemViewPage() {
 
   const examplePairs = parseExamples(problem.examples)
 
+  const getEloClass = (elo: number) => {
+    if (elo >= 3000) return 'elo-3000-plus'
+    if (elo >= 2700) return 'elo-2700-3000'
+    if (elo >= 2500) return 'elo-2500-2700'
+    if (elo >= 2300) return 'elo-2300-2500'
+    if (elo >= 2100) return 'elo-2100-2300'
+    if (elo >= 1900) return 'elo-1900-2100'
+    if (elo >= 1750) return 'elo-1750-1900'
+    if (elo >= 1600) return 'elo-1600-1750'
+    if (elo >= 1500) return 'elo-1500-1600'
+    if (elo >= 1400) return 'elo-1400-1500'
+    if (elo >= 1200) return 'elo-1200-1400'
+    return 'elo-0-1200'
+  }
+
   return (
     <main className="max-w-10xl mx-auto p-6">
       <Link href="/problemset" className="text-blue-600 underline text-sm mb-4 inline-block">← Back to problem list</Link>
       <h1 className="text-2xl font-bold mb-2">{problem.title}</h1>
-      <p className="text-gray-300 text-sm mb-4">Estimated Elo: <strong>{problem.difficulty}</strong></p>
+      <p className={`text-sm mb-4 ${getEloClass(problem.difficulty)}`}>Estimated Elo: <strong>{problem.difficulty}</strong></p>
       <p className="text-gray-300 text-sm mb-4">Time limit: <strong>{problem.time_out*1000}</strong>ms</p>
       <div className="mb-4">
         {problem.tags?.map(tag => (

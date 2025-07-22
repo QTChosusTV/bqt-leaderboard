@@ -94,12 +94,8 @@ function SubmissionContent() {
       {submission.results?.map((r) => (
         <div key={r.test} className="mb-2">
           <p>Test #{r.test}: {r.status}</p>
-          {r.status === 'WA' && (
-            <>
-              <p className="text-yellow-400">Expected: {r.expected}</p>
-              <p className="text-red-400">Got: {r.got}</p>
-            </>
-          )}
+          <p className="text-green-400">Expected: {r.expected}</p>
+          <p className="text-red-400">Got: {r.got}</p>
         </div>
       ))}
     </main>

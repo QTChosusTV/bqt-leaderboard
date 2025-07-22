@@ -135,22 +135,37 @@ export default function LeaderboardPage() {
           </thead>
           <tbody>
             {users.map((user, index) => {
-              /// console.log(user.history)
               const rank = index + 1
               const eloClass = getEloClass(user.elo)
-              const title = getEloTitle(user.elo)
               const top100Class = index < 100 ? 'elo-top-100' : ''
               const usernameClassList = `${eloClass} ${top100Class}`
+              const iconSrc = `assets/ranks/${eloClass}.png`
 
               return (
                 <tr key={user.username}>
-                  <td>{rank}</td>
+                  <td style={{ textAlign: 'center', width: '10  0px', marginLeft: '50px', marginRight: '50px' }}>{rank}</td>
                   <td className={usernameClassList}>
-                    <Link href={`/user?username=${encodeURIComponent(user.username)}`} className={usernameClassList}>
-                      {title} {user.username}
+                    <Link
+                      href={`/user?username=${encodeURIComponent(user.username)}`}
+                      className={usernameClassList}
+                      style={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      <img
+                        src={iconSrc}
+                        alt={eloClass}
+                        style={{
+                          width: '40px',
+                          height: '40px',
+                          marginBottom: '10px',
+                          marginRight: '8px'
+                        }}
+                      />
+                      {user.username}
                     </Link>
                   </td>
-                  <td className={eloClass}>{user.elo}</td>
+                  <td style={{ textAlign: 'center' }} className={eloClass}>
+                    {user.elo}
+                  </td>
                 </tr>
               )
             })}

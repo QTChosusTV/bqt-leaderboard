@@ -187,7 +187,7 @@ export default function UserPage() {
     const eloValues = history.map(c => c.elo);
     const minElo = Math.min(...eloValues);
     const maxElo = Math.max(...eloValues);
-    const padding = history.length === 1 ? 250 : 100;
+    const padding = history.length === 1   ? 250 : 100;
 
     const yMin = Math.max(0, Math.floor((minElo - padding) / 10) * 10);
     const yMax = Math.ceil((maxElo + padding) / 10) * 10;
@@ -259,7 +259,34 @@ export default function UserPage() {
 
   return (
     <div style={{padding: '20px'}}>
-      <h1 id="userTitle" className={eloClass} style={{fontSize: '25px', fontWeight: 'bold'}}>{username} {title} ({elo})</h1>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        marginBottom: '20px'
+      }}>
+        <img
+          src={`/assets/ranks/${eloClass}.png`}
+          alt={eloClass}
+          style={{
+            width: '48px',
+            height: '48px',
+            verticalAlign: 'middle'
+          }}
+        />
+        <h1
+          id="userTitle"
+          className={eloClass}
+          style={{
+            fontSize: '26px',
+            fontWeight: 'bold',
+            margin: 0
+          }}
+        >
+          {username} ({elo})
+        </h1>
+      </div>
+
       <table id="history">
         <thead>
           <tr>
@@ -284,6 +311,44 @@ export default function UserPage() {
           })}
         </tbody>
       </table>
+
+        <div style={{ marginTop: '20px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              maxWidth: '220px',
+              marginBottom: '10px',
+            }}
+          >
+            <h3 style={{ margin: 0, marginRight: '10px' }}>Current rank:</h3>
+            <img
+              src={`/assets/ranks/${getEloClass(elo)}.png`}
+              alt={`Current rank ${elo}`}
+              style={{ width: '36px', height: '36px', transform: 'translateY(-2px)' }}
+            />
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              maxWidth: '220px',
+              marginTop: '8px',
+            }}
+          >
+            <h3 style={{ margin: 0, marginRight: '10px' }}>Peak rank:</h3>
+            <img
+              src={`/assets/ranks/${getEloClass(maxElo)}.png`}
+              alt={`Peak rank ${maxElo}`}
+              style={{ width: '36px', height: '36px', transform: 'translateY(-2px)' }}
+            />
+          </div>
+        </div>
+
+
+
 
       {history.length > 0 && (
         <Line

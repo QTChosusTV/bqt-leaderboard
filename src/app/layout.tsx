@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'My OJ',
-  description: 'Online Judge with Supabase',
+  title: 'BQT Online Judge',
+  description: 'Banh Quy Team Online Judge',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
