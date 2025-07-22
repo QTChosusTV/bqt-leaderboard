@@ -45,7 +45,7 @@ export default function AuthButtons() {
   }
 
   return (
-    <div>
+    <div style={{ display: 'flex', gap: '8px' }}>
       <button onClick={handleProfileClick} className="auth-button">Profile</button>
       <button onClick={logout} className="auth-button">Logout</button>
     </div>
