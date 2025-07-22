@@ -1,11 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/utils/supabaseClient';
 import Link from 'next/link';
 
 export default function AuthButtons() {
   const [username, setUsername] = useState('');
+  const router = useRouter(); 
+
+  const handleProfileClick = () => {
+    router.push(`/user?username=${username}`);
+  };
 
   useEffect(() => {
     const fetch = async () => {
@@ -29,6 +35,10 @@ export default function AuthButtons() {
     window.location.reload();
   };
 
+  const reload = async () => {
+    window.location.reload();
+  }
+
   if (!username) {
     return (
       <>
@@ -39,9 +49,11 @@ export default function AuthButtons() {
   }
 
   return (
-    <>
-      <Link href={`/user?username=${username}`} className="auth-button">Profile</Link>
+    <div>
+      <button onClick={handleProfileClick} className="auth-button">
+         Profile
+      </button>
       <button onClick={logout} className="auth-button">Logout</button>
-    </>
+    </div>
   );
 }
