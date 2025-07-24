@@ -154,10 +154,9 @@ export default function LeaderboardPage() {
                         src={iconSrc}
                         alt={eloClass}
                         style={{
-                          width: '40px',
-                          height: '40px',
-                          marginBottom: '10px',
-                          marginRight: '8px'
+                          width: '80px',
+                          height: '80px',
+                          marginRight: '15px'
                         }}
                       />
                       {user.username}

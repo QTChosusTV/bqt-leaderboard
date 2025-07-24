@@ -269,8 +269,8 @@ export default function UserPage() {
           src={`/assets/ranks/${eloClass}.png`}
           alt={eloClass}
           style={{
-            width: '48px',
-            height: '48px',
+            width: '80px',
+            height: '80px',
             verticalAlign: 'middle'
           }}
         />
@@ -326,7 +326,7 @@ export default function UserPage() {
             <img
               src={`/assets/ranks/${getEloClass(elo)}.png`}
               alt={`Current rank ${elo}`}
-              style={{ width: '36px', height: '36px', transform: 'translateY(-2px)' }}
+              style={{ width: '80px', height: '80px', transform: 'translateY(-2px)' }}
             />
           </div>
           <div
@@ -342,7 +342,7 @@ export default function UserPage() {
             <img
               src={`/assets/ranks/${getEloClass(maxElo)}.png`}
               alt={`Peak rank ${maxElo}`}
-              style={{ width: '36px', height: '36px', transform: 'translateY(-2px)' }}
+              style={{ width: '80px', height: '80px', transform: 'translateY(-2px)' }}
             />
           </div>
         </div>
