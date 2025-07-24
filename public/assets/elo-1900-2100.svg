@@ -1,0 +1,30 @@
+<svg width="400" height="400" viewBox="0 10 100 100">
+  <defs>
+    <linearGradient id="purpleMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#cd44ffff" />
+      <stop offset="100%" stop-color="#ee66dd" />
+    </linearGradient>
+
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#dd66ff" flood-opacity="0.9"/>
+    </filter>
+  </defs>
+
+  <path d="M 10 55 L 50 85 L 90 55 L 50 100 Z"
+        fill="url(#purpleMetal)" stroke="#690587ff" stroke-width="2" />
+
+  <path d="M 20 58 L 50 80 L 80 58 L 50 90 Z"
+        fill="#fc66ffff" stroke="#690587ff" stroke-width="1.5" />
+
+  <path d="M 50 83 
+           L 70 60 
+           L 60 65 
+           L 50 35 
+           L 40 65 
+           L 30 60 
+           Z"
+        fill="url(#purpleMetal)" stroke="#690587ff" stroke-width="1" />
+
+  <polygon points="50,28 53,32 50,36 47,32"
+           fill="#f0caff" stroke="#aa0cbf" stroke-width="0.8"  />
+</svg>

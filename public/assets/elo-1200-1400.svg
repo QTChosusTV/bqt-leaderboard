@@ -1,0 +1,10 @@
+<svg width="400" height="400" viewBox="0 10 100 100">
+  <defs>
+    <linearGradient id="greenMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#88cc88;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#336633;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path d="M 10 70 L 50 90 L 90 70 L 50 100 Z" fill="url(#greenMetal)" stroke="#225522" stroke-width="2"/>
+  <path d="M 30 75 L 50 87 L 70 75 L 50 95 Z" fill="#66cc66" stroke="#2f8f2f" stroke-width="1.5"/>
+</svg>

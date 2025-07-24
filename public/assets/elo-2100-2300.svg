@@ -1,0 +1,50 @@
+<svg width="400" height="400" viewBox="0 10 100 100">
+  <defs>
+    <!-- Yellow metallic gradient -->
+    <linearGradient id="yellowMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff599" />
+      <stop offset="100%" stop-color="#ffd54f" />
+    </linearGradient>
+
+    <!-- Shard highlight gradient -->
+    <linearGradient id="shardGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffffaa"/>
+      <stop offset="100%" stop-color="#ffecb3aa"/>
+    </linearGradient>
+
+    <!-- Glow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#f9cc00" flood-opacity="0.9"/>
+    </filter>
+  </defs>
+
+  <!-- Base large diamond -->
+  <path d="M 10 55 L 50 85 L 90 55 L 50 100 Z"
+        fill="url(#yellowMetal)" stroke="#c28f0e" stroke-width="2" />
+
+  <!-- Inner shape -->
+  <path d="M 20 58 L 50 80 L 80 58 L 50 90 Z"
+        fill="#ffe066" stroke="#c28f0e" stroke-width="1.5" />
+
+  <!-- Star/arrow inside -->
+  <path d="M 50 83 
+           L 70 60 
+           L 60 65 
+           L 50 35 
+           L 40 65 
+           L 30 60 
+           Z"
+        fill="url(#yellowMetal)" stroke="#c28f0e" stroke-width="1" />
+
+  <!-- Top diamond/spark -->
+  <polygon points="50,28 53,32 50,36 47,32"
+           fill="#fffde7" stroke="#fbc02d" stroke-width="0.8"  />
+
+  <!-- Left shard detail -->
+  <polygon points="46,40 39,62 34,60"
+           fill="url(#shardGlow)" stroke="#d4af37" stroke-width="0.8"  />
+
+  <!-- Right shard detail -->
+  <polygon points="54,40 61,62 66,60"
+           fill="url(#shardGlow)" stroke="#d4af37" stroke-width="0.8"  />
+</svg>

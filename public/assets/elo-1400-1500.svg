@@ -1,0 +1,15 @@
+<svg width="400" height="400" viewBox="0 10 100 100">
+  <defs>
+    <linearGradient id="cyanMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#88ffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#228888;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <path d="M 10 70 L 50 90 L 90 70 L 50 100 Z" fill="url(#cyanMetal)" stroke="#227777" stroke-width="2"/>
+
+ 
+  <path d="M 30 75 L 50 87 L 70 75 L 50 95 Z" fill="#66eeee" stroke="#2f8f8f" stroke-width="1.5"/>
+
+  <path d="M 50 70 L 55 80 L 50 90 L 45 80 Z" fill="#ccffff" stroke="#1ca3a3" stroke-width="1"/>
+</svg>

@@ -1,0 +1,29 @@
+<svg width="400" height="400" viewBox="0 10 100 100">
+  <defs>
+    <linearGradient id="violetMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#aa55ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#dd55ee;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#dd66ff" flood-opacity="0.9"/>
+  </filter>
+
+  <path d="M 10 65 L 50 85 L 90 65 L 50 100 Z" fill="url(#violetMetal)" stroke="#3b0587" stroke-width="2"/>
+
+  <path d="M 20 65 L 50 80 L 80 65 L 50 90 Z" fill="#c266ffff" stroke="#3b0587" stroke-width="1.5"/>
+
+  <path d="M 51 87 L 51 70 L 70 60 Z"
+        fill="#ca89ffff" stroke="#3b0587" stroke-width="1"/>
+
+  <path d="M 49 87 L 49 70 L 30 60 Z"
+        fill="#ca89ffff" stroke="#3b0587" stroke-width="1"/>
+
+  <path d="M 51 68 L 51 40 L 60 63 Z"
+        fill="#ca89ffff" stroke="#3b0587" stroke-width="1"/>
+
+  <path d="M 49 68 L 49 40 L 40 63 Z"
+        fill="#ca89ffff" stroke="#3b0587" stroke-width="1"/>
+
+</svg>
