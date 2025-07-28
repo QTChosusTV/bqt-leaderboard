@@ -11,6 +11,7 @@ type Contest = {
   time_end: string | null
   elo_min: number | null
   elo_max: number | null
+  link: string | null
 }
 
 export default function HomePage() {
@@ -141,7 +142,7 @@ export default function HomePage() {
 
     return (
       <li key={contest.id} className="mb-1">
-        <Link href={`/contest/${contest.id}`} className="text-blue-400 hover:underline">
+        <Link href={`${contest.link}`} className="text-blue-400 hover:underline">
           {contest.name ?? "Unnamed Contest"} ({eloMin} - {eloMax}) {timeLeft && `: [${timeLeft}]`}
         </Link>
       </li>
