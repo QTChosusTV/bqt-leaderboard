@@ -19,7 +19,15 @@ export default function HomePage() {
   const [upcoming, setUpcoming] = useState<Contest[]>([])
   const [ongoing, setOngoing] = useState<Contest[]>([])
   const [past, setPast] = useState<Contest[]>([])
-  const [tick, setTick] = useState(0)
+  const [tick, setTick] = useState(0) 
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick(prev => prev + 1)
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     const checkUser = async () => {
@@ -92,21 +100,20 @@ export default function HomePage() {
 
       setUpcoming(upcoming)
       setOngoing(ongoing)
-      setPast(past.sort((a, b) => (b.time_end ?? "").localeCompare(a.time_end ?? "")).slice(0, 10))
+      setPast(
+        past
+          .sort(
+            (a, b) =>
+              new Date(b.time_end ?? 0).getTime() - new Date(a.time_end ?? 0).getTime()
+          )
+          .slice(0, 10)
+      )
     }
 
     checkUser()
     fetchContests()
-
-    useEffect(() => {
-    const interval = setInterval(() => {
-      setTick(t => t + 1)
-    }, 1000)
-
-      return () => clearInterval(interval)
-    }, [])
-
   }, [])
+
 
   const formatTimeLeft = (toTime: string | null) => {
     if (!toTime) return ""
@@ -142,38 +149,41 @@ export default function HomePage() {
   }
 
   return (
-    <main className="p-6">
-      <nav style={{ marginTop: '0px', marginLeft: '-15px', marginBottom: '0px' }}>
-        <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
-        <Link href="/chat" className="redirect-button">Chat</Link>
-        <Link href="/problemset" className="redirect-button">Problemset</Link>
-      </nav>
-      <h1 style={{ marginTop: '20px' }} className="text-2xl font-bold mb-4">
-        Welcome to BQT Online Judge! Created by BanhQuyTeam, BQTOJ promises a convenient experience to learn, compete and improve your competitive programming skill!
-      </h1>
-      {email ? (
-        <p>
-          Logged in as <strong>{email}</strong><br />
-          Username: <strong>{username}</strong>
-        </p>
-      ) : (
-        <p><Link href="/login" className="text-blue-500 underline">Log in</Link> to continue</p>
-      )}
+    <>
+    {tick && null}
+      <main className="p-6">
+        <nav style={{ marginTop: '0px', marginLeft: '-15px', marginBottom: '0px' }}>
+          <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
+          <Link href="/chat" className="redirect-button">Chat</Link>
+          <Link href="/problemset" className="redirect-button">Problemset</Link>
+        </nav>
+        <h1 style={{ marginTop: '20px' }} className="text-2xl font-bold mb-4">
+          Welcome to BQT Online Judge! Created by BanhQuyTeam, BQTOJ promises a convenient experience to learn, compete and improve your competitive programming skill!
+        </h1>
+        {email ? (
+          <p>
+            Logged in as <strong>{email}</strong><br />
+            Username: <strong>{username}</strong>
+          </p>
+        ) : (
+          <p><Link href="/login" className="text-blue-500 underline">Log in</Link> to continue</p>
+        )}
 
-      <br />
-      <p>Wanna solve your first problems? <strong>Go to Problemset!</strong></p>
+        <br />
+        <p>Wanna solve your first problems? <strong>Go to Problemset!</strong></p>
 
-      <br /><br />
-      <h2 className="text-xl font-semibold">Upcoming Contests</h2>
-      <ul>{upcoming.map(c => renderContestLine(c, "upcoming"))}</ul>
+        <br /><br />
+        <h2 className="text-xl font-semibold">Upcoming Contests</h2>
+        <ul>{upcoming.map(c => renderContestLine(c, "upcoming"))}</ul>
 
-      <br />
-      <h2 className="text-xl font-semibold">Ongoing Contests</h2>
-      <ul>{ongoing.map(c => renderContestLine(c, "ongoing"))}</ul>
+        <br />
+        <h2 className="text-xl font-semibold">Ongoing Contests</h2>
+        <ul>{ongoing.map(c => renderContestLine(c, "ongoing"))}</ul>
 
-      <br />
-      <h2 className="text-xl font-semibold">Past Contests</h2>
-      <ul>{past.map(c => renderContestLine(c, "past"))}</ul>
-    </main>
+        <br />
+        <h2 className="text-xl font-semibold">Past Contests</h2>
+        <ul>{past.map(c => renderContestLine(c, "past"))}</ul>
+      </main>
+    </>
   )
 }
