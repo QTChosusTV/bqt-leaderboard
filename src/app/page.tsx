@@ -19,6 +19,7 @@ export default function HomePage() {
   const [upcoming, setUpcoming] = useState<Contest[]>([])
   const [ongoing, setOngoing] = useState<Contest[]>([])
   const [past, setPast] = useState<Contest[]>([])
+  const [tick, setTick] = useState(0)
 
   useEffect(() => {
     const checkUser = async () => {
@@ -96,6 +97,15 @@ export default function HomePage() {
 
     checkUser()
     fetchContests()
+
+    useEffect(() => {
+    const interval = setInterval(() => {
+      setTick(t => t + 1)
+    }, 1000)
+
+      return () => clearInterval(interval)
+    }, [])
+
   }, [])
 
   const formatTimeLeft = (toTime: string | null) => {
@@ -124,7 +134,7 @@ export default function HomePage() {
 
     return (
       <li key={contest.id} className="mb-1">
-        <Link href={`/contest/${contest.id}`} className="text-blue-600 underline">
+        <Link href={`/contest/${contest.id}`} className="text-blue-400 hover:underline">
           {contest.name ?? "Unnamed Contest"} ({eloMin} - {eloMax}) {timeLeft && `: [${timeLeft}]`}
         </Link>
       </li>
