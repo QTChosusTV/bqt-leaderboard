@@ -19,7 +19,7 @@ export default function AboutPage() {
       </p>
 
       <p className="mb-4">
-        Whether you're just getting started or sharpening your fundamentals, BQTOJ offers a curated problem set designed around your skill level. We use an <strong>Elo-based difficulty system</strong> that ensures every problem fits your growth path.
+        Whether you&#8212;re just getting started or sharpening your fundamentals, BQTOJ offers a curated problem set designed around your skill level. We use an <strong>Elo-based difficulty system</strong> that ensures every problem fits your growth path.
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">🛠️ Built by</h2>
