@@ -122,6 +122,7 @@ export default function ChatPage() {
         <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
         <Link href="/chat" className="redirect-button">Chat</Link>
         <Link href="/problemset" className="redirect-button">Problemset</Link>
+        <Link href="/about" className="redirect-button">About</Link>
       </nav>
 
       <h1 className="text-2xl font-bold mb-4">Community Chat</h1>

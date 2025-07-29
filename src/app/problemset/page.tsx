@@ -108,6 +108,7 @@ export default function ProblemsetList() {
         <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
         <Link href="/chat" className="redirect-button">Chat</Link>
         <Link href="/problemset" className="redirect-button">Problemset</Link>
+        <Link href="/about" className="redirect-button">About</Link>
       </nav>
       <nav style={{ marginTop: '0px', marginLeft: '-15px', marginBottom: '0px' }}>
         <div style={{ padding: '20px' }}>

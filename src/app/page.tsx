@@ -157,6 +157,7 @@ export default function HomePage() {
           <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
           <Link href="/chat" className="redirect-button">Chat</Link>
           <Link href="/problemset" className="redirect-button">Problemset</Link>
+          <Link href="/about" className="redirect-button">About</Link>
         </nav>
         <h1 style={{ marginTop: '20px' }} className="text-2xl font-bold mb-4">
           Welcome to BQT Online Judge! Created by BanhQuyTeam, BQTOJ promises a convenient experience to learn, compete and improve your competitive programming skill!
