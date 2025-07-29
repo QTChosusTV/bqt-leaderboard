@@ -15,7 +15,7 @@ export default function AboutPage() {
       <h1 className="text-3xl font-bold mt-6 mb-4">About BQTOJ</h1>
 
       <p className="mb-4">
-        <strong>BQTOJ</strong> (Beginner Quality Training Online Judge) is a friendly and beginner-focused coding judge created by <strong>BanhQuyTeam</strong> — a group of passionate developers who want to make competitive programming more accessible and enjoyable for newcomers.
+        <strong>BQTOJ</strong> (BanhQuyTeam Online Judge) is a friendly and beginner-focused coding judge created by <strong>BanhQuyTeam</strong> — a group of passionate developers who want to make competitive programming more accessible and enjoyable for newcomers.
       </p>
 
       <p className="mb-4">
