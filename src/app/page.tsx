@@ -151,7 +151,7 @@ export default function HomePage() {
 
   return (
     <>
-    {tick && null}
+    {tick > 0 && null}
       <main className="p-6">
         <nav style={{ marginTop: '0px', marginLeft: '-15px', marginBottom: '0px' }}>
           <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
