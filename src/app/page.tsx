@@ -146,8 +146,8 @@ export default function HomePage() {
   }
 
   const renderContestLine = (contest: Contest, type: "upcoming" | "ongoing" | "past") => {
-    const eloMin = contest.elo_min ?? "-"
-    const eloMax = contest.elo_max ?? "-"
+    const eloMin = contest.elo_min ?? 0
+    const eloMax = contest.elo_max ?? 9999
     const timeLeft =
       type === "upcoming"
         ? formatTimeLeft(contest.time_start)
@@ -161,14 +161,14 @@ export default function HomePage() {
           {contest.name ?? "Unnamed Contest"}
 
           <img
-            src={`assets/ranks/${getEloClass(contest.elo_min ?? 0)}.png`}
-            alt={`Rank ${getEloClass(contest.elo_min ?? 0)}`}
+            src={`assets/ranks/${getEloClass(eloMin ?? 0)}.png`}
+            alt={`Rank ${getEloClass(eloMin ?? 0)}`}
             style={{ width: '24px', height: '24px' }}
           />
           to
           <img
-            src={`assets/ranks/${getEloClass(contest.elo_max ?? 0)}.png`}
-            alt={`Rank ${getEloClass(contest.elo_max ?? 0)}`}
+            src={`assets/ranks/${getEloClass(eloMax ?? 0)}.png`}
+            alt={`Rank ${getEloClass(eloMax ?? 0)}`}
             style={{ width: '24px', height: '24px' }}
           />
 
