@@ -159,7 +159,7 @@ export default function HomePage() {
       <li key={contest.id} className="mb-1 flex items-center gap-2">
         <Link href={`${contest.link}`} className="text-blue-400 hover:underline flex items-center gap-2">
           {contest.name ?? "Unnamed Contest"}
-
+          {" | "}
           <img
             src={`assets/ranks/${getEloClass(eloMin ?? 0)}.png`}
             alt={`Rank ${getEloClass(eloMin ?? 0)}`}
