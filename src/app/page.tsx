@@ -130,6 +130,21 @@ export default function HomePage() {
     return `${d > 0 ? `${d}d ` : ""}${leftH}h ${leftM}m ${leftS}s`
   }
 
+  const getEloClass = (elo: number) => {
+    if (elo >= 3000) return 'elo-3000-plus'
+    if (elo >= 2700) return 'elo-2700-3000'
+    if (elo >= 2500) return 'elo-2500-2700'
+    if (elo >= 2300) return 'elo-2300-2500'
+    if (elo >= 2100) return 'elo-2100-2300'
+    if (elo >= 1900) return 'elo-1900-2100'
+    if (elo >= 1750) return 'elo-1750-1900'
+    if (elo >= 1600) return 'elo-1600-1750'
+    if (elo >= 1500) return 'elo-1500-1600'
+    if (elo >= 1400) return 'elo-1400-1500'
+    if (elo >= 1200) return 'elo-1200-1400'
+    return 'elo-0-1200'
+  }
+
   const renderContestLine = (contest: Contest, type: "upcoming" | "ongoing" | "past") => {
     const eloMin = contest.elo_min ?? "-"
     const eloMax = contest.elo_max ?? "-"
@@ -141,9 +156,23 @@ export default function HomePage() {
         : ""
 
     return (
-      <li key={contest.id} className="mb-1">
-        <Link href={`${contest.link}`} className="text-blue-400 hover:underline">
-          {contest.name ?? "Unnamed Contest"} ({eloMin} - {eloMax}) {timeLeft && `: [${timeLeft}]`}
+      <li key={contest.id} className="mb-1 flex items-center gap-2">
+        <Link href={`${contest.link}`} className="text-blue-400 hover:underline flex items-center gap-2">
+          {contest.name ?? "Unnamed Contest"}
+
+          <img
+            src={`assets/ranks/${getEloClass(contest.elo_min ?? 0)}.png`}
+            alt={`Rank ${getEloClass(contest.elo_min ?? 0)}`}
+            style={{ width: '24px', height: '24px' }}
+          />
+          to
+          <img
+            src={`assets/ranks/${getEloClass(contest.elo_max ?? 0)}.png`}
+            alt={`Rank ${getEloClass(contest.elo_max ?? 0)}`}
+            style={{ width: '24px', height: '24px' }}
+          />
+
+          {timeLeft && <span className="ml-1">[{timeLeft}]</span>}
         </Link>
       </li>
     )
