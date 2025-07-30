@@ -159,7 +159,7 @@ export default function HomePage() {
       <li key={contest.id} className="mb-1 flex items-center gap-2">
         <Link href={`${contest.link}`} className="text-blue-400 hover:underline flex items-center gap-2">
           {contest.name ?? "Unnamed Contest"}
-          {" | "}
+          [
           <img
             src={`assets/ranks/${getEloClass(eloMin ?? 0)}.png`}
             alt={`Rank ${getEloClass(eloMin ?? 0)}`}
@@ -171,7 +171,7 @@ export default function HomePage() {
             alt={`Rank ${getEloClass(eloMax ?? 0)}`}
             style={{ width: '24px', height: '24px' }}
           />
-
+          ]
           {timeLeft && <span className="ml-1">[{timeLeft}]</span>}
         </Link>
       </li>
