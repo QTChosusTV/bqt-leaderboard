@@ -132,7 +132,7 @@ export default function HomePage() {
     return (
       <li key={contest.id} className="mb-1 flex items-center gap-2">
         <Link href={`${contest.link}`} className="text-blue-400 hover:underline flex items-center gap-2">
-          {contest.name ?? "Unnamed Contest"} [
+          {contest.name ?? "Unnamed Contest"} (Rated for:
           {iconsInRange.map(rank => (
             <img
               key={rank.class}
@@ -141,7 +141,7 @@ export default function HomePage() {
               style={{ width: '24px', height: '24px' }}
             />
           ))}
-          ]
+          )
           {timeLeft && <span className="ml-1">[{timeLeft}]</span>}
         </Link>
       </li>
