@@ -23,7 +23,7 @@ export default function RegisterPage() {
     /*if (!captchaToken) {
       setError('Please complete the CAPTCHA.');
       return;
-    }*/
+    }?*/ 
 
     try {
       const response = await fetch('/api/verify-captcha', {
