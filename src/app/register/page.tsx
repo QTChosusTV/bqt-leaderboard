@@ -20,10 +20,10 @@ export default function RegisterPage() {
     setError('');
     setSuccess('');
 
-    if (!captchaToken) {
+    /*if (!captchaToken) {
       setError('Please complete the CAPTCHA.');
       return;
-    }
+    }*/
 
     try {
       const response = await fetch('/api/verify-captcha', {
