@@ -52,10 +52,8 @@ function SubmissionContent() {
 
   if (loading) return <p className="p-6">Loading...</p>
   if (!submission) return <p className="p-6 text-red-500">Submission not found.</p>
-
-  let statusText: string
-
-  statusText = submission.overall
+  
+  const statusText: string = submission.overall
 
   /*if (!submission.results) {
     statusText = 'Judging...'
