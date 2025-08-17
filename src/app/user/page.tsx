@@ -24,6 +24,61 @@ interface Contest {
   elo: number;
 }
 
+export interface EloEstimate {
+  elo: number
+  sd: number
+}
+
+export function estimateUserElo(
+  solvedElos: number[],
+  priorMean = 800,
+  priorSd = 300,
+  scale = 400,
+  maxIter = 200,
+  tol = 1e-7
+): EloEstimate {
+  if (!solvedElos || solvedElos.length === 0) {
+    throw new Error("solvedElos must be a non-empty array")
+  }
+
+  const ln10 = Math.log(10)
+  let theta = solvedElos.reduce((a, b) => a + b, 0) / solvedElos.length // start guess
+
+  let h = -1 / (priorSd * priorSd)
+
+  for (let it = 0; it < maxIter; it++) {
+    let gLike = 0
+    let hLike = 0
+
+    for (const beta of solvedElos) {
+      const t = Math.pow(10, (beta - theta) / scale)
+      const p = 1 / (1 + t)
+      gLike += (ln10 / scale) * (1 - p)
+      hLike += -Math.pow(ln10 / scale, 2) * p * (1 - p)
+    }
+
+    const gPrior = -(theta - priorMean) / (priorSd * priorSd)
+    const hPrior = -1 / (priorSd * priorSd)
+
+    const g = gLike + gPrior
+    h = hLike + hPrior
+
+    const step = g / h
+    const thetaNew = theta - step
+
+    if (Math.abs(thetaNew - theta) < tol) {
+      theta = thetaNew
+      break
+    }
+    theta = thetaNew
+  }
+
+  const postVar = -1 / h
+  const postSd = Math.sqrt(Math.max(postVar, 0))
+
+  return { elo: theta, sd: postSd }
+}
+
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, Filler);
 
 const gradientBackgroundPlugin = {
@@ -151,10 +206,15 @@ const getRatingChangeColor = (ratingChange: number) => {
     : `hsl(0, 100%, ${clampedLightness}%)`;
 };
 
+
+
 export default function UserPage() {
   const [username, setUsername] = useState('');
   const [history, setHistory] = useState<Contest[]>([]);
   const [elo, setElo] = useState(0);
+  const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set())
+  const [solvedElos, setSolvedElos] = useState<number[]>([])
+  const [userElo, setUserElo] = useState<number | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -180,6 +240,46 @@ export default function UserPage() {
     fetchHistory();
   }, []);
 
+  useEffect(() => {
+    const fetchSolved = async () => {
+      if (!username) return;
+
+      const { data: subs } = await supabase
+        .from("submissions")
+        .select("problem_id")
+        .eq("username", username)
+        .gte("percentage_correct", 1.0);
+
+      const { data: probs } = await supabase
+        .from("problems")
+        .select("id, difficulty");
+
+      if (subs && probs) {
+        const uniqueIds = [...new Set(subs.map((s) => s.problem_id))];
+
+        const elos = uniqueIds
+          .map((id) => probs.find((p) => p.id === id)?.difficulty ?? 0)
+          .sort((a, b) => a - b);
+
+        setSolvedProblems(new Set(uniqueIds));
+        setSolvedElos(elos);
+
+        try {
+          const estimate = estimateUserElo(elos);
+          setUserElo(Math.round(estimate.elo + estimate.sd));
+          console.log("Estimated Elo:", estimate.elo + estimate.sd);
+        } catch (err) {
+          console.error("Elo estimation failed:", err);
+        }
+
+        //console.log("subs", subs);
+        //console.log("probs", probs);
+        //console.log("elos", elos);
+      }
+    };
+
+    fetchSolved();
+  }, [username]);
 
     const labels = history.map(c => `${c.name} (#${c.contestId})`);
     const data = history.map(c => c.elo);
@@ -347,15 +447,47 @@ export default function UserPage() {
           </div>
         </div>
 
-
-
-
       {history.length > 0 && (
         <Line
           data={chartData}
           options={chartOptions}
         />
       )}
+
+      <div style={{ marginTop: "30px" }}>
+        <h2 style={{ marginBottom: "10px" }}>Solved Problems (Estimate Problem Solving Elo: {userElo})</h2>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "10px",
+          }}
+        >
+          {[...solvedProblems].map((pid, idx) => {
+            const eloVal = solvedElos[idx] || 0;
+            return (
+              <div
+                key={pid}
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: "12px",
+                  backgroundColor: getEloColor(eloVal),
+                  color: "#fff",
+                  fontWeight: "bold",
+                  fontSize: "14px",
+                  cursor: "default",
+                  boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                }}
+              >
+                {`#${pid}`} <span style={{ opacity: 0.85 }}>({eloVal})</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
     </div>
+
+    
   );
 }
