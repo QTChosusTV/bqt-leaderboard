@@ -472,7 +472,7 @@
                     padding: "8px 14px",
                     borderRadius: "12px",
                     backgroundColor: getEloColor(eloVal),
-                    color: "#fff",
+                    color: "#000",
                     fontWeight: "bold",
                     fontSize: "14px",
                     cursor: "default",
