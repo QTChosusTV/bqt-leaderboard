@@ -32,8 +32,6 @@ const renderInlineWithLatex = (text: string, keyPrefix = '') => {
   })
 }
 
-const correct_emoji = ""
-
 export default function ProblemViewPage() {
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
