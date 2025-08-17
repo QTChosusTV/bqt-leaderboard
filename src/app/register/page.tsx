@@ -36,10 +36,10 @@ export default function RegisterPage() {
 
       const result = await response.json();
 
-      if (!result.success) {
+      /*if (!result.success) {
         setError('CAPTCHA verification failed. Please try again.');
         return;
-      }
+      }*/
 
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
