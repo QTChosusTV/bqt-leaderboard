@@ -2,6 +2,8 @@
 
 export const dynamic = 'force-dynamic'; 
 
+// p
+
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState, Suspense } from 'react'
 import { supabase } from '@/utils/supabaseClient'
