@@ -55,7 +55,9 @@ function SubmissionContent() {
 
   let statusText: string
 
-  if (!submission.results) {
+  statusText = submission.overall
+
+  /*if (!submission.results) {
     statusText = 'Judging...'
   } else if (submission.results.some(r => r.status === 'TLE')) {
     statusText = 'Time Limit Exceeded'
@@ -67,7 +69,7 @@ function SubmissionContent() {
     statusText = 'Compile Error'
   } else {
     statusText = 'Wrong Answer'
-  }
+  }*/
 
   return (
     <main className="max-w-4xl mx-auto p-6">
