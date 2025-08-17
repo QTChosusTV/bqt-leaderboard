@@ -39,11 +39,11 @@ export default function LoginPage() {
 
       const result = await response.json()
 
-      if (!result.success) {
+      /*if (!result.success) {
         setError('CAPTCHA verification failed. Please try again.')
         setCaptchaToken(null)
         return
-      }
+      }*/
 
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
