@@ -137,9 +137,10 @@ export default function HomePage() {
           {iconsInRange.map(rank => (
             <Image
               key={rank.class}
-              src={`assets/ranks/${rank.class}.png`}
+              src={`/assets/ranks/${rank.class}.png`}
               alt={rank.class}
-              style={{ width: '24px', height: '24px' }}
+              width='24'
+              height='24'
             />
           ))}
           )

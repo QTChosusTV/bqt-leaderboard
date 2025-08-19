@@ -82,8 +82,7 @@ export default function ProblemViewPage() {
     
     fetchProblem()
     checkUser()
-
-  });
+  }, [id])
 
   useEffect(() => {
     const fetchSubmissions = async () => {

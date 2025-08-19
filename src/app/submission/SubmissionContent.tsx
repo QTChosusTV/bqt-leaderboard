@@ -32,23 +32,45 @@ function SubmissionContent() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchSubmission = async () => {
-      if (!submissionId) return
+    if (!submissionId) return
 
+    const fetchSubmission = async () => {
       const { data, error } = await supabase
         .from('submissions')
         .select('*')
         .eq('id', submissionId)
         .single()
 
-      if (error) console.error('Error fetching submission:', error.message, error.details, error.hint)
-      else setSubmission(data)
-
+      if (data) {
+        setSubmission(data as Submission)
+      }
       setLoading(false)
     }
 
     fetchSubmission()
+
+    const channel = supabase
+      .channel('submission-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'submissions',
+          filter: `id=eq.${submissionId}`,
+        },
+        (payload) => {
+          console.log('Got update:', payload)
+          setSubmission(payload.new as Submission)
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [submissionId])
+
 
   if (loading) return <p className="p-6">Loading...</p>
   if (!submission) return <p className="p-6 text-red-500">Submission not found.</p>

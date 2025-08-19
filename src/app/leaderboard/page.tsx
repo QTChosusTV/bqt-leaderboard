@@ -141,7 +141,7 @@ export default function LeaderboardPage() {
               const eloClass = getEloClass(user.elo)
               const top100Class = index < 100 ? 'elo-top-100' : ''
               const usernameClassList = `${eloClass} ${top100Class}`
-              const iconSrc = `assets/ranks/${eloClass}.png`
+              const iconSrc = `/assets/ranks/${eloClass}.png`
 
               return (
                 <tr key={user.username}>
@@ -156,10 +156,10 @@ export default function LeaderboardPage() {
                         src={iconSrc}
                         alt={eloClass}
                         style={{
-                          width: '80px',
-                          height: '80px',
-                          marginRight: '15px'
+                          marginRight: '15px',
                         }}
+                        width='80'
+                        height='80'
                       />
                       {user.username}
                     </Link>
