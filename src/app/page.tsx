@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const eloRanks = [
   { class: 'elo-0-1200', min: 0 },
@@ -134,7 +135,7 @@ export default function HomePage() {
         <Link href={`${contest.link}`} className="text-blue-400 hover:underline flex items-center gap-2">
           {contest.name ?? "Unnamed Contest"} (Rated for:
           {iconsInRange.map(rank => (
-            <img
+            <Image
               key={rank.class}
               src={`assets/ranks/${rank.class}.png`}
               alt={rank.class}

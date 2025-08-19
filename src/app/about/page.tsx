@@ -2,8 +2,7 @@
 
 import Link from 'next/link'
 import GradientText from './GradientText/GradientText'
-import AnimatedContent from './AnimatedContent/AnimatedContent'
-import Counter from './Counter/Counter';
+import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
 
 export default function AboutPage() {
   return (
@@ -16,7 +15,7 @@ export default function AboutPage() {
       </nav>
 
 
-      <AnimatedContent
+      <AnimatedContent  
         distance={50}
         direction="vertical"
         reverse={false}
@@ -26,7 +25,7 @@ export default function AboutPage() {
         animateOpacity
         scale={1.0}
         threshold={0.2}
-        delay={0.3}
+        delay={0.0}
       >
         <GradientText
           colors={["#c640ffff", "#ff40ffff", "#c640ffff", "#ff40ffff", "#c640ffff"]}
@@ -37,7 +36,18 @@ export default function AboutPage() {
           About BQTOJ
         </GradientText>
       </AnimatedContent>
-
+      <AnimatedContent  
+        distance={50}
+        direction="vertical"
+        reverse={false}
+        duration={0.8}
+        ease="power3.out"
+        initialOpacity={0.0}
+        animateOpacity
+        scale={1.0}
+        threshold={0.2}
+        delay={1.0}
+      >
       <p className="mb-4">
         <strong>BQTOJ</strong> (BanhQuyTeam Online Judge) is a friendly and beginner-focused coding judge created by <strong>BanhQuyTeam</strong> — a group of passionate developers who want to make competitive programming more accessible and enjoyable for newcomers.
       </p>
@@ -66,6 +76,7 @@ export default function AboutPage() {
       <p className="mt-8">
         <Link href="/" className="text-blue-500 underline">← Back to Home</Link>
       </p>
+      </AnimatedContent>
     </main>
   )
 }

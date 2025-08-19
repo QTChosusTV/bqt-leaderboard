@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import './leaderboard.css'
 import Link from 'next/link';
+import Image from 'next/image'
 
 interface User {
   username: string
@@ -151,7 +152,7 @@ export default function LeaderboardPage() {
                       className={usernameClassList}
                       style={{ display: 'flex', alignItems: 'center' }}
                     >
-                      <img
+                      <Image
                         src={iconSrc}
                         alt={eloClass}
                         style={{
