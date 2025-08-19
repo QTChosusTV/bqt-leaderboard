@@ -15,7 +15,6 @@ interface Problem {
   statement: string
   constrains: string
   examples: string
-  testcases: { input: number[], output: number[] }[]
   created_at: string
   explaination: string
   time_out: number
@@ -43,7 +42,7 @@ export default function ProblemViewPage() {
     const fetchProblem = async () => {
       if (!id) return
       const { data, error } = await supabase
-        .from('problems')
+        .from('title, tags, statement, examples, created_at, explaination, time_out, constrains, difficulty')
         .select('*')
         .eq('id', Number(id))
         .single()

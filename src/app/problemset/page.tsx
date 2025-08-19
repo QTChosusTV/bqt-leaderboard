@@ -14,7 +14,6 @@ interface Problem {
   statement: string
   constrains: string
   examples: string
-  testcases: { input: number[], output: number[] }[] // eslint-disable-line @typescript-eslint/no-explicit-any
   created_at: Timestamp
 }
 
@@ -28,7 +27,7 @@ export default function ProblemsetList() {
     const fetchProblems = async () => {
       const { data: problems, error } = await supabase
         .from('problems')
-        .select('id, title, difficulty, statement, tags, constrains, examples, testcases, created_at')
+        .select('id, title, difficulty, statement, tags, constrains, examples, created_at')
         .order('id', { ascending: true })
 
       if (!error && problems) {
