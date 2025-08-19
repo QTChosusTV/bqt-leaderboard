@@ -1,6 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import GradientText from './GradientText/GradientText'
+import AnimatedContent from './AnimatedContent/AnimatedContent'
+import Counter from './Counter/Counter';
 
 export default function AboutPage() {
   return (
@@ -12,7 +15,28 @@ export default function AboutPage() {
         <Link href="/about" className="redirect-button">About</Link>
       </nav>
 
-      <h1 className="text-3xl font-bold mt-6 mb-4">About BQTOJ</h1>
+
+      <AnimatedContent
+        distance={50}
+        direction="vertical"
+        reverse={false}
+        duration={0.8}
+        ease="power3.out"
+        initialOpacity={0.0}
+        animateOpacity
+        scale={1.0}
+        threshold={0.2}
+        delay={0.3}
+      >
+        <GradientText
+          colors={["#c640ffff", "#ff40ffff", "#c640ffff", "#ff40ffff", "#c640ffff"]}
+          animationSpeed={10}
+          showBorder={false}
+          className="text-4xl about"
+        >
+          About BQTOJ
+        </GradientText>
+      </AnimatedContent>
 
       <p className="mb-4">
         <strong>BQTOJ</strong> (BanhQuyTeam Online Judge) is a friendly and beginner-focused coding judge created by <strong>BanhQuyTeam</strong> — a group of passionate developers who want to make competitive programming more accessible and enjoyable for newcomers.
