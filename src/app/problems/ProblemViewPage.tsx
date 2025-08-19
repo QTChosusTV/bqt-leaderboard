@@ -42,8 +42,8 @@ export default function ProblemViewPage() {
     const fetchProblem = async () => {
       if (!id) return
       const { data, error } = await supabase
-        .from('title, tags, statement, examples, created_at, explaination, time_out, constrains, difficulty')
-        .select('*')
+        .from('problems')
+        .select('id, title, tags, statement, examples, created_at, explaination, time_out, constrains, difficulty')
         .eq('id', Number(id))
         .single()
 
