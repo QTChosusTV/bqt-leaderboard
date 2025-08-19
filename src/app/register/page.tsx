@@ -20,10 +20,10 @@ export default function RegisterPage() {
     setError('');
     setSuccess('');
 
-    if (!captchaToken) {
+    /*if (!captchaToken) {
       setError('Please complete the CAPTCHA.');
       return;
-    }
+    }?*/ 
 
     try {
       const response = await fetch('/api/verify-captcha', {
@@ -36,10 +36,10 @@ export default function RegisterPage() {
 
       const result = await response.json();
 
-      if (!result.success) {
+      /*if (!result.success) {
         setError('CAPTCHA verification failed. Please try again.');
         return;
-      }
+      }*/
 
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,

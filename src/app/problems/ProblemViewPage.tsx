@@ -36,6 +36,8 @@ export default function ProblemViewPage() {
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
   const [problem, setProblem] = useState<Problem | null>(null)
+  const [curr_username, setUsername] = useState<string | null>(null)
+  const [solved, setSolved] = useState(false) 
 
   useEffect(() => {
     const fetchProblem = async () => {
@@ -54,8 +56,49 @@ export default function ProblemViewPage() {
       setProblem(data)
     }
 
+    const checkUser = async () => {
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser()
+
+      if (authError || !user) {
+        console.error("Auth error or no user found")
+        return
+      }
+
+      const id = user.id
+
+      const { data: userData, error: fetchError } = await supabase
+        .from("users")
+        .select("username")
+        .eq("id", id)
+        .single()
+      
+      if (userData) {
+        setUsername(userData.username ?? null)
+      }
+    }
+    
     fetchProblem()
-  }, [id])
+    checkUser()
+
+  });
+
+  useEffect(() => {
+    const fetchSubmissions = async () => {
+      if (!problem || !curr_username) return
+      const { data } = await supabase
+        .from('submissions')
+        .select('id')
+        .eq('username', curr_username)
+        .eq('percentage_correct', 1)
+        .eq('problem_id', problem.id)
+
+      if (data && data.length > 0) setSolved(true)
+    }
+    fetchSubmissions()
+  }, [problem, curr_username])
 
   const parseExamples = (examples: string) => {
     const lines = examples.split('\n')
@@ -94,10 +137,11 @@ export default function ProblemViewPage() {
     return 'elo-0-1200'
   }
 
+
   return (
     <main className="max-w-10xl mx-auto p-6">
       <Link href="/problemset" className="text-blue-600 underline text-sm mb-4 inline-block">← Back to problem list</Link>
-      <h1 className="text-2xl font-bold mb-2">{problem.title}</h1>
+      <h1 className="text-2xl font-bold mb-2">{problem.title} {solved && "✅"}</h1>
       <p className={`text-sm mb-4 ${getEloClass(problem.difficulty)}`}>Estimated Elo: <strong>{problem.difficulty}</strong></p>
       <p className="text-gray-300 text-sm mb-4">Time limit: <strong>{problem.time_out*1000}</strong>ms</p>
       <div className="mb-4">

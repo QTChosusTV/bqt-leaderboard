@@ -19,38 +19,26 @@ interface Problem {
 }
 
 export default function ProblemsetList() {
-  const [email, setEmail] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars 
-  const [username, setUsername] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [email, setEmail] = useState<string | null>(null)
+  const [username, setUsername] = useState<string | null>(null)
   const [problems, setProblems] = useState<Problem[]>([])
+  const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     const fetchProblems = async () => {
-      const {
-        data: problems,
-        error: problemsError,
-      } = await supabase
+      const { data: problems, error } = await supabase
         .from('problems')
-        .select('id, title, difficulty, statement, tags, constrains, examples, testcases, created_at, explaination')
+        .select('id, title, difficulty, statement, tags, constrains, examples, testcases, created_at')
         .order('id', { ascending: true })
 
-      if (problemsError) {
-        console.error('Failed to fetch problems')
-      } else {
-        //console.log('Fetched problems: ', problems)
-        setProblems(problems ?? [])
+      if (!error && problems) {
+        setProblems(problems)
       }
     }
 
     const checkUser = async () => {
-      const {
-        data: { user },
-        error: authError,
-      } = await supabase.auth.getUser()
-
-      if (authError || !user) {
-        console.error("Auth error or no user found")
-        return
-      }
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
 
       const id = user.id
       const email = user.email ?? null
@@ -61,31 +49,36 @@ export default function ProblemsetList() {
         .eq("id", id)
         .single()
 
-      if (fetchError && fetchError.code !== "PGRST116") {
-        console.error("Fetch user error:", fetchError.message)
-      }
-
       if (!userData) {
         const generatedUsername = email?.split("@")[0] ?? "user"
-        const { error: insertError } = await supabase
-          .from("users")
-          .insert([{ id, email, username: generatedUsername }])
-
-        if (insertError) {
-          console.error("Insert error:", insertError.message)
-        } else {
-          setUsername(generatedUsername)
-        }
+        await supabase.from("users").insert([{ id, email, username: generatedUsername }])
+        setUsername(generatedUsername)
       } else {
         setUsername(userData.username ?? null)
       }
-
       setEmail(email)
     }
 
     checkUser()
     fetchProblems()
   }, [])
+
+  // fetch solved problems once username is ready
+  useEffect(() => {
+    const fetchSolved = async () => {
+      if (!username) return
+      const { data, error } = await supabase
+        .from('submissions')
+        .select('problem_id')
+        .eq('username', username)
+        .eq('percentage_correct', 1)
+
+      if (!error && data) {
+        setSolvedProblems(new Set(data.map(d => d.problem_id)))
+      }
+    }
+    fetchSolved()
+  }, [username])
 
   const getEloClass = (elo: number) => {
     if (elo >= 3000) return 'elo-3000-plus'
@@ -110,38 +103,43 @@ export default function ProblemsetList() {
         <Link href="/problemset" className="redirect-button">Problemset</Link>
         <Link href="/about" className="redirect-button">About</Link>
       </nav>
-      <nav style={{ marginTop: '0px', marginLeft: '-15px', marginBottom: '0px' }}>
-        <div style={{ padding: '20px' }}>
-          <table id="problemlist" className="eloClass">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Est. Elo</th>
-                <th>Tags</th>
-                <th>Date</th>
+
+      <div style={{ padding: '20px' }}>
+        <table id="problemlist" className="eloClass">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Est. Elo</th>
+              <th>Tags</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {problems.map((problem) => (
+              <tr key={problem.id}>
+                <td>{problem.id}</td>
+                <td className={getEloClass(problem.difficulty)}>
+                  <strong>
+                    <Link href={`/problems?id=${encodeURIComponent(problem.id)}`}>
+                      {problem.title} {solvedProblems.has(problem.id) && "✅"}
+                    </Link>
+                  </strong>
+                </td>
+                <td className={getEloClass(problem.difficulty)}>{problem.difficulty}</td>
+                <td>
+                  {problem.tags?.map(tag => (
+                    <span key={tag.tagName} className="inline-block bg-blue-600 text-white px-2 py-1 rounded mr-1 text-xs">
+                      {tag.tagName}
+                    </span>
+                  ))}
+                </td>
+                <td>{new Date(problem.created_at).toLocaleDateString()}</td>
               </tr>
-            </thead>
-            <tbody>
-              {problems.map((problem) => (
-                <tr key={problem.id}>
-                  <td>{problem.id}</td>
-                  <td className={getEloClass(problem.difficulty)}><strong><Link href={`/problems?id=${encodeURIComponent(problem.id)}`}>{problem.title}</Link></strong></td>
-                  <td className={getEloClass(problem.difficulty)}>{problem.difficulty}</td>
-                  <td>
-                    {problem.tags?.map(tag => (
-                      <span key={tag.tagName} className="inline-block bg-blue-600 text-white px-2 py-1 rounded mr-1 text-xs">
-                        {tag.tagName}
-                      </span>
-                    ))}
-                  </td>
-                  <td>{new Date(problem.created_at).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </nav>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </main>
   )
 }

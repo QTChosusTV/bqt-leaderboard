@@ -4,6 +4,21 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import Link from 'next/link'
 
+const eloRanks = [
+  { class: 'elo-0-1200', min: 0 },
+  { class: 'elo-1200-1400', min: 1200 },
+  { class: 'elo-1400-1500', min: 1400 },
+  { class: 'elo-1500-1600', min: 1500 },
+  { class: 'elo-1600-1750', min: 1600 },
+  { class: 'elo-1750-1900', min: 1750 },
+  { class: 'elo-1900-2100', min: 1900 },
+  { class: 'elo-2100-2300', min: 2100 },
+  { class: 'elo-2300-2500', min: 2300 },
+  { class: 'elo-2500-2700', min: 2500 },
+  { class: 'elo-2700-3000', min: 2700 },
+  { class: 'elo-3000-plus', min: 3000 },
+]
+
 type Contest = {
   id: number
   name: string | null
@@ -20,13 +35,10 @@ export default function HomePage() {
   const [upcoming, setUpcoming] = useState<Contest[]>([])
   const [ongoing, setOngoing] = useState<Contest[]>([])
   const [past, setPast] = useState<Contest[]>([])
-  const [tick, setTick] = useState(0) 
+  const [tick, setTick] = useState(0)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTick(prev => prev + 1)
-    }, 1000)
-
+    const interval = setInterval(() => setTick(prev => prev + 1), 1000)
     return () => clearInterval(interval)
   }, [])
 
@@ -37,10 +49,7 @@ export default function HomePage() {
         error: authError,
       } = await supabase.auth.getUser()
 
-      if (authError || !user) {
-        console.error("Auth error or no user found")
-        return
-      }
+      if (authError || !user) return console.error("Auth error or no user found")
 
       const id = user.id
       const email = user.email ?? null
@@ -61,11 +70,7 @@ export default function HomePage() {
           .from("users")
           .insert([{ id, email, username: generatedUsername }])
 
-        if (insertError) {
-          console.error("Insert error:", insertError.message)
-        } else {
-          setUsername(generatedUsername)
-        }
+        if (!insertError) setUsername(generatedUsername)
       } else {
         setUsername(userData.username ?? null)
       }
@@ -79,10 +84,7 @@ export default function HomePage() {
         .select("*")
         .order("time_start", { ascending: true })
 
-      if (error) {
-        console.error("Failed to fetch contests:", error.message)
-        return
-      }
+      if (error) return console.error("Failed to fetch contests:", error.message)
 
       const now = new Date().toISOString()
       const upcoming: Contest[] = []
@@ -90,31 +92,19 @@ export default function HomePage() {
       const past: Contest[] = []
 
       for (const contest of data || []) {
-        if (contest.time_start > now) {
-          upcoming.push(contest)
-        } else if (contest.time_start <= now && contest.time_end >= now) {
-          ongoing.push(contest)
-        } else {
-          past.push(contest)
-        }
+        if (contest.time_start > now) upcoming.push(contest)
+        else if (contest.time_end >= now) ongoing.push(contest)
+        else past.push(contest)
       }
 
       setUpcoming(upcoming)
       setOngoing(ongoing)
-      setPast(
-        past
-          .sort(
-            (a, b) =>
-              new Date(b.time_end ?? 0).getTime() - new Date(a.time_end ?? 0).getTime()
-          )
-          .slice(0, 10)
-      )
+      setPast(past.sort((a, b) => new Date(b.time_end ?? 0).getTime() - new Date(a.time_end ?? 0).getTime()).slice(0, 10))
     }
 
     checkUser()
     fetchContests()
   }, [])
-
 
   const formatTimeLeft = (toTime: string | null) => {
     if (!toTime) return ""
@@ -124,15 +114,12 @@ export default function HomePage() {
     const m = Math.floor(s / 60)
     const h = Math.floor(m / 60)
     const d = Math.floor(h / 24)
-    const leftH = h % 24
-    const leftM = m % 60
-    const leftS = s % 60
-    return `${d > 0 ? `${d}d ` : ""}${leftH}h ${leftM}m ${leftS}s`
+    return `${d > 0 ? `${d}d ` : ""}${h % 24}h ${m % 60}m ${s % 60}s`
   }
 
   const renderContestLine = (contest: Contest, type: "upcoming" | "ongoing" | "past") => {
-    const eloMin = contest.elo_min ?? "-"
-    const eloMax = contest.elo_max ?? "-"
+    const eloMin = contest.elo_min ?? 0
+    const eloMax = contest.elo_max ?? 9999
     const timeLeft =
       type === "upcoming"
         ? formatTimeLeft(contest.time_start)
@@ -140,10 +127,22 @@ export default function HomePage() {
         ? formatTimeLeft(contest.time_end)
         : ""
 
+    const iconsInRange = eloRanks.filter(rank => rank.min >= eloMin && rank.min <= eloMax)
+
     return (
-      <li key={contest.id} className="mb-1">
-        <Link href={`${contest.link}`} className="text-blue-400 hover:underline">
-          {contest.name ?? "Unnamed Contest"} ({eloMin} - {eloMax}) {timeLeft && `: [${timeLeft}]`}
+      <li key={contest.id} className="mb-1 flex items-center gap-2">
+        <Link href={`${contest.link}`} className="text-blue-400 hover:underline flex items-center gap-2">
+          {contest.name ?? "Unnamed Contest"} (Rated for:
+          {iconsInRange.map(rank => (
+            <img
+              key={rank.class}
+              src={`assets/ranks/${rank.class}.png`}
+              alt={rank.class}
+              style={{ width: '24px', height: '24px' }}
+            />
+          ))}
+          )
+          {timeLeft && <span className="ml-1">[{timeLeft}]</span>}
         </Link>
       </li>
     )
@@ -151,18 +150,20 @@ export default function HomePage() {
 
   return (
     <>
-    {tick > 0 && null}
+      {tick > 0 && null}
       <main className="p-6">
-        <nav style={{ marginTop: '0px', marginLeft: '-15px', marginBottom: '0px' }}>
+        <nav className="mb-0 ml-[-15px] mt-0">
           <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
           <Link href="/chat" className="redirect-button">Chat</Link>
           <Link href="/problemset" className="redirect-button">Problemset</Link>
           <Link href="/ide" className="redirect-button">Live IDE</Link>
           <Link href="/about" className="redirect-button">About</Link>
         </nav>
-        <h1 style={{ marginTop: '20px' }} className="text-2xl font-bold mb-4">
+
+        <h1 className="text-2xl font-bold mt-5 mb-4">
           Welcome to BQT Online Judge! Created by BanhQuyTeam, BQTOJ promises a convenient experience to learn, compete and improve your competitive programming skill!
         </h1>
+
         {email ? (
           <p>
             Logged in as <strong>{email}</strong><br />

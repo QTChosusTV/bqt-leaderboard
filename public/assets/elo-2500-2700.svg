@@ -1,0 +1,68 @@
+<svg width="400" height="400" viewBox="0 -10 100 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Light red metallic gradient -->
+    <linearGradient id="lightRedMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffdada" />
+      <stop offset="100%" stop-color="#ff7575" />
+    </linearGradient>
+
+    <!-- Light red shard glow gradient -->
+    <linearGradient id="shardGlowRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe5e5aa"/>
+      <stop offset="100%" stop-color="#ff9a9aaa"/>
+    </linearGradient>
+
+    <!-- Rich red shard gradient -->
+    <linearGradient id="shard2700" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffdadaaa"/>
+      <stop offset="100%" stop-color="#ff7575aa"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Base large diamond -->
+  <path d="M 10 55 L 50 85 L 90 55 L 50 100 Z"
+        fill="url(#lightRedMetal)" stroke="#cc5a5a" stroke-width="2" />
+  
+  <!-- Star/arrow inside -->
+  <path d="M 50 90 
+           L 90.5 55
+           L 60 65 
+           L 50 32 
+           L 40 65 
+           L 09.5 55
+           Z"
+        fill="url(#lightRedMetal)" stroke="#cc5a5a" stroke-width="1" />
+
+  <!-- Top diamond/spark -->
+  <polygon points="50,28 53,32 50,36 47,32"
+           fill="#ffeaea" stroke="#ff7575" stroke-width="0.8"  />
+  <polygon points="50,86 60,77 50,40 40,77"
+           fill="#ffeaea" stroke="#ff7575" stroke-width="0.8"  />
+
+  <!-- Left shard detail -->
+  <polygon points="48,35 39,63 33,61"
+           fill="url(#shardGlowRed)" stroke="#cc5a5a" stroke-width="0.8"  />
+
+  <!-- Original left-adjacent shard -->
+  <polygon points="25,37 32,60.6 22,57"
+           fill="url(#shard2700)" stroke="#ff7575" stroke-width="0.8"  />
+
+  <!-- Right shard detail -->
+  <polygon points="52,35 61,63 67,61"
+           fill="url(#shardGlowRed)" stroke="#cc5a5a" stroke-width="0.8"  />
+
+  <!-- Original right-adjacent shard -->
+  <polygon points="75,37 68,60.6 78,57"
+           fill="url(#shard2700)" stroke="#ff7575" stroke-width="0.8"  />
+
+  <!--  Added left red wing shard -->
+  <polygon points="18,40 30,60 15,55"
+           fill="#ff7575" stroke="#cc5a5a" stroke-width="0.8" />
+
+  <!--  Added right red wing shard -->
+  <polygon points="82,40 70,60 85,55"
+           fill="#ff7575" stroke="#cc5a5a" stroke-width="0.8" />
+
+  <path d="M 70 22.5 L 50 5 L 30 22.5 L 50 0 Z"
+      fill="url(#lightRedMetal)" stroke="#cc5a5a" stroke-width="1" />
+</svg>
