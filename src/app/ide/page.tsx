@@ -222,7 +222,7 @@ export default function IDEPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-gray-300">{user.email?.split('@')[0]}</span>
+                <span className="text-gray-300">{user.email/*?.split('@')[0]*/}</span>
               </div>
             ) : (
               <Link href="/auth" className="text-sm text-purple-400 hover:underline">
