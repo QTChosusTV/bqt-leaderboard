@@ -196,6 +196,8 @@
     return '#aaaaaa';
   };
 
+  type Solved = { id: number; elo: number };
+
   const getRatingChangeColor = (ratingChange: number) => {
     const maxChange = 500;
     const absChange = Math.abs(ratingChange);
@@ -213,7 +215,7 @@
     const [history, setHistory] = useState<Contest[]>([]);
     const [elo, setElo] = useState(0);
     const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set())
-    const [solvedElos, setSolvedElos] = useState<number[]>([])
+    const [solvedElos, setSolvedElos] = useState<Solved[]>([]);
     const [userElo, setUserElo] = useState<number | null>(null);
 
     useEffect(() => {
@@ -255,23 +257,23 @@
           .select("id, difficulty");
 
         if (subs && probs) {
-          const uniqueIds = [...new Set(subs.map((s) => s.problem_id))];
+          const solved = [...new Set(subs.map((s) => s.problem_id))]
+            .map((id) => ({
+              id,
+              elo: probs.find((p) => p.id === id)?.difficulty ?? 0,
+            }))
+            .sort((a, b) => a.elo - b.elo); // optional: remove if you don’t want sorting
 
-          const elos = uniqueIds
-            .map((id) => probs.find((p) => p.id === id)?.difficulty ?? 0)
-            .sort((a, b) => a - b);
-
-          setSolvedProblems(new Set(uniqueIds));
-          setSolvedElos(elos);
+          setSolvedProblems(new Set(solved.map((s) => s.id)));
+          setSolvedElos(solved);
 
           try {
-            const estimate = estimateUserElo(elos);
+            const estimate = estimateUserElo(solved.map(s => s.elo));
             setUserElo(Math.round(estimate.elo + estimate.sd));
             console.log("Estimated Elo:", estimate.elo + estimate.sd);
           } catch (err) {
             console.error("Elo estimation failed:", err);
           }
-
           //console.log("subs", subs);
           //console.log("probs", probs);
           //console.log("elos", elos);
@@ -463,26 +465,24 @@
               gap: "10px",
             }}
           >
-            {[...solvedProblems].map((pid, idx) => {
-              const eloVal = solvedElos[idx] || 0;
-              return (
-                <div
-                  key={pid}
-                  style={{
-                    padding: "8px 14px",
-                    borderRadius: "12px",
-                    backgroundColor: getEloColor(eloVal),
-                    color: "#000",
-                    fontWeight: "bold",
-                    fontSize: "14px",
-                    cursor: "default",
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-                  }}
-                >
-                  {`#${pid}`} <span style={{ opacity: 0.85 }}>({eloVal})</span>
-                </div>
-              );
-            })}
+            {solvedElos.map(({ id, elo }) => (
+            <div
+              key={id}
+              style={{
+                padding: "8px 14px",
+                borderRadius: "12px",
+                backgroundColor: getEloColor(elo),
+                color: "#000",
+                fontWeight: "bold",
+                fontSize: "14px",
+                cursor: "default",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+              }}
+            >
+              #{id} <span style={{ opacity: 0.85 }}>({elo})</span>
+            </div>
+          ))}
+
           </div>
         </div>
 
