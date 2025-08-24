@@ -307,7 +307,7 @@
           pointBackgroundColor: pointColors,
           pointBorderColor: "#fff",
           pointRadius: 5,
-          tension: 0.3,
+          tension: 0.1,
           fill: false
         }
       ]
