@@ -101,20 +101,31 @@ export default function ProblemViewPage() {
   const parseExamples = (examples: string) => {
     const lines = examples.split('\n')
     const result: { input: string[], output: string[] }[] = []
-    let current: { input: string[], output: string[] } = { input: [], output: [] }
+    let current: { input: string[], output: string[] } | null = null
+    let inOutput = false
 
     for (const line of lines) {
       if (line.startsWith('[i]')) {
+        if (!current) current = { input: [], output: [] }
+        if (inOutput) {
+          // we already finished one example -> push and start a new one
+          result.push(current)
+          current = { input: [], output: [] }
+          inOutput = false
+        }
         current.input.push(line.slice(3).trim())
       } else if (line.startsWith('[o]')) {
+        if (!current) current = { input: [], output: [] }
+        inOutput = true
         current.output.push(line.slice(3).trim())
-        result.push(current)
-        current = { input: [], output: [] }
       }
     }
 
+    if (current) result.push(current)
     return result
   }
+
+
 
   if (!problem) return <p className="p-4">Loading problem...</p>
 

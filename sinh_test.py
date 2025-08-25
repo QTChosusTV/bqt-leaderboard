@@ -2,22 +2,31 @@ import json
 import random
 import os
 
-NUM_TESTS = 12
-MAX_N = 12
+NUM_TESTS = 10
+MIN_N = 1
+MAX_N = 1_000_000_000
 
 testcases = []
+str_list = []
 
-def fib(n):
-    if n <= 1:
-        return 1
-    return n * fib(n-1)
+def bin(i, n, s):
+    if i > n:
+        str_list.append(s)
+        return
+    bin(i+1, n, s+"0")
+    bin(i+1, n, s+"1")
 
 for _ in range(NUM_TESTS):
+    
     n = _+1
-    ans = fib(n)
+    str_list = []
+    bin(1, n, "")
 
     input_str = f"{n}"
-    output_str = f"{ans}"
+    output_str = ""
+
+    for s in str_list:
+        output_str = output_str + s + "\n"
 
     testcases.append({
         "input": input_str,
@@ -26,7 +35,7 @@ for _ in range(NUM_TESTS):
 
 print("Current directory:", os.getcwd())
 
-output_file = "fib_testcases.json"
+output_file = "random_testcases.json"
 with open(output_file, "w") as f:
     json.dump(testcases, f, indent=2)
 
