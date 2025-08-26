@@ -90,7 +90,7 @@ export default function ProblemViewPage() {
         .from('submissions')
         .select('id')
         .eq('username', curr_username)
-        .eq('percentage_correct', 1)
+        .eq('overall', 'Accepted')
         .eq('problem_id', problem.id)
 
       if (data && data.length > 0) setSolved(true)
@@ -108,7 +108,6 @@ export default function ProblemViewPage() {
       if (line.startsWith('[i]')) {
         if (!current) current = { input: [], output: [] }
         if (inOutput) {
-          // we already finished one example -> push and start a new one
           result.push(current)
           current = { input: [], output: [] }
           inOutput = false
