@@ -250,7 +250,7 @@
           .from("submissions")
           .select("problem_id")
           .eq("username", username)
-          .gte("percentage_correct", 1.0);
+          .gte("overall", "Accepted");
 
         const { data: probs } = await supabase
           .from("problems")
