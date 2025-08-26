@@ -22,6 +22,11 @@ export default function ProblemsetList() {
   const [username, setUsername] = useState<string | null>(null)
   const [problems, setProblems] = useState<Problem[]>([])
   const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set())
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+
+  
+
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -70,7 +75,7 @@ export default function ProblemsetList() {
         .from('submissions')
         .select('problem_id')
         .eq('username', username)
-        .eq('percentage_correct', 1)
+        .eq('overall', "Accepted")
 
       if (!error && data) {
         setSolvedProblems(new Set(data.map(d => d.problem_id)))
@@ -94,14 +99,81 @@ export default function ProblemsetList() {
     return 'elo-0-1200'
   }
 
+  const allTags = [
+    "math",
+    "dp",
+    "recursion",
+    "basic",
+    "graph",
+    "counting",
+    "all pair shortest",
+    "greedy",
+    "implementation"
+  ]
+
+  const filteredProblems = problems
+  .filter(problem =>
+    selectedTags.length === 0 ||
+    problem.tags?.some(tag => selectedTags.includes(tag.tagName))
+  )
+  .sort((a, b) =>
+    sortOrder === 'asc'
+      ? a.difficulty - b.difficulty
+      : b.difficulty - a.difficulty
+  )
+
+
+
   return (
     <main className="p-6">
-      <nav style={{marginTop: '0px', marginLeft: '-15px', marginBottom: '-20px'}}>
+      <nav style={{marginTop: '0px', marginLeft: '-15px', marginBottom: '20px'}}>
         <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
         <Link href="/chat" className="redirect-button">Chat</Link>
         <Link href="/problemset" className="redirect-button">Problemset</Link>
         <Link href="/about" className="redirect-button">About</Link>
       </nav>
+
+      <div className="flex flex-col gap-4 mb-4">
+        <div>
+          <label className="mr-2">Sort by Difficulty:</label>
+          <select
+            value={sortOrder}
+            onChange={e => setSortOrder(e.target.value as 'asc' | 'desc')}
+            className="p-1 border rounded"
+          >
+            <option value="asc" style={{color: "#000"}}>Ascending</option>
+            <option value="desc" style={{color: "#000"}}>Descending</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="mr-2">Filter by Tags:</label>
+          <select style={{height: 150, marginLeft: 30}}
+            multiple
+            value={selectedTags}
+            onChange={e =>
+              setSelectedTags(
+                Array.from(e.target.selectedOptions, option => option.value)
+              )
+            }
+            className="p-1 border rounded"
+          >
+            {allTags.map(tag => (
+              <option key={tag} value={tag}>{tag}</option>
+            ))}
+          </select>
+
+          <button
+            type="button"
+            onClick={() => setSelectedTags([])}
+            className="ml-2 px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
+            style={{marginLeft: 25}}
+          >
+            Reset
+          </button>
+        </div>
+
+      </div>
 
       <div style={{ padding: '20px' }}>
         <table id="problemlist" className="eloClass">
@@ -115,7 +187,7 @@ export default function ProblemsetList() {
             </tr>
           </thead>
           <tbody>
-            {problems.map((problem) => (
+            {filteredProblems.map((problem) => (
               <tr key={problem.id}>
                 <td>{problem.id}</td>
                 <td className={getEloClass(problem.difficulty)}>
