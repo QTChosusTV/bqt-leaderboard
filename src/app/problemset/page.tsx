@@ -193,7 +193,7 @@ export default function ProblemsetList() {
                 <td className={getEloClass(problem.difficulty)}>
                   <strong>
                     <Link href={`/problems?id=${encodeURIComponent(problem.id)}`}>
-                      {problem.title} {solvedProblems.has(problem.id) && "✅"}
+                      {solvedProblems.has(problem.id) && "✅"} {problem.title} 
                     </Link>
                   </strong>
                 </td>
