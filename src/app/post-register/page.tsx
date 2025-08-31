@@ -7,56 +7,75 @@ export default function PostRegisterPage() {
   const [username, setUsername] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  console.log("Inserting username:", username)
+  console.log('Inserting username:', username)
 
   const handleFinalizeAccount = async () => {
-    const { data: userData, error: userError } = await supabase.auth.getUser()
+    // reset messages
+    setError('')
+    setMessage('')
 
-    if (userError || !userData?.user) {
-      setError('You are not logged in. Please log in first.')
+    const trimmed = username.trim()
+    if (!trimmed) {
+      setError('Please enter your desired username.')
       return
     }
 
-    const id = userData.user.id
-    const email = userData.user.email
-    const username = localStorage.getItem('pending_username')
+    setLoading(true)
+    try {
+      const { data: userData, error: userError } = await supabase.auth.getUser()
 
-    if (!email) {
-      setError('Email missing from user data.')
-      return
-    }
+      if (userError || !userData?.user) {
+        setError('You are not logged in. Please log in first.')
+        return
+      }
 
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('id', id)
-      .maybeSingle()
+      const id = userData.user.id
+      const email = userData.user.email
 
-    if (existingUser) {
-      setMessage('Account already exists! You’re all set.')
-      return
-    }
+      if (!email) {
+        setError('Email missing from user data.')
+        return
+      }
 
-    const { data: duplicateUsername } = await supabase
-      .from('users')
-      .select('id')
-      .eq('username', username)
-      .maybeSingle()
+      // check if user row already exists for this id
+      const { data: existingUser, error: existingError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('id', id)
+        .maybeSingle()
 
-    if (duplicateUsername) {
-      setError('This username is already taken. Please choose another.')
-      return
-    }
+      if (existingUser) {
+        setMessage('Account already exists! You\'re all set.')
+        return
+      }
 
-    const { error: insertError } = await supabase
-      .from('users')
-      .insert([{ id, email, username }])
+      // check username duplicate
+      const { data: duplicate, error: dupError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('username', trimmed)
+        .maybeSingle()
 
-    if (insertError) {
-      setError('Failed to set up your account: ' + insertError.message)
-    } else {
-      setMessage('Your account is fully set up. Welcome!')
+      if (duplicate) {
+        setError('This username is already taken. Please choose another.')
+        return
+      }
+
+      // insert new user row
+      const { data: insertData, error: insertError } = await supabase
+        .from('users')
+        .insert([{ id, email, username: trimmed }])
+
+      if (insertError) {
+        setError('Failed to set up your account: ' + insertError.message)
+      } else {
+        setMessage('Your account is fully set up. Welcome!')
+        setUsername('')
+      }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -74,9 +93,10 @@ export default function PostRegisterPage() {
         />
         <button
           onClick={handleFinalizeAccount}
-          className="w-full bg-green-600 py-2 rounded hover:bg-green-700 text-black"
+          className={`w-full py-2 rounded ${loading ? 'bg-gray-500' : 'bg-green-600 hover:bg-green-700'} text-black`}
+          disabled={loading}
         >
-          Complete Setup
+          {loading ? 'Processing...' : 'Complete Setup'}
         </button>
         {error && <p className="text-red-500">{error}</p>}
         {message && <p className="text-green-500">{message}</p>}
