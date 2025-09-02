@@ -106,6 +106,7 @@ export default function ProblemsetList() {
     "basic",
     "graph",
     "counting",
+    "backtracking",
     "all pair shortest",
     "greedy",
     "implementation"

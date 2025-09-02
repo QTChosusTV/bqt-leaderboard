@@ -13,30 +13,22 @@
   },
   {
     "input": "4",
-    "output": "2"
+    "output": "20"
   },
   {
     "input": "5",
-    "output": "10"
+    "output": "100"
   },
   {
     "input": "6",
-    "output": "4"
+    "output": "432"
   },
   {
     "input": "7",
-    "output": "40"
+    "output": "2504"
   },
   {
     "input": "8",
-    "output": "92"
-  },
-  {
-    "input": "9",
-    "output": "352"
-  },
-  {
-    "input": "10",
-    "output": "724"
+    "output": "28860"
   }
 ]

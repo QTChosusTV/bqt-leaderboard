@@ -1,67 +1,77 @@
 import json
-import random
 import os
-import sys
 
-NUM_TESTS = 50
-MOD = 1000000007
+NUM_TESTS = 8
+MAX_N = 10  # since hybrid problem is only solvable for small n
 
-def count_kary_strings(n, k, m, i, freq, s):
-    # Base case: string of length n completed
-    if i == n:
-        return 1
-    
+def hybrid_solutions(n: int) -> int:
+    """
+    Count valid placements of n//2 rooks and n - n//2 queens
+    on an n x n board (n <= 10).
+    """
+    m = n // 2
     total = 0
-    # Try each digit from 1 to k
-    for digit in range(1, k + 1):
-        if freq[digit] > 0:  # Check if digit can be used
-            freq[digit] -= 1
-            total = (total + count_kary_strings(n, k, m, i + 1, freq, s + str(digit))) % MOD
-            freq[digit] += 1  # Backtrack
-    
+    board = [-1] * n  # board[row] = col (piece placed), -1 = none
+    piece = [None] * n  # piece[row] = "Q" or "R"
+
+    def is_safe(row, col, p):
+        for r in range(row):
+            c = board[r]
+            if c == -1:
+                continue
+            # same column → invalid
+            if c == col:
+                return False
+            if p == "Q" or piece[r] == "Q":
+                # queens also attack diagonally
+                if abs(c - col) == abs(r - row):
+                    return False
+        return True
+
+    def backtrack(row, placed_rooks, placed_queens):
+        nonlocal total
+        if row == n:
+            if placed_rooks == m and placed_queens == n - m:
+                total += 1
+            return
+
+        # try rook
+        if placed_rooks < m:
+            for col in range(n):
+                if is_safe(row, col, "R"):
+                    board[row] = col
+                    piece[row] = "R"
+                    backtrack(row + 1, placed_rooks + 1, placed_queens)
+                    board[row] = -1
+                    piece[row] = None
+
+        # try queen
+        if placed_queens < n - m:
+            for col in range(n):
+                if is_safe(row, col, "Q"):
+                    board[row] = col
+                    piece[row] = "Q"
+                    backtrack(row + 1, placed_rooks, placed_queens + 1)
+                    board[row] = -1
+                    piece[row] = None
+
+    backtrack(0, 0, 0)
     return total
 
+
+# === Generate testcases ===
 testcases = []
+for n in range(1, NUM_TESTS + 1):
+    input_str = f"{n}"
+    output_str = str(hybrid_solutions(n))
+    testcases.append({"input": input_str, "output": output_str})
 
-try:
-    for test_num in range(NUM_TESTS):
-        # Generate random values within constraints
-        n = random.randint(1, random.randint(2, 11))  
-        k = random.randint(1, random.randint(1, 11))  
-        m = random.randint(1, n)   # Ensure m <= n
-        
-        # Initialize frequency array for digits 1 to k
-        freq = [0] * (k + 1)  # Index 0 unused, 1 to k used
-        for i in range(1, k + 1):
-            freq[i] = m
-        
-        # Compute the output
-        output = count_kary_strings(n, k, m, 0, freq, "")
-        print(f"Test {test_num + 1}: n={n}, k={k}, m={m}, output={output}")  # Debugging output
-        
-        input_str = f"{n} {k} {m}"
-        output_str = str(output)
-        
-        testcases.append({
-            "input": input_str,
-            "output": output_str
-        })
+print("Current directory:", os.getcwd())
+output_file = "hybrid_testcases.json"
+with open(output_file, "w") as f:
+    json.dump(testcases, f, indent=2)
 
-    print("Current directory:", os.getcwd())
-
-    output_file = "random_testcases.json"
-    with open(output_file, "w") as f:
-        json.dump(testcases, f, indent=2)
-
-    print(f"{len(testcases)} testcases written to {output_file}")
-
-except RecursionError as e:
-    print(f"RecursionError: {e}. Consider reducing n.")
-except PermissionError as e:
-    print(f"PermissionError: {e}. Check write permissions in {os.getcwd()} or specify a different output file.")
-except Exception as e:
-    print(f"An error occurred: {e}")
+print(f"{len(testcases)} testcases written to {output_file}")
 
 if __name__ == "__main__":
-    # No need to increase recursion limit for small n (up to 15)
     pass
