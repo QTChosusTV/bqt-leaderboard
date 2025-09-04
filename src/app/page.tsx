@@ -6,7 +6,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 const eloRanks = [
-  { class: 'elo-0-1200', min: 0 },
+  { class: 'elo-0-800', min: 0 },
+  { class: 'elo-800-1200', min: 800 },
   { class: 'elo-1200-1400', min: 1200 },
   { class: 'elo-1400-1500', min: 1400 },
   { class: 'elo-1500-1600', min: 1500 },
