@@ -84,7 +84,7 @@ export default function ProblemsetList() {
     fetchSolved()
   }, [username])
 
-  const getEloClass = (elo: number) => {
+    const getEloClass = (elo: number) => {
     if (elo >= 3000) return 'elo-3000-plus'
     if (elo >= 2700) return 'elo-2700-3000'
     if (elo >= 2500) return 'elo-2500-2700'
@@ -96,8 +96,10 @@ export default function ProblemsetList() {
     if (elo >= 1500) return 'elo-1500-1600'
     if (elo >= 1400) return 'elo-1400-1500'
     if (elo >= 1200) return 'elo-1200-1400'
-    return 'elo-0-1200'
+    if (elo >= 800) return 'elo-800-1200'
+    return 'elo-0-800'
   }
+
 
   const allTags = [
     "math",
@@ -109,7 +111,9 @@ export default function ProblemsetList() {
     "backtracking",
     "all pair shortest",
     "greedy",
-    "implementation"
+    "implementation",
+    "stack",
+    "sliding window"
   ]
 
   const filteredProblems = problems

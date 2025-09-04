@@ -31,7 +31,8 @@ export default function ChatPage() {
     if (elo >= 1500) return 'Semi expert';
     if (elo >= 1400) return 'Specialist';
     if (elo >= 1200) return 'Pupil';
-    return 'Newbie';
+    if (elo >= 800) return 'Newbie';
+    return 'Beginner';
   };
 
   useEffect(() => {

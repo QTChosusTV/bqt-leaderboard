@@ -5,6 +5,7 @@ import { supabase } from '@/utils/supabaseClient'
 import './leaderboard.css'
 import Link from 'next/link';
 import Image from 'next/image'
+import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
 
 interface User {
   username: string
@@ -22,7 +23,7 @@ export default function LeaderboardPage() {
   const [users, setUsers] = useState<User[]>([])
   const [email, setEmail] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
   const [username, setUsername] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
-
+  const [tick, setTick] = useState(1)
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase
@@ -40,6 +41,17 @@ export default function LeaderboardPage() {
 
     fetchData()
   }, [])
+
+  useEffect(() => {
+    if (tick >= users.length) return 
+
+    const timer = setTimeout(() => {
+      setTick(prev => Math.min(prev + 1, users.length))
+    }, 100) 
+
+    return () => clearTimeout(timer)
+  }, [tick, users.length])
+
 
     useEffect(() => {
     const checkUser = async () => {
@@ -100,7 +112,8 @@ export default function LeaderboardPage() {
     if (elo >= 1500) return 'elo-1500-1600'
     if (elo >= 1400) return 'elo-1400-1500'
     if (elo >= 1200) return 'elo-1200-1400'
-    return 'elo-0-1200'
+    if (elo >= 800) return 'elo-800-1200'
+    return 'elo-0-800'
   }
 
   /*const getEloTitle = (elo: number) => {
@@ -126,52 +139,66 @@ export default function LeaderboardPage() {
         <Link href="/problemset" className="redirect-button">Problemset</Link>
         <Link href="/about" className="redirect-button">About</Link>
       </nav>
+      
       <div style={{ padding: '20px' }}>
-        <table id="leaderboard">
-          <thead>
-            <tr>
-              <th style={{ textAlign: 'center' }}>Rank</th>
-              <th style={{ paddingLeft: '25px' }}>Username</th>
-              <th style={{ textAlign: 'center' }}>Elo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, index) => {
-              const rank = index + 1
-              const eloClass = getEloClass(user.elo)
-              const top100Class = index < 100 ? 'elo-top-100' : ''
-              const usernameClassList = `${eloClass} ${top100Class}`
-              const iconSrc = `/assets/ranks/${eloClass}.png`
+        <AnimatedContent  
+          distance={50}
+          direction="vertical"
+          reverse={false}
+          duration={0.8}
+          ease="power3.out"
+          initialOpacity={0.0}
+          animateOpacity
+          scale={1.0}
+          threshold={0.2}
+          delay={0.0}
+        >
+          <table id="leaderboard">
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'center' }}>Rank</th>
+                <th style={{ paddingLeft: '25px' }}>Username</th>
+                <th style={{ textAlign: 'center' }}>Elo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.slice(0, tick).map((user, index) => {
+                const rank = index + 1
+                const eloClass = getEloClass(user.elo)
+                const top100Class = index < 100 ? 'elo-top-100' : ''
+                const usernameClassList = `${eloClass} ${top100Class}`
+                const iconSrc = `/assets/ranks/${eloClass}.png`
 
-              return (
-                <tr key={user.username}>
-                  <td style={{ textAlign: 'center', width: '10  0px', marginLeft: '50px', marginRight: '50px' }}>{rank}</td>
-                  <td className={usernameClassList}>
-                    <Link
-                      href={`/user?username=${encodeURIComponent(user.username)}`}
-                      className={usernameClassList}
-                      style={{ display: 'flex', alignItems: 'center' }}
-                    >
-                      <Image
-                        src={iconSrc}
-                        alt={eloClass}
-                        style={{
-                          marginRight: '15px',
-                        }}
-                        width='80'
-                        height='80'
-                      />
-                      {user.username}
-                    </Link>
-                  </td>
-                  <td style={{ textAlign: 'center' }} className={eloClass}>
-                    {user.elo}
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+                return (
+                  <tr key={user.username}>
+                    <td style={{ textAlign: 'center', width: '10  0px', marginLeft: '50px', marginRight: '50px' }}>{rank}</td>
+                    <td className={usernameClassList}>
+                      <Link
+                        href={`/user?username=${encodeURIComponent(user.username)}`}
+                        className={usernameClassList}
+                        style={{ display: 'flex', alignItems: 'center' }}
+                      >
+                        <Image
+                          src={iconSrc}
+                          alt={eloClass}
+                          style={{
+                            marginRight: '15px',
+                          }}
+                          width='80'
+                          height='80'
+                        />
+                        {user.username}
+                      </Link>
+                    </td>
+                    <td style={{ textAlign: 'center' }} className={eloClass}>
+                      {user.elo}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </AnimatedContent>
       </div>
     </main>
   )

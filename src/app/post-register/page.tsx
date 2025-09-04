@@ -71,8 +71,16 @@ export default function PostRegisterPage() {
       if (insertError) {
         setError('Failed to set up your account: ' + insertError.message)
       } else {
-        setMessage('Your account is fully set up. Welcome!')
-        setUsername('')
+        const { error: leadError } = await supabase
+          .from('leaderboard')
+          .insert([{ username: trimmed, history: [], elo: 0 }])
+
+        if (leadError) {
+          setError('User created, but failed to add to leaderboard: ' + leadError.message)
+        } else {
+          setMessage('Your account is fully set up and added to leaderboard. Welcome!')
+          setUsername('')
+        }
       }
     } finally {
       setLoading(false)
@@ -92,7 +100,10 @@ export default function PostRegisterPage() {
           required
         />
         <button
-          onClick={handleFinalizeAccount}
+          onClick={() => {
+            handleFinalizeAccount()
+            }
+          }
           className={`w-full py-2 rounded ${loading ? 'bg-gray-500' : 'bg-green-600 hover:bg-green-700'} text-black`}
           disabled={loading}
         >

@@ -23,18 +23,18 @@ export default function RegisterPage() {
     /*if (!captchaToken) {
       setError('Please complete the CAPTCHA.');
       return;
-    }?*/ 
+    }*/
 
-    try {
-      const response = await fetch('/api/verify-captcha', {
+    //try {
+      /*const response = await fetch('/api/verify-captcha', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ response: captchaToken }),
       });
-
-      const result = await response.json();
+      */
+      //const result = await response.json();
 
       /*if (!result.success) {
         setError('CAPTCHA verification failed. Please try again.');
@@ -60,10 +60,10 @@ export default function RegisterPage() {
       }
 
       setSuccess('Check your Gmail and confirm before continuing setup!');
-    } catch (err) {
-      setError('An error occurred during registration. Please try again.');
-      console.error(err);
-    }
+    //} catch (err) {
+    //  setError('An error occurred during registration. Please try again.');
+    //  console.error(err);
+    //}
   };
 
   return (
@@ -92,7 +92,7 @@ export default function RegisterPage() {
           />
         </div>
         <div className="flex flex-col items-center">
-          <CapWidget
+          {/*<CapWidget
             endpoint="https://capdashboard.anhwaivo.xyz/ee25efb360/"
             theme="dark"
             onSolve={(token: string) => {
@@ -102,7 +102,7 @@ export default function RegisterPage() {
               setError(`Captcha error: ${message}`);
               setCaptchaToken(null);
             }}
-          />
+          />*/}
           {error && <p className="text-red-500 text-sm">{error}</p>}
           {success && <p className="text-green-600 text-sm">{success}</p>}
         </div>

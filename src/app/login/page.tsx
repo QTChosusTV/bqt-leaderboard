@@ -28,16 +28,16 @@ export default function LoginPage() {
       return
     }*/
 
-    try {
-      const response = await fetch('/api/verify-captcha', {
+    //try {
+      /*const response = await fetch('/api/verify-captcha', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ response: captchaToken }),
-      })
+      })*/
 
-      const result = await response.json()
+      //const result = await response.json()
 
       /*if (!result.success) {
         setError('CAPTCHA verification failed. Please try again.')
@@ -62,10 +62,10 @@ export default function LoginPage() {
 
       setSuccess('Login successful! Redirecting...')
       setTimeout(() => router.push('/'), 1000) 
-    } catch (err) {
+    /*} catch (err) {
       setError('An error occurred during login. Please try again.')
       console.error(err)
-    }
+    }*/
   }
 
   return (
@@ -94,7 +94,7 @@ export default function LoginPage() {
           />
         </div>
         <div className="flex flex-col items-center">
-          <CapWidget
+          {/*<CapWidget
             endpoint="https://capdashboard.anhwaivo.xyz/ee25efb360/"
             theme="dark"
             onSolve={(token: string) => setCaptchaToken(token)}
@@ -102,7 +102,7 @@ export default function LoginPage() {
               setError(`Captcha error: ${message}`)
               setCaptchaToken(null)
             }}
-          />
+          />*/}
           {error && <p className="text-red-500 text-sm">{error}</p>}
           {success && <p className="text-green-600 text-sm">{success}</p>}
         </div>

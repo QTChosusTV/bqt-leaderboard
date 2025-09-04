@@ -64,7 +64,8 @@ table tr:hover {
 .elo-1500-1600 { color: #15d0ff; } /* Cyan */
 .elo-1400-1500 { color: #00aaaa; } /* Cyan */
 .elo-1200-1400 { color: #00aa00; } /* Green */
-.elo-0-1200 { color: #aaaaaa; } /* Gray */
+.elo-800-1200 { color: #aaaaaa; } /* Gray */
+.elo-0-800 { color: #ffffff; } /* White */
 
 /* Ensure currentRating inherits the Elo color */
 #currentRating.elo-3000-plus { color: #8b0000; } /* Red */
@@ -78,7 +79,8 @@ table tr:hover {
 #currentRating.elo-1500-1600 { color: #4bdbff; } /* Cyan */
 #currentRating.elo-1400-1500 { color: #00aaaa; } /* Cyan */
 #currentRating.elo-1200-1400 { color: #00aa00; } /* Green */
-#currentRating.elo-0-1200 { color: #aaaaaa; } /* Gray */
+#currentRating.elo-800-1200 { color: #aaaaaa; } /* Gray */
+#currentRating.elo-0-800 { color: #ffffff; } /* Write */
 
 /* Top 100 users in leaderboard */
 .elo-top-100 { font-weight: bold; }

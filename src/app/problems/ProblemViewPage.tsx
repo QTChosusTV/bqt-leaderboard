@@ -142,7 +142,8 @@ export default function ProblemViewPage() {
     if (elo >= 1500) return 'elo-1500-1600'
     if (elo >= 1400) return 'elo-1400-1500'
     if (elo >= 1200) return 'elo-1200-1400'
-    return 'elo-0-1200'
+    if (elo >= 800) return 'elo-800-1200'
+    return 'elo-0-800'
   }
 
 
