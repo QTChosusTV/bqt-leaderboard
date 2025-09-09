@@ -12,6 +12,7 @@ export default function AboutPage() {
         <Link href="/chat" className="redirect-button">Chat</Link>
         <Link href="/problemset" className="redirect-button">Problemset</Link>
         <Link href="/about" className="redirect-button">About</Link>
+        <Link href="/ide" className="redirect-button">Live IDE</Link>
       </nav>
 
 
@@ -53,14 +54,14 @@ export default function AboutPage() {
       </p>
 
       <p className="mb-4">
-        Whether you&#8212;re just getting started or sharpening your fundamentals, BQTOJ offers a curated problem set designed around your skill level. We use an <strong>Elo-based difficulty system</strong> that ensures every problem fits your growth path.
+        Whether you are just getting started or sharpening your fundamentals, BQTOJ offers a curated problem set designed around your skill level. We use an <strong>Elo-based difficulty system</strong> that ensures every problem fits your growth path.
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">🛠️ Built by</h2>
       <ul className="list-disc pl-6 mb-4">
-        <li><strong>QTChosusTV</strong> – Lead developer & system architect</li>
-        <li><strong>Anhwaivo</strong> – Backend engineer, UI/UX designer & frontend</li>
-        <li><strong>Sussy_fish</strong> – Problem setter</li>
+        <li><strong style={{color: '#aa00aa'}}>QTChosusTV</strong> – Lead developer & system architect</li>
+        <li><strong style={{color: '#55aaff'}}>Anhwaivo</strong> – Backend engineer, UI/UX designer & frontend</li>
+        <li><strong style={{color: '#00aa00'}}>Sussy_fish</strong> – Problem setter</li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">🚀 Mission</h2>

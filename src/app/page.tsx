@@ -179,6 +179,11 @@ export default function HomePage() {
         <br />
         <p>Wanna solve your first problems? <strong>Go to Problemset!</strong></p>
 
+        
+        <p style={{marginTop: 50}}>Support to help us maintain and upgrade this website more!</p>
+
+        <Image src={`/assets/qr/MONEY.jpg`} alt={``} width={250} height={250} style={{marginTop: 20}}></Image>
+
         <br /><br />
         <h2 className="text-xl font-semibold">Upcoming Contests</h2>
         <ul>{upcoming.map(c => renderContestLine(c, "upcoming"))}</ul>
