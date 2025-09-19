@@ -4,5 +4,3 @@
 ## todo (of course)
 - pls make better buttons
 - add particles 🤑
-- live ide
-- idk
