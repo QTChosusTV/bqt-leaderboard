@@ -34,6 +34,12 @@ const renderInlineWithLatex = (text: string, keyPrefix = '') => {
 export default function ProblemViewPage() {
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
+
+  if (id && Number(id) > 1e9) {
+    return <p className="p-4">Problem not found</p>
+  }
+
+
   const [problem, setProblem] = useState<Problem | null>(null)
   const [curr_username, setUsername] = useState<string | null>(null)
   const [solved, setSolved] = useState(false) 

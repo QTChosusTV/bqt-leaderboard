@@ -59,52 +59,33 @@ function SubmitPageContent() {
 
     setSubmitting(true)
 
-    const { data: inserted, error: insertError } = await supabase
-      .from('submissions')
-      .insert({
-        username: username,
-        problem_id: problemId,
-        code,
-        language,
-        created_at: new Date().toISOString(),
+    try {
+      const res = await fetch('https://bqt-submit.anhwaivo.xyz/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          code,
+          problem_id: problemId,
+          language,
+        }),
       })
-      .select()
-      .single()
 
-    if (insertError) {
-      console.error('Insert error:', insertError.message)
-      setSubmitting(false)
-      return
-    }
+      const result = await res.json()
+      // console.log("Submit response:", result)
+      if (!result.id) {
+        console.error('No submission ID returned')
+        setSubmitting(false)
+        return
+      }
 
-    if (!username) {
-      console.error("Username not loaded. Please wait...");
-      return;
-    }
-
-    const submissionId = inserted?.id
-    if (!submissionId) {
-      console.error('Submission insert returned no ID.')
-      setSubmitting(false)
-      return
-    }
-
-    fetch('https://bqt-submit.anhwaivo.xyz/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: submissionId,
-        user: username,
-        code: code,
-        problem_id: problemId,
-        language: language,
-      }),
-    }).catch((err) => {
+      router.push(`/submission?id=${result.id}`)
+    } catch (err) {
       console.error('Error while triggering judge:', err)
-    })
-
-    router.push(`/submission?id=${submissionId}`)
+      setSubmitting(false)
+    }
   }
+ 
 
   return (
     <main className="max-w-3xl mx-auto p-6">

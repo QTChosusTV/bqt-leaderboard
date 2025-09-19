@@ -168,20 +168,21 @@
       }
 
 
-    /*const getEloTitle = (elo: number) => {
-      if (elo >= 3000) return '[Legendary master]'
-      if (elo >= 2700) return '[Grandmaster]'
-      if (elo >= 2500) return '[International master]'
-      if (elo >= 2300) return '[National master]'
-      if (elo >= 2100) return '[Master]'
-      if (elo >= 1900) return '[Candidate master]'
-      if (elo >= 1750) return '[Semi master]'
-      if (elo >= 1600) return '[Expert]'
-      if (elo >= 1500) return '[Semi expert]'
-      if (elo >= 1400) return '[Specialist]'
-      if (elo >= 1200) return '[Pupil]'
-      return '[Newbie]'
-    }*/
+    const getEloTitle = (elo: number) => {
+      if (elo >= 3000) return 'Legendary master'
+      if (elo >= 2700) return 'Grandmaster'
+      if (elo >= 2500) return 'International master'
+      if (elo >= 2300) return 'National master'
+      if (elo >= 2100) return 'Master'
+      if (elo >= 1900) return 'Candidate master'
+      if (elo >= 1750) return 'Semi master'
+      if (elo >= 1600) return 'Expert'
+      if (elo >= 1500) return 'Semi expert'
+      if (elo >= 1400) return 'Specialist'
+      if (elo >= 1200) return 'Pupil'
+      if (elo >= 800) return 'Newbie'
+      return 'Beginner'
+    }
 
   const getEloColor = (elo: number) => {
     if (elo >= 3000) return '#8b0000';
@@ -365,31 +366,50 @@
     return (
       <div style={{padding: '20px'}}>
         <div style={{
-          display: 'flex',
           alignItems: 'center',
           gap: '10px',
           marginBottom: '20px'
         }}>
-          <img
-            src={`/assets/ranks/${eloClass}.png`}
-            alt={eloClass}
-            style={{
-              width: '80px',
-              height: '80px',
-              verticalAlign: 'middle'
-            }}
-          />
-          <h1
+
+          <div style={{display: 'flex'}}>
+            <img
+              src={`/assets/ranks/${eloClass}.png`}
+              alt={eloClass}
+              style={{
+                width: '80px',
+                height: '80px',
+                verticalAlign: 'middle'
+              }}
+            />
+            <h1
+              id="userTitle"
+              className={eloClass}
+              style={{
+                fontSize: '26px',
+                fontWeight: 'bold',
+                margin: 0,
+                marginTop: '25px',
+                marginLeft: '10px'
+              }}
+            >
+              {username} ({elo})
+            </h1>
+          </div>
+
+          <h2
             id="userTitle"
             className={eloClass}
             style={{
-              fontSize: '26px',
+              fontSize: '16px',
               fontWeight: 'bold',
-              margin: 0
+              marginLeft: '90px',
+              marginTop: '-15px',
+              marginBottom: '35px'
             }}
           >
-            {username} ({elo})
-          </h1>
+            {getEloTitle(elo)}
+          </h2>
+
         </div>
 
         <table id="history">

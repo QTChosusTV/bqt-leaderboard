@@ -34,6 +34,7 @@ export default function ProblemsetList() {
         .from('problems')
         .select('id, title, difficulty, statement, tags, constrains, examples, created_at')
         .order('id', { ascending: true })
+        .lt('id', 1_000_000_000)
 
       if (!error && problems) {
         setProblems(problems)
