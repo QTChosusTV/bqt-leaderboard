@@ -190,14 +190,7 @@ export default function ContestPage() {
   else if (now >= timeStart && now <= timeEnd) buttonText = "Join Contest"
 
   return (
-    <main className="h-screen flex flex-col">
-      <nav className="p-4 flex gap-1">
-        <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
-        <Link href="/chat" className="redirect-button">Chat</Link>
-        <Link href="/problemset" className="redirect-button">Problemset</Link>
-        <Link href="/ide" className="redirect-button">Live IDE</Link>
-        <Link href="/about" className="redirect-button">About</Link>
-      </nav>
+    <main className="h-screen flex flex-col"> 
 
       <div className="flex flex-1">
         <aside className="w-40 bg-gray-800 p-4 flex flex-col">
