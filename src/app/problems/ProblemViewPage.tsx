@@ -40,9 +40,6 @@ export default function ProblemViewPage() {
   const [solved, setSolved] = useState(false) 
 
   
-  if (id && Number(id) > 1e9) {
-    return <p className="p-4">Problem not found</p>
-  } 
 
   useEffect(() => {
     const fetchProblem = async () => {
@@ -103,6 +100,11 @@ export default function ProblemViewPage() {
     }
     fetchSubmissions()
   }, [problem, curr_username])
+
+  
+  if (id && Number(id) > 1e9) {
+    return <p className="p-4">Problem not found</p>
+  } 
 
   const parseExamples = (examples: string) => {
     const lines = examples.split('\n')
