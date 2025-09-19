@@ -140,19 +140,22 @@ export default function ContestProblemset() {
   }, [])
 
   useEffect(() => {
-    const fetchSolved = async () => {
-      if (!username) return
+    if (!username || !contestId) return;
+
+    const timer = setTimeout(async () => {
       const { data } = await supabase
         .from('submissions')
         .select('problem_id')
         .eq('username', username)
         .eq('overall', 'Accepted')
-        .eq('contest_id', contestId)
+        .eq('contest_id', contestId);
 
-      if (data) setSolvedProblems(new Set(data.map(d => d.problem_id)))
-    }
-    fetchSolved()
-  }, [username])
+      if (data) setSolvedProblems(new Set(data.map(d => d.problem_id)));
+    }, 500); 
+
+    return () => clearTimeout(timer); 
+  }, [username, contestId]);
+
 
   const getEloClass = (elo: number) => {
     if (elo >= 3000) return 'elo-3000-plus'
