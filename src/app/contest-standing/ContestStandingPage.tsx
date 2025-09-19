@@ -18,7 +18,15 @@ interface Standing {
 }
 
 interface Contest {
-  problems: { pid: string; pname: string }[]
+  id: number
+  name: string | null
+  time_start: string | null
+  time_end: string | null
+  elo_min: number | null
+  elo_max: number | null
+  link: string | null
+  problems: { pid: number; pname: string }[]
+  descriptions: string
 }
 
 function formatPenalty(seconds: number): string {
@@ -52,6 +60,47 @@ export default function ContestStandingPage() {
   const [problems, setProblems] = useState<{ pid: string; pname: string }[]>([])
   const [eloMap, setEloMap] = useState<Record<string, number>>({})
   const [username, setUsername] = useState('')
+  const [tick, setTick] = useState(0)
+  const [currUser, setCurrUser] = useState<any>(null);
+  const [contest, setContest] = useState<Contest | null>(null);
+  
+  useEffect(() => {
+    if (!contestId) return;
+    const fetchContest = async () => {
+      const { data } = await supabase
+        .from('contests')
+        .select('id, name, time_start, time_end, elo_min, elo_max, link, problems, descriptions')
+        .eq('id', contestId)
+        .single();
+      if (data) setContest(data);
+    };
+    fetchContest();
+  }, [contestId]);
+  
+  
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+  
+      const { data: userData } = await supabase
+        .from('users')
+        .select('id, username, current_contest_id')
+        .eq('id', user.id)
+        .single();
+  
+      if (!userData) return;
+  
+      setCurrUser(userData);
+      setUsername(userData.username);
+    };
+    fetchUser();
+  }, []);
+  
+  useEffect(() => {
+    const interval = setInterval(() => setTick(prev => prev + 1), 1000)
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -108,20 +157,45 @@ export default function ContestStandingPage() {
     fetchData()
   }, [contestId])
 
+  const now = Date.now()
+  const timeStart = contest?.time_start ? new Date(contest.time_start).getTime() : 0
+  const timeEnd = contest?.time_end ? new Date(contest.time_end).getTime() : 0
+
+  const formatTimeLeft = (toTime: string | null) => {
+    if (!toTime) return ''
+    const ms = new Date(toTime).getTime() - Date.now()
+    if (ms <= 0) return '0s'
+    const s = Math.floor(ms / 1000)
+    const m = Math.floor(s / 60)
+    const h = Math.floor(m / 60)
+    const d = Math.floor(h / 24)
+    return `${d > 0 ? `${d}d ` : ''}${h % 24}h ${m % 60}m ${s % 60}s`
+  }
+
+  const countdownText = () => {
+    if (!contest) return ''
+    const now = Date.now()
+    const start = contest.time_start ? new Date(contest.time_start).getTime() : 0
+    const end = contest.time_end ? new Date(contest.time_end).getTime() : 0
+    if (now < start) return `Starts in: ${formatTimeLeft(contest.time_start)}`
+    else if (now >= start && now <= end) return `Ends in: ${formatTimeLeft(contest.time_end)}`
+    else return 'Contest ended'
+  }
+
   return (
     <main className="min-h-screen flex bg-gray-900">
       {/* Sidebar */}
       <aside className="w-40 bg-gray-800 p-4 flex flex-col">
         <h2 className="text-lg font-bold mb-4">Contest</h2>
-        <Link href={`/contest?id=${contestId}`} className="redirect-button">
-          Info
-        </Link>
-        <Link href="/contest-problemset" className="redirect-button">
-          Problems
-        </Link>
-        <Link href={`/contest-standing?id=${contestId}`} className="redirect-button">
-          Standing
-        </Link>
+        <Link href={`/contest?id=${contestId}`} className="redirect-button">Info</Link>
+          {currUser?.current_contest_id !== 0 && (now <= timeEnd) && (
+            <Link href="/contest-problemset" className="redirect-button">Problems</Link>
+          )}
+          {currUser?.current_contest_id !== 0 && contest && (
+            <Link href={`/contest-standing?id=${contest.id}`} className="redirect-button">
+              Standing
+            </Link>
+          )}
       </aside>
 
       {/* Main content */}
@@ -135,6 +209,8 @@ export default function ContestStandingPage() {
           initialOpacity={0.0}
           animateOpacity
         >
+          
+          <p className="text-yellow-400 mb-4 font-semibold">{countdownText()}</p>
           <table className="w-full border-collapse text-sm">
             <thead className="bg-gray-700 text-white">
               <tr>

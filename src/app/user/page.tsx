@@ -15,6 +15,7 @@
   import { Line } from "react-chartjs-2";
   import './user.css';
   import type { Chart } from 'chart.js';
+  import Image from 'next/image'
 
   interface Contest {
     contestId: number;
@@ -372,14 +373,14 @@
         }}>
 
           <div style={{display: 'flex'}}>
-            <img
+            <Image
               src={`/assets/ranks/${eloClass}.png`}
               alt={eloClass}
               style={{
-                width: '80px',
-                height: '80px',
                 verticalAlign: 'middle'
               }}
+              width='80'
+              height='80'
             />
             <h1
               id="userTitle"
@@ -448,10 +449,12 @@
               }}
             >
               <h3 style={{ margin: 0, marginRight: '10px' }}>Current rank:</h3>
-              <img
+              <Image
                 src={`/assets/ranks/${getEloClass(elo)}.png`}
                 alt={`Current rank ${elo}`}
-                style={{ width: '80px', height: '80px', transform: 'translateY(-2px)' }}
+                style={{ transform: 'translateY(-2px)' }}
+                width='80'
+                height='80'
               />
             </div>
             <div
@@ -464,10 +467,12 @@
               }}
             >
               <h3 style={{ margin: 0, marginRight: '10px' }}>Peak rank:</h3>
-              <img
+              <Image
                 src={`/assets/ranks/${getEloClass(maxElo)}.png`}
                 alt={`Peak rank ${maxElo}`}
-                style={{ width: '80px', height: '80px', transform: 'translateY(-2px)' }}
+                style={{transform: 'translateY(-2px)'}}
+                width='80'
+                height='80'
               />
             </div>
           </div>

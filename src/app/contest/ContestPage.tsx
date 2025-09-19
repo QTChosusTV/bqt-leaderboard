@@ -27,9 +27,15 @@ export default function ContestPage() {
 
   const [contest, setContest] = useState<Contest | null>(null)
   const [currUser, setCurrUser] = useState<any>(null)
+  const [username, setUsername] = useState<string>()
+  const [tick, setTick] = useState(0)
   const router = useRouter()
 
-  // Fetch current user
+  useEffect(() => {
+    const interval = setInterval(() => setTick(prev => prev + 1), 1000)
+    return () => clearInterval(interval)
+  }, [])
+
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
@@ -40,16 +46,22 @@ export default function ContestPage() {
         .eq("email", user.email)
         .single()
       if (error) console.error("Error fetching user:", error)
+
+      if (!userData) {
+        console.error("No user found in database")
+        return
+      }
+
       setCurrUser(userData)
-      console.log("Auth user.id:", user.id)
-      console.log("Fetched userData:", userData)
+      setUsername(userData.username)
+      //console.log("Auth user.id:", user.id)
+      //console.log("Fetched userData:", userData)
     }
     fetchUser()
   }, [])
 
 
 
-  // Fetch contest
   useEffect(() => {
     if (!contestIdNum) return
 
@@ -63,7 +75,7 @@ export default function ContestPage() {
       if (!error && data) {
         setContest({
           ...data,
-          id: Number(data.id), // force bigint → number
+          id: Number(data.id),
         } as Contest)
       } else {
         console.error('Error fetching contest:', error)
@@ -81,7 +93,6 @@ export default function ContestPage() {
     return <main className="p-6">Loading contest...</main>
   }
 
-  // REPLACE your current handleClick with this:
   const handleClick = async () => {
     try {
       if (!currUser || !contest) return
@@ -90,7 +101,6 @@ export default function ContestPage() {
       const timeStart = contest.time_start ? new Date(contest.time_start).getTime() : 0
       const timeEnd = contest.time_end ? new Date(contest.time_end).getTime() : 0
 
-      // ensure contest id is a number
       const contestIdSafe = Number(contest.id)
       if (!contestIdSafe) {
         console.error('Invalid contest id:', contest?.id)
@@ -101,11 +111,10 @@ export default function ContestPage() {
       console.log('contest before update:', contest)
       console.log('contest id update:', contestIdSafe)
 
-      // Always update user's current_contest_id (register or join)
       const { data: updatedUser, error } = await supabase
         .from('users')
         .update({ current_contest_id: contestIdSafe })
-        .eq('id', currUser.id)   // IMPORTANT: use id (UUID), not email
+        .eq('id', currUser.id)  
         .select()
         .single()
 
@@ -114,15 +123,11 @@ export default function ContestPage() {
         return
       }
 
-      // update local state immediately so UI reflects the change
       setCurrUser((prev: any) => ({ ...(prev ?? {}), ...updatedUser }))
 
-      // If contest is currently running, redirect to problems
       if (now >= timeStart && now <= timeEnd) {
-        // push to contest-problemset — that page reads current_contest_id from user
         router.push('/contest-problemset')
       } else {
-        // registered (before start) — you can show a toast or just leave the UI updated
         console.log('Registered for contest', contestIdSafe)
       }
     } catch (err) {
@@ -130,8 +135,28 @@ export default function ContestPage() {
     }
   }
 
+  const formatTimeLeft = (toTime: string | null) => {
+    if (!toTime) return ""
+    const ms = new Date(toTime).getTime() - Date.now()
+    if (ms <= 0) return "0s"
+    const s = Math.floor(ms / 1000)
+    const m = Math.floor(s / 60)
+    const h = Math.floor(m / 60)
+    const d = Math.floor(h / 24)
+    return `${d > 0 ? `${d}d ` : ""}${h % 24}h ${m % 60}m ${s % 60}s`
+  }
 
-  // Example: fetching submissions with null-safe filter
+  const countdownText = () => {
+    if (!contest) return ""
+    const now = Date.now()
+    const start = contest.time_start ? new Date(contest.time_start).getTime() : 0
+    const end = contest.time_end ? new Date(contest.time_end).getTime() : 0
+
+    if (now < start) return `Starts in: ${formatTimeLeft(contest.time_start)}`
+    else if (now >= start && now <= end) return `Ends in: ${formatTimeLeft(contest.time_end)}`
+    else return "Contest ended"
+  }
+
   const fetchSubmissions = async (username: string, contestId: number | null) => {
     let query = supabase
       .from("submissions")
@@ -140,10 +165,8 @@ export default function ContestPage() {
       .eq("overall", "Accepted")
 
     if (contestId === null || contestId === 0) {
-      // Contest not attached, fetch global submissions
       query = query.is("contest_id", null)
     } else {
-      // Contest exists, match by bigint
       query = query.eq("contest_id", contestId)
     }
 
@@ -158,7 +181,6 @@ export default function ContestPage() {
 
 
 
-  // Button logic
   const now = Date.now()
   const timeStart = contest.time_start ? new Date(contest.time_start).getTime() : 0
   const timeEnd = contest.time_end ? new Date(contest.time_end).getTime() : 0
@@ -169,7 +191,6 @@ export default function ContestPage() {
 
   return (
     <main className="h-screen flex flex-col">
-      {/* Global nav */}
       <nav className="p-4 flex gap-1">
         <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
         <Link href="/chat" className="redirect-button">Chat</Link>
@@ -178,12 +199,11 @@ export default function ContestPage() {
         <Link href="/about" className="redirect-button">About</Link>
       </nav>
 
-      {/* Sidebar + content */}
       <div className="flex flex-1">
         <aside className="w-40 bg-gray-800 p-4 flex flex-col">
           <h2 className="text-lg font-bold mb-4">Contest</h2>
           <Link href={`/contest?id=${contest.id}`} className="redirect-button">Info</Link>
-          {currUser?.current_contest_id !== 0 && (
+          {currUser?.current_contest_id !== 0 && (now <= timeEnd) && (
             <Link href="/contest-problemset" className="redirect-button">Problems</Link>
           )}
           {currUser?.current_contest_id !== 0 && (
@@ -208,6 +228,8 @@ export default function ContestPage() {
                 {contest.time_end && <>| End: {new Date(contest.time_end).toLocaleString()}</>}
               </p>
 
+              <p className="text-yellow-400 mb-4 font-semibold">{countdownText()}</p>
+
               <p className="mb-4 text-gray-300">
                 Elo range: {contest.elo_min ?? '-'} – {contest.elo_max ?? '-'}
               </p>
@@ -218,7 +240,7 @@ export default function ContestPage() {
                   disabled={currUser?.current_contest_id === contest.id}
                   className={`mt-6 px-4 py-2 rounded text-white ${
                     currUser?.current_contest_id === contest.id
-                      ? "bg-gray-600 cursor-not-allowed"
+                      ? "bg-gray-900 cursor-not-allowed"
                       : "bg-blue-600 hover:bg-blue-700"
                   }`}
                 >
