@@ -200,3 +200,10 @@ button:hover {
     @apply bg-background text-foreground;
   }
 }
+
+@font-face {
+  font-family: "Oswald";
+  src: url("/assets/fonts/Oswald-VariableFont_wght.ttf") format("truetype");
+  font-weight: 800; 
+  font-style: normal;
+}

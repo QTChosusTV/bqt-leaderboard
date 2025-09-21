@@ -15,6 +15,8 @@ interface Standing {
   score: number
   penalty: number
   problems: Record<string, any>
+  pi: number
+  delta: number
 }
 
 interface Contest {
@@ -139,6 +141,8 @@ export default function ContestStandingPage() {
       })
       setEloMap(eloObj)
 
+
+
       const { data: contestData } = await supabase
         .from('contests')
         .select('problems')
@@ -150,7 +154,56 @@ export default function ContestStandingPage() {
         return a.penalty - b.penalty
       })
 
-      setStandings(sorted)
+
+      const participants = (standingData ?? []).map((s, idx) => ({
+        user_id: s.user_id,
+        elo: eloObj[s.user_id] || 800,  // fallback if missing
+        rank: idx + 1,
+        score: s.score,
+        penalty: s.penalty
+      }));
+
+      const K = 60;
+      const SCORE_BONUS_FACTOR = 12.5 * (6.0 - 2.0); // since DIV = 2.0f
+      const MAX_RATING_CHANGE = 500.0;
+      const MAX_SCORE = 20400.0;
+
+      const enriched = (standingData ?? []).map((s, idx) => {
+        const elo = eloObj[s.user_id] ?? 1200
+        const rank = idx + 1;
+
+        // expected rank
+        let expectedRank = 1.0;
+        for (const other of participants) {
+          if (other.user_id !== s.user_id) {
+            expectedRank += 1.0 - expectedProbability(elo, other.elo);
+          }
+        }
+
+        // rating change (Δ)
+        let ratingChange = K * (expectedRank - rank);
+        ratingChange += (s.score / MAX_SCORE) * SCORE_BONUS_FACTOR;
+        ratingChange /= (1.0 + (s.contestJoined ?? 1) / 10.0);
+        ratingChange = Math.max(-MAX_RATING_CHANGE, Math.min(MAX_RATING_CHANGE, ratingChange));
+
+        let newElo = elo + ratingChange;
+        newElo = Math.max(0, Math.min(4000, newElo));
+        const delta = Math.round(newElo) - elo;
+
+        // performance rating (Π)
+        const performance = computePerformance({ user_id: s.user_id, elo, rank }, participants);
+
+        return {
+          ...s,
+          pi: performance,
+          delta,
+        };
+      });
+
+      setStandings(enriched.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return a.penalty - b.penalty;
+      }));
       setProblems(contestData?.problems || [])
     }
 
@@ -181,6 +234,44 @@ export default function ContestStandingPage() {
     else if (now >= start && now <= end) return `Ends in: ${formatTimeLeft(contest.time_end)}`
     else return 'Contest ended'
   }
+
+  function expectedProbability(ratingA: number, ratingB: number): number {
+    return 1.0 / (1.0 + Math.pow(10.0, (ratingB - ratingA) / 400.0));
+  }
+
+  function computeSeed(R: number, me: { user_id: string; elo: number }, participants: { user_id: string; elo: number }[]): number {
+    let seed = 1.0;
+    for (const other of participants) {
+      if (other.user_id !== me.user_id) {
+        seed += 1.0 / (1.0 + Math.pow(10.0, (other.elo - R) / 400.0));
+      }
+    }
+    return seed;
+  }
+
+  function computePerformance(
+    me: { user_id: string; elo: number; rank: number },
+    participants: { user_id: string; elo: number }[]
+  ): number {
+    const actualSeed = participants.length + 1 - me.rank;
+    const target = actualSeed;
+
+    let lo = 0.0, hi = 4000.0;
+    const seedLo = computeSeed(lo, me, participants);
+    const seedHi = computeSeed(hi, me, participants);
+
+    if (target >= seedHi) return hi;
+    if (target <= seedLo) return lo;
+
+    for (let it = 0; it < 40; ++it) {
+      const mid = (lo + hi) / 2.0;
+      const seed = computeSeed(mid, me, participants);
+      if (seed > target) hi = mid;
+      else lo = mid;
+    }
+    return (lo + hi) / 2.0;
+  }
+
 
   return (
     <main className="min-h-screen flex bg-gray-900">
@@ -223,6 +314,9 @@ export default function ContestStandingPage() {
                 ))}
                 <th className="px-4 py-2 text-center border">Score</th>
                 <th className="px-4 py-2 text-center border">Penalty</th>
+                <th className="px-4 py-2 text-center border">Π</th>
+                <th className="px-4 py-2 text-center border">Δ</th>
+                <th className="px-4 py-2 text-center border">⮭</th>
               </tr>
             </thead>
             <tbody>
@@ -238,7 +332,7 @@ export default function ContestStandingPage() {
                     <td className="px-4 py-2 text-center border">{rank}</td>
                     <td
                       className={`px-4 py-2 text-center border font-bold ${getEloClass(
-                        eloMap[s.user_id] || 0
+                        eloMap[s.user_id] || 800
                       )}`}
                     >
                       <Link
@@ -269,11 +363,26 @@ export default function ContestStandingPage() {
                         </td>
                       )
                     })}
-                    <td className="px-4 py-2 text-center border text-green-400">
+                    <td className="px-4 py-2 text-center border text-white">
                       {s.score}
                     </td>
                     <td className="px-4 py-2 text-center border text-yellow-400">
                       {formatPenalty(s.penalty * 60)}
+                    </td>
+                    <td className={"px-4 py-2 text-center border text-blue-400 " + getEloClass(s.pi)} style={{fontFamily: "Oswald"}}>
+                      {Math.round(s.pi ?? 0) >= 4000 ? '∞' : Math.round(s.pi ?? 0)}
+                    </td>
+                    <td style={{fontFamily: "Oswald"}} className={`px-4 py-2 text-center border ${s.delta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {s.delta > 0 ? '+' : ''}{s.delta ?? 0}
+                    </td>
+                    <td className={`px-4 py-2 text-center border`}>
+                      <span style={{fontFamily: "Oswald"}} className={getEloClass(eloMap[s.user_id])}>
+                        {eloMap[s.user_id]}
+                      </span>
+                      {" -> "}
+                      <span style={{fontFamily: "Oswald"}} className={getEloClass(eloMap[s.user_id] + s.delta)}>
+                        {eloMap[s.user_id] + s.delta}
+                      </span>
                     </td>
                   </tr>
                 )
