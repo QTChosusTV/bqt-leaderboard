@@ -105,24 +105,6 @@ export default function ContestStandingPage() {
   }, [])
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
-      if (userError || !user?.id) return
-
-      const { data: userData } = await supabase
-        .from('users')
-        .select('username')
-        .eq('id', user.id)
-        .maybeSingle()
-
-      if (userData?.username) {
-        setUsername(userData.username)
-      }
-    }
-    fetchUser()
-  }, [])
-
-  useEffect(() => {
     if (!contestId) return
 
     const fetchData = async () => {
@@ -137,7 +119,7 @@ export default function ContestStandingPage() {
 
       const eloObj: Record<string, number> = {}
       leaderboard?.forEach((entry) => {
-        eloObj[entry.username] = entry.elo
+        eloObj[entry.username] = entry.elo ?? 0
       })
       setEloMap(eloObj)
 
@@ -157,16 +139,16 @@ export default function ContestStandingPage() {
 
       const participants = (standingData ?? []).map((s, idx) => ({
         user_id: s.user_id,
-        elo: eloObj[s.user_id] || 800,  // fallback if missing
+        elo: eloObj[s.user_id] || 0,  // fallback if missing
         rank: idx + 1,
         score: s.score,
         penalty: s.penalty
       }));
 
-      const K = 60;
+      const K = 100;
       const SCORE_BONUS_FACTOR = 12.5 * (6.0 - 2.0); // since DIV = 2.0f
       const MAX_RATING_CHANGE = 500.0;
-      const MAX_SCORE = 20400.0;
+      const MAX_SCORE = (contestData?.problems ?? []).length;
 
       const enriched = (standingData ?? []).map((s, idx) => {
         const elo = eloObj[s.user_id] ?? 1200
@@ -181,17 +163,29 @@ export default function ContestStandingPage() {
         }
 
         // rating change (Δ)
-        let ratingChange = K * (expectedRank - rank);
-        ratingChange += (s.score / MAX_SCORE) * SCORE_BONUS_FACTOR;
-        ratingChange /= (1.0 + (s.contestJoined ?? 1) / 10.0);
-        ratingChange = Math.max(-MAX_RATING_CHANGE, Math.min(MAX_RATING_CHANGE, ratingChange));
-
-        let newElo = elo + ratingChange;
-        newElo = Math.max(0, Math.min(4000, newElo));
-        const delta = Math.round(newElo) - elo;
-
         // performance rating (Π)
         const performance = computePerformance({ user_id: s.user_id, elo, rank }, participants);
+
+        // polynomial factor f(o)
+        let f = 0.5375590444025147 
+       - 1.609673516547565e-4 * elo 
+       + 6.436497743378832e-9 * elo * elo;
+
+        // contest size clamp
+        const n = participants.length;
+        if (n > 1) {
+          f *= Math.log10(Math.sqrt(n));
+        }
+
+        // new rating
+        let newElo = elo + (performance - elo) * f;
+        newElo = Math.max(0, Math.min(4000, newElo));
+
+        // rating delta
+        const delta = Math.round(newElo) - elo;
+
+
+        // performance rating (Π)
 
         return {
           ...s,
@@ -302,7 +296,7 @@ export default function ContestStandingPage() {
         >
           
           <p className="text-yellow-400 mb-4 font-semibold">{countdownText()}</p>
-          <table className="w-full border-collapse text-sm">
+          <table className="w-full border-collapse text-sm table-auto">
             <thead className="bg-gray-700 text-white">
               <tr>
                 <th className="px-4 py-2 text-center border">Rank</th>
@@ -366,16 +360,16 @@ export default function ContestStandingPage() {
                     <td className="px-4 py-2 text-center border text-white">
                       {s.score}
                     </td>
-                    <td className="px-4 py-2 text-center border text-yellow-400">
+                    <td className="px-1 py-2 text-center border text-yellow-400">
                       {formatPenalty(s.penalty * 60)}
                     </td>
-                    <td className={"px-4 py-2 text-center border text-blue-400 " + getEloClass(s.pi)} style={{fontFamily: "Oswald"}}>
+                    <td className={"px-1 py-1 text-center border text-blue-400 " + getEloClass(s.pi)} style={{fontFamily: "Oswald"}}>
                       {Math.round(s.pi ?? 0) >= 4000 ? '∞' : Math.round(s.pi ?? 0)}
                     </td>
                     <td style={{fontFamily: "Oswald"}} className={`px-4 py-2 text-center border ${s.delta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       {s.delta > 0 ? '+' : ''}{s.delta ?? 0}
                     </td>
-                    <td className={`px-4 py-2 text-center border`}>
+                    <td className={`px-2 py-1 text-center border`}>
                       <span style={{fontFamily: "Oswald"}} className={getEloClass(eloMap[s.user_id])}>
                         {eloMap[s.user_id]}
                       </span>
