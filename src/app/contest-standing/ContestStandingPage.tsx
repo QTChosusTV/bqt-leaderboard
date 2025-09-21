@@ -251,7 +251,16 @@ export default function ContestStandingPage() {
                     {problems.map((p, idx) => {
                       const info = s.problems?.[p.pid]
                       return (
-                        <td key={idx} className="px-4 py-2 text-center border">
+                        <td key={idx} 
+                        className={info?.tries > 0
+                            ? (info?.verdict === 'AC'
+                              ? "px-4 py-2 text-center border text-green-500"
+                              : "px-4 py-2 text-center border text-red-500")
+                            : ""}
+                        >
+
+                      
+                      
                           {info?.tries > 0
                             ? (info?.verdict === 'AC'
                               ? '+' + ((info?.tries ?? 1) > 1 ? info.tries - 1 : '')
