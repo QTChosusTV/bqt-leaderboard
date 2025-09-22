@@ -198,6 +198,8 @@ export default function ContestProblemset() {
     else return 'Contest ended'
   }
 
+  
+
 
 
   return (
@@ -205,10 +207,10 @@ export default function ContestProblemset() {
       <aside className="w-40 bg-gray-800 p-4 flex flex-col mr-6">
         <h2 className="text-lg font-bold mb-4">Contest</h2>
           <Link href={`/contest?id=${contestId}`} className="redirect-button">Info</Link>
-          {currUser?.current_contest_id !== 0 && (now <= timeEnd) && (
+          {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
             <Link href="/contest-problemset" className="redirect-button">Problems</Link>
           )}
-          {currUser?.current_contest_id !== 0 && contest && (
+          {contest && (
             <Link href={`/contest-standing?id=${contest.id}`} className="redirect-button">
               Standing
             </Link>
@@ -217,7 +219,7 @@ export default function ContestProblemset() {
 
         
         <div className="flex-1 mr-6 mt-6">
-          {contestId ? (
+          {contestId && (now >= timeStart) ? (
             <div>
               <AnimatedContent
                 distance={50}
@@ -256,7 +258,7 @@ export default function ContestProblemset() {
               </AnimatedContent>
             </div>
           ) : (
-            <p className="p-6 text-red-400">You are not in a contest / Problem are being loaded</p>
+            <p className="p-6 text-red-400">You are not in a contest / Problem are being loaded / Contest has not started</p>
           )}
         </div>
     </main>

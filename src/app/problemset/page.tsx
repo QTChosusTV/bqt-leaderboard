@@ -30,11 +30,16 @@ export default function ProblemsetList() {
 
   useEffect(() => {
     const fetchProblems = async () => {
-      const { data: problems, error } = await supabase
+      let query = supabase
         .from('problems')
         .select('id, title, difficulty, statement, tags, constrains, examples, created_at')
         .order('id', { ascending: true })
-        .lt('id', 1_000_000_000)
+
+      //if (username !== 'QTChosusTV') {
+      query = query.lt('id', 1_000_000_000)
+      //}
+
+      const { data: problems, error } = await query
 
       if (!error && problems) {
         setProblems(problems)
@@ -114,7 +119,12 @@ export default function ProblemsetList() {
     "greedy",
     "implementation",
     "stack",
-    "sliding window"
+    "sliding window",
+    "brute force",
+    "geometry",
+    "sweepline", 
+    "interval",
+    "number theory"
   ]
 
   const filteredProblems = problems

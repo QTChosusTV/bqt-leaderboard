@@ -255,7 +255,8 @@
           .from("submissions")
           .select("problem_id")
           .eq("username", username)
-          .eq("overall", "Accepted");
+          .eq("overall", "Accepted")
+          .lt('problem_id', 1_000_000_000);
 
         const { data: probs } = await supabase
           .from("problems")

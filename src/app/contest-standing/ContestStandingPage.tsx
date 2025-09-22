@@ -273,10 +273,10 @@ export default function ContestStandingPage() {
       <aside className="w-40 bg-gray-800 p-4 flex flex-col">
         <h2 className="text-lg font-bold mb-4">Contest</h2>
         <Link href={`/contest?id=${contestId}`} className="redirect-button">Info</Link>
-          {currUser?.current_contest_id !== 0 && (now <= timeEnd) && (
+          {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
             <Link href="/contest-problemset" className="redirect-button">Problems</Link>
           )}
-          {currUser?.current_contest_id !== 0 && contest && (
+          {contest && (
             <Link href={`/contest-standing?id=${contest.id}`} className="redirect-button">
               Standing
             </Link>
@@ -305,12 +305,17 @@ export default function ContestStandingPage() {
                   <th key={idx} className="px-4 py-2 text-center border">
                     {p.pname}
                   </th>
-                ))}
+                ))} 
                 <th className="px-4 py-2 text-center border">Score</th>
                 <th className="px-4 py-2 text-center border">Penalty</th>
-                <th className="px-4 py-2 text-center border">Π</th>
-                <th className="px-4 py-2 text-center border">Δ</th>
-                <th className="px-4 py-2 text-center border">⮭</th>
+                  {(now <= timeEnd) && (
+                    <>
+                      <th className="px-4 py-2 text-center border">Π</th>
+                      <th className="px-4 py-2 text-center border">Δ</th>
+                      <th className="px-4 py-2 text-center border">⮭</th>
+                    </>
+                  )} 
+                
               </tr>
             </thead>
             <tbody>
@@ -363,21 +368,25 @@ export default function ContestStandingPage() {
                     <td className="px-1 py-2 text-center border text-yellow-400">
                       {formatPenalty(s.penalty * 60)}
                     </td>
-                    <td className={"px-1 py-1 text-center border text-blue-400 " + getEloClass(s.pi)} style={{fontFamily: "Oswald"}}>
-                      {Math.round(s.pi ?? 0) >= 4000 ? '∞' : Math.round(s.pi ?? 0)}
-                    </td>
-                    <td style={{fontFamily: "Oswald"}} className={`px-4 py-2 text-center border ${s.delta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {s.delta > 0 ? '+' : ''}{s.delta ?? 0}
-                    </td>
-                    <td className={`px-2 py-1 text-center border`}>
-                      <span style={{fontFamily: "Oswald"}} className={getEloClass(eloMap[s.user_id])}>
-                        {eloMap[s.user_id]}
-                      </span>
-                      {" -> "}
-                      <span style={{fontFamily: "Oswald"}} className={getEloClass(eloMap[s.user_id] + s.delta)}>
-                        {eloMap[s.user_id] + s.delta}
-                      </span>
-                    </td>
+                    {(now <= timeEnd) && (
+                      <>
+                        <td className={"px-1 py-1 text-center border text-blue-400 " + getEloClass(s.pi)} style={{fontFamily: "Oswald"}}>
+                          {Math.round(s.pi ?? 0) >= 4000 ? '∞' : Math.round(s.pi ?? 0)}
+                        </td>
+                        <td style={{fontFamily: "Oswald"}} className={`px-4 py-2 text-center border ${s.delta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          {s.delta > 0 ? '+' : ''}{s.delta ?? 0}
+                        </td>
+                        <td className={`px-2 py-1 text-center border`}>
+                          <span style={{fontFamily: "Oswald"}} className={getEloClass(eloMap[s.user_id])}>
+                            {eloMap[s.user_id]}
+                          </span>
+                          {" -> "}
+                          <span style={{fontFamily: "Oswald"}} className={getEloClass(eloMap[s.user_id] + s.delta)}>
+                            {eloMap[s.user_id] + s.delta}
+                          </span>
+                        </td>
+                      </>
+                    )}
                   </tr>
                 )
               })}
