@@ -16,6 +16,7 @@
   import './user.css';
   import type { Chart } from 'chart.js';
   import Image from 'next/image'
+  import parse from 'color-parse';
 
   interface Contest {
     contestId: number;
@@ -201,6 +202,19 @@
     return '#ffffff';
   };
 
+  const getCFEloColor = (elo: number) => {
+    if (elo >= 3000) return '#8b0000';
+    if (elo >= 2600) return '#ff0000';
+    if (elo >= 2400) return '#ff7575';
+    if (elo >= 2300) return '#ffcc44';
+    if (elo >= 2100) return '#ffee99';
+    if (elo >= 1900) return '#aa00aa';
+    if (elo >= 1600) return '#55aaff';
+    if (elo >= 1400) return '#00aaaa';
+    if (elo >= 1200) return '#00aa00';
+    return '#aaaaaa';
+  };
+
   type Solved = { id: number; elo: number };
 
   const getRatingChangeColor = (ratingChange: number) => {
@@ -222,6 +236,8 @@
     const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set())
     const [solvedElos, setSolvedElos] = useState<Solved[]>([]);
     const [userElo, setUserElo] = useState<number | null>(null);
+    const [handle, setHandle] = useState('');
+    const [cfElo, setCFElo] = useState('');
 
     useEffect(() => {
       const params = new URLSearchParams(window.location.search);
@@ -244,7 +260,41 @@
           setElo(data.elo || data.history[data.history.length - 1]?.elo || 0);
         }
       };
+
+      const fetchCodeforcesRating = async () => {
+        const { data } = await supabase
+          .from('users')
+          .select('codeforces_handle')
+          .eq('username', uname)
+          .maybeSingle();
+
+      
+        // console.log(data)
+
+        if (data?.codeforces_handle) {
+          setHandle(data?.codeforces_handle);
+        }
+
+        try {
+          const res = await fetch(
+            `https://codeforces.com/api/user.info?handles=${data?.codeforces_handle}`
+          );
+          const json = await res.json();
+
+          if (json.status === "OK" && json.result.length > 0) {
+            const userInfo = json.result[0];
+            setCFElo(userInfo.rating || "Unrated");
+          } else {
+            setCFElo("Unrated");
+          }
+        } catch (err) {
+          console.error("Error fetching CF rating:", err);
+          setCFElo("Error");
+        }
+      };
+
       fetchHistory();
+      fetchCodeforcesRating();
     }, []);
 
     useEffect(() => {
@@ -438,6 +488,8 @@
             })}
           </tbody>
         </table>
+
+        <p style={{marginTop: 30, fontSize: 20}}>Codeforces rating: <strong style={{color: getCFEloColor(Number(cfElo))}}>{handle} ({cfElo})</strong></p>
 
           <div style={{ marginTop: '20px' }}>
             <div

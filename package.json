@@ -17,6 +17,7 @@
     "chart.js": "^4.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "color-parse": "^2.0.2",
     "gsap": "^3.13.0",
     "jsrepo": "^2.4.5",
     "katex": "^0.16.22",
@@ -29,6 +30,8 @@
     "react-dom": "^19.0.0",
     "react-katex": "^3.1.0",
     "react-markdown": "^10.1.0",
+    "remark-breaks": "^4.0.0",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.3.1",
     "three": "^0.150.0"
   },
