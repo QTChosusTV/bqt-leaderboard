@@ -409,7 +409,7 @@ export default function ContestStandingPage() {
                       <strong>{s.score}</strong>
                     </td>
                     <td className="px-1 py-2 text-center border text-yellow-400">
-                      {formatPenalty(s.penalty * 60)}
+                      {s.penalty}
                     </td>
                     {(now <= timeEnd) && (
                       <>
