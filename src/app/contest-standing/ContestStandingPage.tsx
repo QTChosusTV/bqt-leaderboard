@@ -219,6 +219,26 @@ export default function ContestStandingPage() {
     return `${d > 0 ? `${d}d ` : ''}${h % 24}h ${m % 60}m ${s % 60}s`
   }
 
+  function getSolveTimeGradient(timeStr: string, contestStart: string | null, contestEnd: string | null): string {
+    if (!timeStr || !contestStart || !contestEnd) return "gray"
+
+    const start = new Date(contestStart).getTime()
+    const end = new Date(contestEnd).getTime()
+    const solve = new Date(timeStr).getTime()
+
+    if (end <= start) return "gray"
+
+    // ratio: 0 = start, 1 = end
+    const ratio = Math.min(1, Math.max(0, (solve - start) / (end - start)))
+
+    // Hue 120 (green) → 0 (red)
+    const hue = 120 - ratio * 120
+
+    return `hsl(${hue}, 100%, 50%)`
+  }
+
+
+
   const countdownText = () => {
     if (!contest) return ''
     const now = Date.now()
@@ -266,6 +286,15 @@ export default function ContestStandingPage() {
     return (lo + hi) / 2.0;
   }
 
+  function formatSolveTime(timeStr: string, contestStart: string | null): string {
+    if (!timeStr || !contestStart) return ""
+    const solveTime = new Date(timeStr).getTime()
+    const startTime = new Date(contestStart).getTime()
+    const diffSeconds = Math.floor((solveTime - startTime) / 1000)
+    return formatPenalty(diffSeconds)  // you already have formatPenalty
+  }
+
+
 
   return (
     <main className="min-h-screen flex bg-gray-900">
@@ -296,9 +325,9 @@ export default function ContestStandingPage() {
         >
           
           <p className="text-yellow-400 mb-4 font-semibold">{countdownText()}</p>
-          <table className="w-full border-collapse text-sm table-auto">
+          <table className="w-full border-collapse text-xs table-auto text-center align-middle">
             <thead className="bg-gray-700 text-white">
-              <tr>
+              <tr className="">
                 <th className="px-4 py-2 text-center border">Rank</th>
                 <th className="px-4 py-2 text-center border">User</th>
                 {problems.map((p, idx) => (
@@ -336,7 +365,7 @@ export default function ContestStandingPage() {
                     >
                       <Link
                         href={`/user?username=${encodeURIComponent(s.user_id)}`}
-                        className="no-underline hover:underline"
+                        className="no-underline hover:underline text-left"
                       >
                         {s.user_id}
                       </Link>
@@ -345,25 +374,39 @@ export default function ContestStandingPage() {
                       const info = s.problems?.[p.pid]
                       return (
                         <td key={idx} 
-                        className={info?.tries > 0
-                            ? (info?.verdict === 'AC'
-                              ? "px-4 py-2 text-center border text-green-500"
-                              : "px-4 py-2 text-center border text-red-500")
-                            : ""}
+                          className={info?.tries > 0
+                              ? (info?.verdict === 'AC'
+                                ? "px-4 py-2 text-center border text-green-500"
+                                : "px-4 py-2 text-center border text-red-500")
+                              : "px-4 py-2 text-center border"}
                         >
+                          {info?.tries > 0 ? (
+                            <div className="flex flex-col items-center">
+                              <span>
+                                  <strong>
+                                    <i>
+                                      {info?.verdict === 'AC'
+                                        ? '+' + ((info?.tries ?? 1) > 1 ? info.tries - 1 : '')
+                                        : '-' + (info?.tries > 0 ? info.tries : '')}
+                                      </i>
+                                  </strong>
+                              </span>
+                              {info?.verdict === 'AC' && (
+                                <span
+                                  className="text-xs font-mono"
+                                  style={{ color: getSolveTimeGradient(info.time, contest?.time_start ?? null, contest?.time_end ?? null) }}
+                                >
+                                  <strong>{formatSolveTime(info.time, contest?.time_start ?? null)}</strong>
+                                </span>
 
-                      
-                      
-                          {info?.tries > 0
-                            ? (info?.verdict === 'AC'
-                              ? '+' + ((info?.tries ?? 1) > 1 ? info.tries - 1 : '')
-                              : '-' + (info?.tries > 0 ? info.tries : ''))
-                            : ''}
+                              )}
+                            </div>
+                          ) : ''}
                         </td>
                       )
                     })}
                     <td className="px-4 py-2 text-center border text-white">
-                      {s.score}
+                      <strong>{s.score}</strong>
                     </td>
                     <td className="px-1 py-2 text-center border text-yellow-400">
                       {formatPenalty(s.penalty * 60)}
