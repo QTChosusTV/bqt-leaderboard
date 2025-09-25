@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import ContestStandingPage from './ContestStandingPage'
+import './standing.css'
 
 export default function Page() {
   return (

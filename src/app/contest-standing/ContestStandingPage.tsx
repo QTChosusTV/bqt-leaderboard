@@ -118,10 +118,13 @@ export default function ContestStandingPage() {
         .select('username, elo')
 
       const eloObj: Record<string, number> = {}
+
       leaderboard?.forEach((entry) => {
-        eloObj[entry.username] = entry.elo ?? 0
+        eloObj[entry.username] = entry.elo && entry.elo !== 0 ? entry.elo : 1500
       })
+
       setEloMap(eloObj)
+
 
 
 
