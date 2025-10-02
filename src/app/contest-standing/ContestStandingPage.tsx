@@ -304,12 +304,12 @@ export default function ContestStandingPage() {
       {/* Sidebar */}
       <aside className="w-40 bg-gray-800 p-4 flex flex-col">
         <h2 className="text-lg font-bold mb-4">Contest</h2>
-        <Link href={`/contest?id=${contestId}`} className="redirect-button">Info</Link>
+        <Link href={`/contest?id=${contestId}`} className="redirect-button" prefetch={false}>Info</Link>
           {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
-            <Link href="/contest-problemset" className="redirect-button">Problems</Link>
+            <Link href="/contest-problemset" className="redirect-button" prefetch={false}>Problems</Link>
           )}
           {contest && (
-            <Link href={`/contest-standing?id=${contest.id}`} className="redirect-button">
+            <Link href={`/contest-standing?id=${contest.id}`} className="redirect-button" prefetch={false}>
               Standing
             </Link>
           )}
@@ -369,6 +369,7 @@ export default function ContestStandingPage() {
                       <Link
                         href={`/user?username=${encodeURIComponent(s.user_id)}`}
                         className="no-underline hover:underline text-left"
+                        prefetch={false}
                       >
                         {s.user_id}
                       </Link>

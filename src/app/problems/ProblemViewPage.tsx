@@ -157,7 +157,7 @@ export default function ProblemViewPage() {
 
   return (
     <main className="max-w-10xl mx-auto p-6">
-      <Link href="/problemset" className="text-blue-600 underline text-sm mb-4 inline-block">← Back to problem list</Link>
+      <Link href="/problemset" className="text-blue-600 underline text-sm mb-4 inline-block" prefetch={false}>← Back to problem list</Link>
       <h1 className="text-2xl font-bold mb-2">{problem.title} {solved && "✅"}</h1>
       <p className={`text-sm mb-4 ${getEloClass(problem.difficulty)}`}>Estimated Elo: <strong>{problem.difficulty}</strong></p>
       <p className="text-gray-300 text-sm mb-4">Time limit: <strong>{problem.time_out*1000}</strong>ms</p>
@@ -261,7 +261,7 @@ export default function ProblemViewPage() {
       )}
 
       <div className="mt-6">
-        <Link href={`/submit?id=${problem.id}`}>
+        <Link href={`/submit?id=${problem.id}`} prefetch={false}>
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
             Submit Solution
           </button>

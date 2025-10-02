@@ -1,54 +1,35 @@
 import random
 import json
+import math
 
-NUM_SMALL = 10   # số test n nhỏ
+NUM_SMALL = 10   
 MAX_N_SMALL = 20
 MAX_TIME = 100
 N_LARGE = 5*10**4
 
-def max_planes(intervals):
-    """
-    Tính số máy bay tối đa cùng bay bằng sweepline
-    intervals: list of (l,r)
-    """
-    events = []
-    for l,r in intervals:
-        events.append((l, 1))       # +1 khi cất cánh
-        events.append((r+1, -1))    # -1 khi hạ cánh
-    events.sort()
-    cnt = 0
-    mx = 0
-    for _, val in events:
-        cnt += val
-        if cnt > mx:
-            mx = cnt
-    return mx
+TEST = [
+    #   CNT     MAXN                  MAXK
+    [   10,     1000,                   3  ],
+    [   10,     1000000,                5  ],
+    [   10,     1000000000,            10  ],
+    [   10,     1000000000000000,      15  ],
+    [   10,     1000000000000000000,   20  ]
+]
+
+def solve(n, k):
+    return int(math.ceil(math.log(n, k+1)))
 
 testcases = []
 
-# sinh test nhỏ
-for _ in range(NUM_SMALL):
-    n = random.randint(1, MAX_N_SMALL)
-    intervals = []
-    for _ in range(n):
-        l = random.randint(1, MAX_TIME)
-        r = random.randint(l, MAX_TIME)
-        intervals.append((l, r))
-    inp = f"{n}\n" + "\n".join(f"{l} {r}" for l, r in intervals)
-    out = str(max_planes(intervals))
-    testcases.append({"input": inp, "output": out})
+for [cnt, maxn, maxk] in TEST:
+    for _ in range(cnt):
+        n = random.randint(1, maxn)
+        k = random.randint(2, maxk)
+        inp = f"{n} {k}"
+        #inp = f"{n}\n" + "\n".join(f"{l} {r}" for l, r in intervals)
+        out = str(solve(n, k))
+        testcases.append({"input": inp, "output": out})
 
-# 1 test n lớn
-intervals = []
-for _ in range(N_LARGE):
-    l = random.randint(1, N_LARGE)
-    r = random.randint(l, N_LARGE)
-    intervals.append((l, r))
-inp = f"{N_LARGE}\n" + "\n".join(f"{l} {r}" for l, r in intervals)
-out = str(max_planes(intervals))   # Python sweepline vẫn O(n log n) đủ nhanh
-testcases.append({"input": inp, "output": out})
-
-# xuất ra json
 with open("random_testcases.json", "w") as f:
     json.dump(testcases, f, indent=2)
 

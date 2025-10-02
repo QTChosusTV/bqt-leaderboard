@@ -206,12 +206,12 @@ export default function ContestProblemset() {
     <main className="flex min-h-screen bg-gray-900" style={{margin: 0}}>
       <aside className="w-40 bg-gray-800 p-4 flex flex-col mr-6">
         <h2 className="text-lg font-bold mb-4">Contest</h2>
-          <Link href={`/contest?id=${contestId}`} className="redirect-button">Info</Link>
+          <Link href={`/contest?id=${contestId}`} className="redirect-button" prefetch={false}>Info</Link>
           {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
-            <Link href="/contest-problemset" className="redirect-button">Problems</Link>
+            <Link href="/contest-problemset" className="redirect-button" prefetch={false}>Problems</Link>
           )}
           {contest && (
-            <Link href={`/contest-standing?id=${contest.id}`} className="redirect-button">
+            <Link href={`/contest-standing?id=${contest.id}`} className="redirect-button prefetch={false}">
               Standing
             </Link>
           )}
@@ -245,7 +245,7 @@ export default function ContestProblemset() {
                         <td>{problem.pname}</td>
                         <td className={getEloClass(problem.difficulty)}>
                           <strong>
-                            <Link href={`/problems?id=${encodeURIComponent(problem.id)}`}>
+                            <Link href={`/problems?id=${encodeURIComponent(problem.id)}`} prefetch={false}>
                               {solvedProblems.has(problem.id) && "✅"} {problem.title}
                             </Link>
                           </strong>

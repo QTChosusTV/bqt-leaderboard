@@ -134,11 +134,11 @@ export default function LeaderboardPage() {
   return (
     <main>
       <nav style={{marginTop: '24px', marginLeft: '9px', marginBottom: '-20px'}}>
-        <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
-        <Link href="/chat" className="redirect-button">Chat</Link>
-        <Link href="/problemset" className="redirect-button">Problemset</Link>
-        <Link href="/about" className="redirect-button">About</Link>
-        <Link href="/ide" className="redirect-button">Live IDE</Link>
+        <Link href="/leaderboard" className="redirect-button" prefetch={false}>Leaderboard</Link>
+        <Link href="/chat" className="redirect-button" prefetch={false}>Chat</Link>
+        <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>
+        <Link href="/about" className="redirect-button" prefetch={false}>About</Link>
+        <Link href="/ide" className="redirect-button" prefetch={false}>Live IDE</Link>
       </nav>
       
       <div style={{ padding: '20px' }}>
@@ -178,6 +178,7 @@ export default function LeaderboardPage() {
                         href={`/user?username=${encodeURIComponent(user.username)}`}
                         className={usernameClassList}
                         style={{ display: 'flex', alignItems: 'center' }}
+                        prefetch={false}
                       >
                         <Image
                           src={iconSrc}

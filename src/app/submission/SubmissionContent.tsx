@@ -24,6 +24,61 @@ type Submission = {
   overall: Verdict
 }
 
+// For overall (already full words)
+function overallColor(overall: string): string {
+  switch (overall) {
+    case 'Accepted': return 'text-green-400'
+    case 'Wrong Answer': return 'text-red-400'
+    case 'Time Limit Exceeded': return 'text-gray-400'
+    case 'Memory Limit Exceeded': return 'text-purple-400'
+    case 'Runtime Error': return 'text-orange-400'
+    case 'Compile Error': return 'text-yellow-400'
+    case 'Judging...': return 'text-blue-400'
+    default: return 'text-white'
+  }
+}
+
+function overallBg(overall: string): string {
+  switch (overall) {
+    case 'Accepted': return 'bg-green-900/40'
+    case 'Wrong Answer': return 'bg-red-900/40'
+    case 'Time Limit Exceeded': return 'bg-gray-800/60'
+    case 'Memory Limit Exceeded': return 'bg-purple-900/40'
+    case 'Runtime Error': return 'bg-orange-900/40'
+    case 'Compile Error': return 'bg-yellow-900/40'
+    case 'Judging...': return 'bg-blue-900/40'
+    default: return 'bg-gray-900'
+  }
+}
+
+// For per-test (short codes)
+function testText(status: Verdict): string {
+  switch (status) {
+    case 'AC': return 'Accepted'
+    case 'WA': return 'Wrong Answer'
+    case 'TLE': return 'Time Limit Exceeded'
+    case 'MLE': return 'Memory Limit Exceeded'
+    case 'RE': return 'Runtime Error'
+    case 'CE': return 'Compile Error'
+    case 'Pending': return 'Judging...'
+    default: return status
+  }
+}
+
+function testColor(status: Verdict): string {
+  switch (status) {
+    case 'AC': return 'text-green-400'
+    case 'WA': return 'text-red-400'
+    case 'TLE': return 'text-gray-400'
+    case 'MLE': return 'text-purple-400'
+    case 'RE': return 'text-orange-400'
+    case 'CE': return 'text-yellow-400'
+    case 'Pending': return 'text-blue-400'
+    default: return 'text-white'
+  }
+}
+
+
 function SubmissionContent() {
   const searchParams = useSearchParams()
   const submissionId = searchParams.get('id')
@@ -102,23 +157,36 @@ function SubmissionContent() {
         <strong>Problem ID:</strong> {submission.problem_id}
       </div>
       <div className="mb-4">
-        <strong>Status:</strong> {statusText}
+        <strong>Status:</strong>{' '}
+        <span className={`px-2 py-1 rounded font-semibold ${overallColor(submission.overall)}`}>
+          {submission.overall}
+        </span>
       </div>
 
-      <div className="mb-4">
-        <strong>Code:</strong>
-        <pre className="whitespace-pre-wrap bg-gray-900 text-white p-4 rounded mt-2 text-sm">
-          {submission.code}
-        </pre>
-      </div>
+      <pre
+        className={`whitespace-pre-wrap text-white p-4 rounded mt-2 text-sm shadow-inner ${overallBg(submission.overall)}`}
+        style={{marginBottom: 20}}
+      >
+        {submission.code}
+      </pre>
 
       {submission.results?.map((r) => (
-        <div key={r.test} className="mb-2">
-          <p>Test #{r.test}: {r.status}</p>
-          <p className="text-green-400">Expected: {r.expected}</p>
-          <p className="text-red-400">Got: {r.got}</p>
+        <div key={r.test} className="mb-4 p-4 rounded-xl bg-gray-800 shadow-md">
+          <p className="text-blue-400 font-semibold mb-2">
+            Test #{r.test}:{' '}
+            <span className={testColor(r.status)}>
+              {testText(r.status)}
+            </span>
+          </p>
+          <div className="grid grid-cols-[100px_1fr] gap-2">
+            <p className="text-yellow-500">Expected:</p>
+            <span className={testColor(r.status)}>{r.expected}</span>
+            <p className="text-white">Got:</p>
+            <span className={testColor(r.status)}>{r.got}</span>
+          </div>
         </div>
       ))}
+
     </main>
   )
 }

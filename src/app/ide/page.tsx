@@ -225,7 +225,7 @@ export default function IDEPage() {
                 <span className="text-gray-300">{user.email/*?.split('@')[0]*/}</span>
               </div>
             ) : (
-              <Link href="/auth" className="text-sm text-purple-400 hover:underline">
+              <Link href="/auth" className="text-sm text-purple-400 hover:underline"> prefetch={false}
                 Sign In
               </Link>
             )}
