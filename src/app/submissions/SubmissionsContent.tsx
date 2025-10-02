@@ -122,7 +122,7 @@ export default function SubmissionsPage() {
 
       // fetch leaderboard elo for all usernames
       const usernames = subsData?.map(s => s.username) || []
-      let eloMap: Record<string, number | null> = {}
+      const eloMap: Record<string, number | null> = {}
 
       if (usernames.length > 0) {
         const { data: leaderboardData, error: lbError } = await supabase
