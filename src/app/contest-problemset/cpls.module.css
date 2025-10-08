@@ -1,0 +1,28 @@
+.cplsTable th, 
+.cplsTable td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #434343;
+    border-left: 2px solid #434343;
+    border-top: 2px solid #434343;
+    border-right: 2px solid #434343;
+    font-size: 19px;
+}
+
+
+.cplsTable th {
+    background-color: #505050;
+}
+
+.cpButton {
+  padding: 10px 7px;
+  border: 1px outset buttonborder;
+  color: #444444;
+  background-color: #aaaaaa;
+  text-decoration: none;
+  font-size: 15px;
+  text-align: center;
+  justify-content: flex-start;
+  margin: 10px;
+  gap: 10px;
+}

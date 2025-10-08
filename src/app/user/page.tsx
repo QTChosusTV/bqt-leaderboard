@@ -14,6 +14,7 @@
   } from "chart.js";
   import { Line } from "react-chartjs-2";
   import './user.css';
+  import styles from './user.module.css';
   import type { Chart } from 'chart.js';
   import Image from 'next/image'
   import parse from 'color-parse';
@@ -464,13 +465,13 @@
 
         </div>
 
-        <table id="history">
+        <table id="history" className={styles.urTable} style={{width: 1480}}>
           <thead>
             <tr>
               <th>ID</th><th>Name</th><th>Date</th><th>Rank</th><th>Elo</th><th>Change</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className={styles.contestList}>
             {history.map((c, i) => {
               const prevElo = i > 0 ? history[i - 1].elo : 0;
               const change = c.elo - prevElo;

@@ -1,0 +1,12 @@
+.cpButton {
+  padding: 10px 7px;
+  border: 1px outset buttonborder;
+  color: #444444;
+  background-color: #aaaaaa;
+  text-decoration: none;
+  font-size: 15px;
+  text-align: center;
+  justify-content: flex-start;
+  margin: 10px;
+  gap: 10px;
+}

@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import Link from 'next/link'
-import './user.css'
+import './pbl.css'
+import styles from './pbl.module.css'
 import { Timestamp } from 'next/dist/server/lib/cache-handlers/types'
 
 interface Problem {
@@ -124,7 +125,11 @@ export default function ProblemsetList() {
     "geometry",
     "sweepline", 
     "interval",
-    "number theory"
+    "number theory",
+    "dsu",
+    "offline-queries",
+    "sorting",
+    "data structures"
   ]
 
   const filteredProblems = problems
@@ -148,6 +153,7 @@ export default function ProblemsetList() {
         <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>
         <Link href="/about" className="redirect-button" prefetch={false}>About</Link>
         <Link href="/ide" className="redirect-button" prefetch={false}>Live IDE</Link>
+        <Link href="/submissions" className="redirect-button">Submissions</Link>
       </nav>
 
       <div className="flex flex-col gap-4 mb-4">
@@ -193,7 +199,7 @@ export default function ProblemsetList() {
       </div>
 
       <div style={{ padding: '20px' }}>
-        <table id="problemlist" className="eloClass">
+        <table id="problemlist" className={styles.plsTable}>
           <thead>
             <tr>
               <th>ID</th>

@@ -1,0 +1,14 @@
+.plsTable th, 
+.plsTable td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #434343;
+    border-left: 2px solid #434343;
+    border-top: 2px solid #434343;
+    border-right: 2px solid #434343;
+    font-size: 19px;
+}
+
+.plsTable th {
+   background-color: #505050; 
+}

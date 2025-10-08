@@ -16,74 +16,8 @@ h1 span {
     color: inherit; /* Ensure h1 doesn't override span colors */
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #2a2a2a;
-    padding: 40px;
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 2px solid #434343;
-    border-left: 2px solid #434343;
-    border-top: 2px solid #434343;
-    border-right: 2px solid #434343;
-    font-size: 19px;
-}
-
-th {
-    background-color: #505050;
-}
 
 
-table tr:hover {
-    background-color: #3a3a3a !important;
-}
-
-.contest-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.contest-list li {
-    background-color: #5d5d5d;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-}
-
-/* Elo color classes */
-.elo-3000-plus { color: #8b0000; } /* Red */
-.elo-2700-3000 { color: #ff0000; } /* Red */
-.elo-2500-2700 { color: #ff7575; } /* Red */
-.elo-2300-2500 { color: #ffaa00; } /* Orange */
-.elo-2100-2300 { color: #fbff00; } /* Yellow */
-.elo-1900-2100 { color: #aa00aa; } /* Purple */
-.elo-1750-1900 { color: #7900fa; } /* Blue */
-.elo-1600-1750 { color: #55aaff; } /* Blue */
-.elo-1500-1600 { color: #15d0ff; } /* Cyan */
-.elo-1400-1500 { color: #00aaaa; } /* Cyan */
-.elo-1200-1400 { color: #00aa00; } /* Green */
-.elo-800-1200 { color: #aaaaaa; } /* Gray */
-.elo-0-800 { color: #ffffff; } /* White */
-
-/* Ensure currentRating inherits the Elo color */
-#currentRating.elo-3000-plus { color: #8b0000; } /* Red */
-#currentRating.elo-2700-3000 { color: #ff0000; } /* Red */
-#currentRating.elo-2500-2700 { color: #ff7575; } /* Red */
-#currentRating.elo-2300-2500 { color: #ffaa00; } /* Orange */
-#currentRating.elo-2100-2300 { color: #fbff00; } /* Yellow */
-#currentRating.elo-1900-2100 { color: #aa00aa; } /* Purple */
-#currentRating.elo-1750-1900 { color: #7900fa; } /* Blue */
-#currentRating.elo-1600-1750 { color: #55aaff; } /* Blue */
-#currentRating.elo-1500-1600 { color: #4bdbff; } /* Cyan */
-#currentRating.elo-1400-1500 { color: #00aaaa; } /* Cyan */
-#currentRating.elo-1200-1400 { color: #00aa00; } /* Green */
-#currentRating.elo-800-1200 { color: #aaaaaa; } /* Gray */
-#currentRating.elo-0-800 { color: #ffffff; } /* Write */
 
 /* Top 100 users in leaderboard */
 .elo-top-100 { font-weight: bold; }
@@ -224,3 +158,4 @@ button {
 button:hover {
     background-color: #4488cc;
 }
+

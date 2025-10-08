@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
+import styles from './leaderboard.module.css'
 import './leaderboard.css'
 import Link from 'next/link';
 import Image from 'next/image'
@@ -139,6 +140,7 @@ export default function LeaderboardPage() {
         <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>
         <Link href="/about" className="redirect-button" prefetch={false}>About</Link>
         <Link href="/ide" className="redirect-button" prefetch={false}>Live IDE</Link>
+        <Link href="/submissions" className="redirect-button">Submissions</Link>
       </nav>
       
       <div style={{ padding: '20px' }}>
@@ -154,7 +156,7 @@ export default function LeaderboardPage() {
           threshold={0.2}
           delay={0.0}
         >
-          <table id="leaderboard">
+          <table id="leaderboard" className={styles.sTable}>
             <thead>
               <tr>
                 <th style={{ textAlign: 'center' }}>Rank</th>

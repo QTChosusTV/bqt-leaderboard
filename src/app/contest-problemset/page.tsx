@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import Link from 'next/link'
-import './user.css'
+import './cpls.css'
+import styles from './cpls.module.css'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
 
 interface Problem {
@@ -204,18 +205,18 @@ export default function ContestProblemset() {
 
   return (
     <main className="flex min-h-screen bg-gray-900" style={{margin: 0}}>
-      <aside className="w-40 bg-gray-800 p-4 flex flex-col mr-6">
-        <h2 className="text-lg font-bold mb-4">Contest</h2>
-          <Link href={`/contest?id=${contestId}`} className="redirect-button" prefetch={false}>Info</Link>
-          {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
-            <Link href="/contest-problemset" className="redirect-button" prefetch={false}>Problems</Link>
-          )}
-          {contest && (
-            <Link href={`/contest-standing?id=${contest.id}`} className="redirect-button prefetch={false}">
-              Standing
-            </Link>
-          )}
-      </aside>
+        <aside className="w-40 bg-gray-800 p-4 flex flex-col mr-6">
+          <h2 className="text-lg font-bold mb-4">Contest</h2>
+            <Link href={`/contest?id=${contestId}`} className={styles.cpButton} prefetch={false}>Info</Link>
+            {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
+              <Link href="/contest-problemset" className={styles.cpButton} prefetch={false}>Problems</Link>
+            )}
+            {contest && (
+              <Link href={`/contest-standing?id=${contest.id}`} className={styles.cpButton}>
+                Standing
+              </Link>
+            )}
+        </aside>
 
         
         <div className="flex-1 mr-6 mt-6">
@@ -231,7 +232,7 @@ export default function ContestProblemset() {
               >
                 <h2 className="text-lg font-bold mb-4">Contest Problems</h2>
                 <p className="text-yellow-400 mb-4 font-semibold">{countdownText()}</p>
-                <table id="problemlist" className="eloClass">
+                <table id="problemlist" className={styles.cplsTable}>
                   <thead>
                     <tr>
                       <th>Problem</th>

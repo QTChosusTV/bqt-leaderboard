@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { supabase } from '@/utils/supabaseClient'
+import "./submissions.css"
+import styles from "./submissions.module.css"
 
 type Submission = {
   id: number
@@ -162,15 +164,28 @@ export default function SubmissionsPage() {
   }
 
   return (
-    <main className="max-w-6xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Submissions (page {page})</h1>
+    <main className="p-6" style={{fontSize: 15}}>
+
+      <nav style={{marginTop: '0px', marginLeft: '-15px', marginBottom: '20px'}}>
+          <Link href="/leaderboard" className="redirect-button" prefetch={false}>Leaderboard</Link>
+          <Link href="/chat" className="redirect-button" prefetch={false}>Chat</Link>
+          <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>
+          <Link href="/about" className="redirect-button" prefetch={false}>About</Link>
+          <Link href="/ide" className="redirect-button" prefetch={false}>Live IDE</Link>
+          <Link href="/submissions" className="redirect-button">Submissions</Link>
+        </nav>
+
+      <h1 className="text-2xl font-bold mb-4 mt-10">Submissions (page {page})</h1>
 
       {loading ? (
         <p className="text-gray-400">Loading...</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border border-gray-700 text-sm">
-            <thead className="bg-gray-800">
+        <div className="overflow-x-auto max-w-8xl mx-auto">
+ 
+        
+
+          <table className="w-full border border-gray-700">
+            <thead className={styles.smsTable}>
               <tr>
                 <th className="p-2 text-left">Verdict</th>
                 <th className="p-2 text-left">Problem</th>
@@ -182,9 +197,17 @@ export default function SubmissionsPage() {
             </thead>
             <tbody>
               {subs.map(s => (
-                <tr key={s.id} className="border-b border-gray-700">
+                <tr key={s.id} className="border-b border-gray-700 smsTable" style={{fontSize: 15}}>
                   <td className={`p-2 ${verdictColor(s.overall)}`}>{s.overall}</td>
-                  <td className="p-2">{s.problem_id}</td>
+                  <td className="p-2">
+                    <Link href={`/problems?id=${s.problem_id}`} prefetch={false}>
+                      <span
+                        className={`hover:underline cursor-pointer`}
+                      >
+                        {s.problem_id}
+                      </span>
+                    </Link>
+                  </td>
                   <td className="p-2">
                     <Link href={`/user?username=${s.username}`} prefetch={false}>
                       <span

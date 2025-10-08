@@ -13,6 +13,7 @@ export default function AboutPage() {
         <Link href="/problemset" className="redirect-button">Problemset</Link>
         <Link href="/about" className="redirect-button">About</Link>
         <Link href="/ide" className="redirect-button">Live IDE</Link>
+        <Link href="/submissions" className="redirect-button">Submissions</Link>
       </nav>
 
 

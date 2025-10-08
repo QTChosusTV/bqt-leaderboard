@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
 import remarkGfm from "remark-gfm"
 import remarkBreaks from "remark-breaks"
+import styles from "./ct.module.css"
 
 interface Contest {
   id: number
@@ -197,12 +198,12 @@ export default function ContestPage() {
       <div className="flex flex-1">
         <aside className="w-40 bg-gray-800 p-4 flex flex-col">
           <h2 className="text-lg font-bold mb-4">Contest</h2>
-          <Link href={`/contest?id=${contest.id}`} className="redirect-button" prefetch={false}>Info</Link>
+          <Link href={`/contest?id=${contest.id}`} className={styles.cpButton} prefetch={false}>Info</Link>
           {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
-            <Link href="/contest-problemset" className="redirect-button" prefetch={false}>Problems</Link>
+            <Link href="/contest-problemset" className={styles.cpButton} prefetch={false}>Problems</Link>
           )}
           {contest && (
-            <Link href={`/contest-standing?id=${contest.id}`} className="redirect-button" prefetch={false}>Standing</Link>
+            <Link href={`/contest-standing?id=${contest.id}`} className={styles.cpButton} prefetch={false}>Standing</Link>
           )}
         </aside>
 

@@ -1,0 +1,9 @@
+.smsTable {
+  background: #aa66aa;
+  font-size: 15px;
+}
+
+.smsTable th,
+.smsTable td {
+  font-size: 15px;
+}
