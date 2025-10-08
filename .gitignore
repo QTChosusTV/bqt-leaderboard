@@ -20,6 +20,8 @@
 # production
 /build
 
+/sinh_test
+
 # misc
 .DS_Store
 *.pem
@@ -39,11 +41,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-.py
-.cpp
-.exe
-.o
-.json
-
-/sinh_test
