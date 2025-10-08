@@ -1,7 +1,7 @@
 from supabase import create_client
 
 url = "https://izlisxyrycqzuiebxuim.supabase.co"
-key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml6bGlzeHlyeWNxenVpZWJ4dWltIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDUxMjU2OSwiZXhwIjoyMDY2MDg4NTY5fQ.2qFrPi-8K6POyDpq6zorYxEKMw-Jj2mkkmU0TSl5fw0"
+key = ""
 supabase = create_client(url, key)
 
 testcases = [
