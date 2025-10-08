@@ -45,3 +45,5 @@ next-env.d.ts
 .exe
 .o
 .json
+
+/sinh_test
