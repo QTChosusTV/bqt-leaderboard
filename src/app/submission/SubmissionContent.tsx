@@ -10,6 +10,9 @@ type TestResult = {
   status: Verdict
   expected?: string
   got?: string
+  time: number
+  memory_kb: number
+
 }
 
 type Submission = {
@@ -22,6 +25,8 @@ type Submission = {
   percentage_correct: number
   results?: TestResult[]
   overall: string
+  time: number
+  memory_kb: number
 }
 
 function overallColor(overall: string): string {
@@ -189,6 +194,10 @@ function SubmissionContent() {
             <span className={testColor(r.status)}>{r.expected}</span>
             <p className="text-white">Got:</p>
             <span className={testColor(r.status)}>{r.got}</span>
+            <p className="text-blue-500">Time:</p>
+            <span>{Math.round(((r.time ?? 0) * 1000) * 100) / 100} ms</span>
+            <p className="text-blue-500">Memory:</p>
+            <span>{(r.memory_kb??262144) - 262144}KB</span>
           </div>
         </div>
       ))}

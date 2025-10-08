@@ -15,6 +15,8 @@ type Submission = {
   overall: string
   created_at: string
   elo?: number | null
+  time?: number | null
+  memory_kb?: number | null
 }
 
 const getEloClass = (elo: number) => {
@@ -111,7 +113,9 @@ export default function SubmissionsPage() {
           problem_id,
           language,
           overall,
-          created_at
+          created_at,
+          time,
+          memory_kb
         `)
         .order("created_at", { ascending: false })
         .range(from, to)
@@ -192,6 +196,7 @@ export default function SubmissionsPage() {
                 <th className="p-2 text-left">Username</th>
                 <th className="p-2 text-left">Language</th>
                 <th className="p-2 text-left">Time</th>
+                <th className="p-2 text-left">Memory</th>
                 <th className="p-2 text-left">Action</th>
               </tr>
             </thead>
@@ -218,7 +223,11 @@ export default function SubmissionsPage() {
                     </Link>
                   </td>
                   <td className="p-2">{s.language}</td>
-                  <td className="p-2">{new Date(s.created_at).toLocaleString()}</td>
+                  <td className="p-2">{((s.time??0)*1000)}ms</td>
+                  <td className="p-2">
+                    {( (s.memory_kb ?? 262144) - 262144 )} KB
+                  </td>
+
                   <td className="p-2">
                     {s.username === username ? (
                       <Link href={`/submission?id=${s.id}`} prefetch={false}>
