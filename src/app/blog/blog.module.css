@@ -1,0 +1,6 @@
+.prose p {
+  margin: 0;     
+}
+.prose p + p {
+  margin-top: 0.25rem; 
+}
