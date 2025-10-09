@@ -9,6 +9,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import remarkBreaks from "remark-breaks";
 import "katex/dist/katex.min.css";
+import Link from "next/link";
 
 interface Post {
   id: number;
@@ -92,44 +93,47 @@ export default function BlogPage() {
   if (!post) return <p className="mt-3 ml-3">😵 Không tìm thấy bài viết.</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+    <div className="max-w-7xl mx-auto p-6">
 
-      <div className="text-md text-gray-500 mb-6">
-        Đăng bởi{" "}
-        <a
-          href={`/user?username=${post.username}`}
-          className={getEloClass(elo ?? 0)}
-        >
-          <strong>{post.username}</strong>
-        </a>{" "}
-        vào {new Date(post.created_at).toLocaleString("vi-VN")}
-      </div>
+        <Link href="/blogs" className="text-blue-600 hover:underline" style={{textAlign: "left"}}>← Back to blog list</Link>
 
-      <div className="prose max-w-none [&_p]:my-5 [&_h2]:mt-2 [&_li]:my-1">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
-          rehypePlugins={[rehypeKatex]}
-        >
-          {post.content}
-        </ReactMarkdown>
-      </div>
+        <h1 className="text-3xl font-bold mb-2 mt-5">{post.title}</h1>
 
-
-
-      {post.tags && post.tags.length > 0 && (
-        <div className="mt-6 flex flex-wrap gap-2">
-          {post.tags.map((t) => (
+        <div className="text-md text-gray-500 mb-6">
+            Đăng bởi{" "}
             <a
-              key={t}
-              href={`/blogs?tag=${t}`}
-              className="px-2 py-1 text-xs border rounded hover:bg-gray-100"
+            href={`/user?username=${post.username}`}
+            className={getEloClass(elo ?? 0)}
             >
-              #{t}
-            </a>
-          ))}
+            <strong>{post.username}</strong>
+            </a>{" "}
+            vào {new Date(post.created_at).toLocaleString("vi-VN")}
         </div>
-      )}
+
+        <div className="prose max-w-none [&_p]:my-5 [&_h2]:mt-2 [&_li]:my-1">
+            <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
+            rehypePlugins={[rehypeKatex]}
+            >
+            {post.content}
+            </ReactMarkdown>
+        </div>
+
+
+
+        {post.tags && post.tags.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-2">
+            {post.tags.map((t) => (
+                <a
+                key={t}
+                href={`/blogs?tag=${t}`}
+                className="px-2 py-1 text-xs border rounded hover:bg-gray-100"
+                >
+                #{t}
+                </a>
+            ))}
+            </div>
+        )}
     </div>
   );
 }

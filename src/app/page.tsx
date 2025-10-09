@@ -162,6 +162,7 @@ export default function HomePage() {
           <Link href="/about" className="redirect-button">About</Link>
           <Link href="/ide" className="redirect-button">Live IDE</Link>
           <Link href="/submissions" className="redirect-button">Submissions</Link>
+          <Link href="/blogs" className="redirect-button">Blogs</Link>
         </nav>
 
         <h1 className="text-2xl font-bold mt-5 mb-4">

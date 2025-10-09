@@ -11,6 +11,9 @@ int main() {
     for (auto &x : a) cin >> x;
     ll k; cin >> k;
 
+
+    sort(a.rbegin(), a.rend());
+
     ll sum = 0;
     for (int i = 0; i < n; i++) {
         sum += a[i];

@@ -141,6 +141,7 @@ export default function LeaderboardPage() {
         <Link href="/about" className="redirect-button" prefetch={false}>About</Link>
         <Link href="/ide" className="redirect-button" prefetch={false}>Live IDE</Link>
         <Link href="/submissions" className="redirect-button">Submissions</Link>
+        <Link href="/blogs" className="redirect-button">Blogs</Link>
       </nav>
       
       <div style={{ padding: '20px' }}>

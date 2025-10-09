@@ -177,6 +177,7 @@ export default function SubmissionsPage() {
           <Link href="/about" className="redirect-button" prefetch={false}>About</Link>
           <Link href="/ide" className="redirect-button" prefetch={false}>Live IDE</Link>
           <Link href="/submissions" className="redirect-button">Submissions</Link>
+          <Link href="/blogs" className="redirect-button">Blogs</Link>
         </nav>
 
       <h1 className="text-2xl font-bold mb-4 mt-10">Submissions (page {page})</h1>

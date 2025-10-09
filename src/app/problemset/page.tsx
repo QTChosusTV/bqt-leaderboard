@@ -154,6 +154,7 @@ export default function ProblemsetList() {
         <Link href="/about" className="redirect-button" prefetch={false}>About</Link>
         <Link href="/ide" className="redirect-button" prefetch={false}>Live IDE</Link>
         <Link href="/submissions" className="redirect-button">Submissions</Link>
+        <Link href="/blogs" className="redirect-button">Blogs</Link>
       </nav>
 
       <div className="flex flex-col gap-4 mb-4">
