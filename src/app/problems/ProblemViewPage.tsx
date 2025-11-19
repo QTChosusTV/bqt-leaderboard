@@ -4,8 +4,9 @@ import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import Link from 'next/link'
-import { BlockMath, InlineMath } from 'react-katex'
 import './style.css'
+import ExplanationRenderer from "./ExplanationRenderer";
+import { BlockMath, InlineMath } from 'react-katex'
 
 interface Problem {
   id: number
@@ -237,28 +238,9 @@ export default function ProblemViewPage() {
       </section>
 
       {problem.explaination && (
-        <section className="mb-6">
-          <h2 className="text-lg font-semibold">Explanation</h2>
-          {problem.explaination.split('\n').map((line, i) => {
-            const trimmed = line.trim()
-
-            if (trimmed.startsWith('$$') && trimmed.endsWith('$$')) {
-              const latex = trimmed.slice(2, -2).trim()
-              return (
-                <div key={i} className="text-left">
-                  <BlockMath math={latex} />
-                </div>
-              )
-            }
-
-            return (
-              <p key={i} className="whitespace-pre-wrap">
-                {renderInlineWithLatex(line, `ex-${i}`)}
-              </p>
-            )
-          })}
-        </section>
+        <ExplanationRenderer content={problem.explaination} />
       )}
+
 
       <div className="mt-6">
         <Link href={`/submit?id=${problem.id}`} prefetch={false}>
