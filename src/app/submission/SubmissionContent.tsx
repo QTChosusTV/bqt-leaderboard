@@ -196,8 +196,6 @@ function SubmissionContent() {
             <span className={testColor(r.status)}>{r.got}</span>
             <p className="text-blue-500">Time:</p>
             <span>{Math.round(((r.time ?? 0) * 1000) * 100) / 100} ms</span>
-            <p className="text-blue-500">Memory:</p>
-            <span>{(r.memory_kb??262144) - 262144}KB</span>
           </div>
         </div>
       ))}

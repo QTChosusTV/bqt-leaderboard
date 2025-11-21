@@ -85,6 +85,7 @@ export default function HomePage() {
         .from("contests")
         .select("*")
         .order("time_start", { ascending: true })
+        .limit(20)
 
       if (error) return console.error("Failed to fetch contests:", error.message)
 
@@ -151,6 +152,66 @@ export default function HomePage() {
     )
   }
 
+  const renderContestCard = (
+    contest: Contest,
+    type: "upcoming" | "ongoing" | "past"
+  ) => {
+    const eloMin = contest.elo_min ?? 0
+    const eloMax = contest.elo_max ?? 9999
+    const timeLeft =
+      type === "upcoming"
+        ? formatTimeLeft(contest.time_start)
+        : type === "ongoing"
+        ? formatTimeLeft(contest.time_end)
+        : ""
+
+    const iconsInRange = eloRanks.filter(rank => rank.min >= eloMin && rank.min <= eloMax)
+
+    return (
+      <Link
+        key={contest.id}
+        href={contest.link ?? "#"}
+        className="block bg-neutral-900 border border-neutral-700 hover:border-neutral-500 hover:bg-neutral-800 transition rounded-lg p-4 shadow-sm"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-blue-300">
+              {contest.name ?? "Unnamed Contest"}
+            </h3>
+
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-neutral-400 text-sm">Rated:</span>
+
+              {iconsInRange.map(rank => (
+                <Image
+                  key={rank.class}
+                  src={`/assets/ranks/${rank.class}.png`}
+                  alt={rank.class}
+                  width={22}
+                  height={22}
+                  className="inline-block"
+                />
+              ))}
+            </div>
+          </div>
+
+          {timeLeft && (
+            <span
+              className={`text-sm px-3 py-1 rounded-md font-medium ${
+                type === "ongoing"
+                  ? "bg-green-700 text-white"
+                  : "bg-neutral-700 text-neutral-100"
+              }`}
+            >
+              {timeLeft}
+            </span>
+          )}
+        </div>
+      </Link>
+    )
+  }
+
+
   return (
     <>
       {tick > 0 && null}
@@ -165,38 +226,83 @@ export default function HomePage() {
           <Link href="/blogs" className="redirect-button">Blogs</Link>
         </nav>
 
-        <h1 className="text-2xl font-bold mt-5 mb-4">
-          Welcome to BQT Online Judge! Created by BanhQuyTeam, BQTOJ promises a convenient experience to learn, compete and improve your competitive programming skill!
-        </h1>
-
-        {email ? (
-          <p>
-            Logged in as <strong>{email}</strong><br />
-            Username: <strong>{username}</strong>
+        <section className="mt-8 bg-neutral-900 p-6 rounded-xl shadow-md border border-neutral-700">
+          <h1 className="text-3xl font-bold mb-3">
+            Welcome to BQT Online Judge!
+          </h1>
+          <p className="text-neutral-300 leading-relaxed">
+            Created by <strong>BanhQuyTeam</strong>, BQTOJ gives you a smooth and enjoyable
+            experience to learn, compete, and level up your competitive programming skills.
           </p>
-        ) : (
-          <p><Link href="/login" className="text-blue-500 underline">Log in</Link> to continue</p>
-        )}
 
-        <br />
-        <p>Wanna solve your first problems? <strong>Go to Problemset!</strong></p>
+          <div className="mt-4">
+            {email ? (
+              <p className="text-neutral-300">
+                Logged in as <strong>{email}</strong><br />
+                Username: <strong>{username}</strong>
+              </p>
+            ) : (
+              <p className="text-neutral-300">
+                <Link href="/login" className="text-blue-400 underline">Log in</Link> to continue
+              </p>
+            )}
+          </div>
 
-        
-        <p style={{marginTop: 50}}>Support to help us maintain and upgrade this website more!</p>
+          <Link
+            href="/problemset"
+            className="inline-block mt-6 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition"
+          >
+            Start Solving →
+          </Link>
+        </section>
 
-        <Image src={`/assets/qr/MONEY.jpg`} alt={``} width={250} height={250} style={{marginTop: 20}}></Image>
+        <section className="mt-12 space-y-10">
+          <div>
+            <h2 className="text-xl font-semibold mb-4"> ⬤ Upcoming Contests</h2>
+            <div className="space-y-3">
+              {upcoming.map(c => renderContestCard(c, "upcoming"))}
+            </div>
+          </div>
 
-        <br /><br />
-        <h2 className="text-xl font-semibold">Upcoming Contests</h2>
-        <ul>{upcoming.map(c => renderContestLine(c, "upcoming"))}</ul>
+          <div>
+            <h2 className="text-xl font-semibold mb-4"> ⬤ Ongoing Contests</h2>
+            <div className="space-y-3">
+              {ongoing.map(c => renderContestCard(c, "ongoing"))}
+            </div>
+          </div>
 
-        <br />
-        <h2 className="text-xl font-semibold">Ongoing Contests</h2>
-        <ul>{ongoing.map(c => renderContestLine(c, "ongoing"))}</ul>
+          <div>
+            <h2 className="text-xl font-semibold flex items-center gap-3 mb-5">
+               ⬤ Past Contests
+              <Link href="/contests/past/1" className="text-blue-400 text-m hover:underline">
+                (View all)
+              </Link>
+            </h2>
+            <div className="space-y-3">
+              {past.map(c => renderContestCard(c, "past"))}
+            </div>
+          </div>
 
-        <br />
-        <h2 className="text-xl font-semibold">Past Contests</h2>
-        <ul>{past.map(c => renderContestLine(c, "past"))}</ul>
+          
+        </section>
+
+        <section className="mt-10 bg-neutral-900 p-5 rounded-xl shadow-md border border-neutral-700">
+          <h2 className="text-xl font-semibold mb-3">Support BQTOJ</h2>
+          <p className="text-neutral-300">
+            Help us maintain and improve the platform!
+          </p>
+
+          <div className="mt-5 flex justify-center">
+            <Image
+              src="/assets/qr/MONEY.jpg"
+              alt="Donate QR"
+              width={220}
+              height={220}
+              className="rounded-lg shadow"
+            />
+          </div>
+        </section>
+
       </main>
     </>
   )
