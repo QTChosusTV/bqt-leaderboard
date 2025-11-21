@@ -1,12 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600;700;900&display=swap');
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 @import "tw-animate-css";
 
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-source-sans: 'Source Sans Pro', sans-serif;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -42,8 +43,8 @@
 }
 
 body {
-  font-family: Fira Code, sans-serif;
   background-color: #1e1e1e;
+  font-family: var(--font-source-sans);
   color: #ffffff;
 }
 
@@ -51,7 +52,7 @@ body {
   color: #d900ff;
   font-weight: bold;
   font-size: 25px;
-  font-family: Fira Code, sans-serif;
+  font-family: var(--font-source-sans), 'Source Sans Pro', sans-serif;
   text-shadow: 1px 1px 2px black;
 }
 
@@ -195,7 +196,9 @@ button:hover {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
+    font-family: 'Source Sans Pro', sans-serif;
     @apply bg-background text-foreground;
   }
 }

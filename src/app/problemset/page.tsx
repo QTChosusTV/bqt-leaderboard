@@ -23,11 +23,10 @@ export default function ProblemsetList() {
   const [username, setUsername] = useState<string | null>(null)
   const [problems, setProblems] = useState<Problem[]>([])
   const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set())
+  const [submittedProblems, setSubmittedProblems] = useState<Set<number>>(new Set())
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
-
-  
-
+  const [filterStatus, setFilterStatus] = useState<'all' | 'unsolved' | 'submitted-not-ac'>('all')
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -74,21 +73,26 @@ export default function ProblemsetList() {
     fetchProblems()
   }, [])
 
-  // fetch solved problems once username is ready
   useEffect(() => {
-    const fetchSolved = async () => {
+    const fetchSubmissions = async () => {
       if (!username) return
       const { data, error } = await supabase
         .from('submissions')
-        .select('problem_id')
+        .select('problem_id, overall')
         .eq('username', username)
-        .eq('overall', "Accepted")
 
       if (!error && data) {
-        setSolvedProblems(new Set(data.map(d => d.problem_id)))
+        const solved = new Set<number>()
+        const submitted = new Set<number>()
+        data.forEach(d => {
+          submitted.add(d.problem_id)
+          if (d.overall === "Accepted") solved.add(d.problem_id)
+        })
+        setSolvedProblems(solved)
+        setSubmittedProblems(submitted)
       }
     }
-    fetchSolved()
+    fetchSubmissions()
   }, [username])
 
     const getEloClass = (elo: number) => {
@@ -133,15 +137,24 @@ export default function ProblemsetList() {
   ]
 
   const filteredProblems = problems
-  .filter(problem =>
-    selectedTags.length === 0 ||
-    problem.tags?.some(tag => selectedTags.includes(tag.tagName))
-  )
-  .sort((a, b) =>
-    sortOrder === 'asc'
-      ? a.difficulty - b.difficulty
-      : b.difficulty - a.difficulty
-  )
+    .filter(problem => {
+      // filter by tags
+      const tagMatch = selectedTags.length === 0 || problem.tags?.some(tag => selectedTags.includes(tag.tagName))
+      
+      // filter by status
+      const statusMatch =
+        filterStatus === 'all' ||
+        (filterStatus === 'unsolved' && !solvedProblems.has(problem.id)) ||
+        (filterStatus === 'submitted-not-ac' && submittedProblems.has(problem.id) && !solvedProblems.has(problem.id))
+
+      return tagMatch && statusMatch
+    })
+    .sort((a, b) =>
+      sortOrder === 'asc'
+        ? a.difficulty - b.difficulty
+        : b.difficulty - a.difficulty
+    )
+
 
 
 
@@ -163,7 +176,7 @@ export default function ProblemsetList() {
           <select
             value={sortOrder}
             onChange={e => setSortOrder(e.target.value as 'asc' | 'desc')}
-            className="p-2 border rounded"
+            className="p-2 border rounded bg-gray-500"
           >
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
@@ -189,19 +202,26 @@ export default function ProblemsetList() {
             Reset
           </button>
         </div>
+
+        <div>
+          <label className="font-semibold">Filter by Status:  </label>
+          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value as any)} className="p-2 border rounded bg-gray-500">
+            <option value="all">All</option>
+            <option value="unsolved">Unsolved</option>
+            <option value="submitted-not-ac">Submitted</option>
+          </select>
+        </div>
+
       </div>
 
       <div className="space-y-4">
         {filteredProblems.map(problem => (
-          <Link
-            key={problem.id}
-            href={`/problems?id=${encodeURIComponent(problem.id)}`}
-            className="flex flex-col md:flex-row md:justify-between border rounded-lg p-4 hover:shadow-lg transition bg-gray-800 hover:bg-gray-600"
-          >
+          <Link key={problem.id} href={`/problems?id=${encodeURIComponent(problem.id)}`} className="flex flex-col md:flex-row md:justify-between border rounded-lg p-4 hover:shadow-lg transition bg-gray-800 hover:bg-gray-600">
             <div className="flex flex-col md:flex-row md:items-center gap-2">
               <span className="font-bold text-gray-400">#{problem.id}</span>
               <h3 className={`font-semibold text-lg ${getEloClass(problem.difficulty)}`}>
                 {solvedProblems.has(problem.id) && <span>✅ </span>}
+                {(!solvedProblems.has(problem.id) && submittedProblems.has(problem.id)) && <span>❌ </span>}
                 {problem.title}
               </h3>
             </div>

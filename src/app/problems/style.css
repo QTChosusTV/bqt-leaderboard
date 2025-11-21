@@ -1,11 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
 
-body {
-    background-color: #1e1e1e;
-    color: #e0e0e0;
-    font-family: 'Fira Code', monospace;
-    margin: 0px;
-}
 
 h1, h2 {
     color: #e0e0e0;

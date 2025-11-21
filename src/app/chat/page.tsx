@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/utils/supabaseClient';
 import './chat.css';
+import styles from './chat.module.css'
 import Link from 'next/link';
 
 interface Message {
