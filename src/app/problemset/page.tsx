@@ -157,83 +157,65 @@ export default function ProblemsetList() {
         <Link href="/blogs" className="redirect-button">Blogs</Link>
       </nav>
 
-      <div className="flex flex-col gap-4 mb-4">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
         <div>
-          <label className="mr-2">Sort by Difficulty:</label>
+          <label className="mr-2 font-semibold">Sort by Difficulty:</label>
           <select
             value={sortOrder}
             onChange={e => setSortOrder(e.target.value as 'asc' | 'desc')}
-            className="p-1 border rounded"
+            className="p-2 border rounded"
           >
-            <option value="asc" style={{color: "#000"}}>Ascending</option>
-            <option value="desc" style={{color: "#000"}}>Descending</option>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
           </select>
         </div>
 
-        <div>
-          <label className="mr-2">Filter by Tags:</label>
-          <select style={{height: 150, marginLeft: 30}}
+        <div className="flex items-center gap-2">
+          <label className="font-semibold">Filter by Tags:</label>
+          <select
             multiple
             value={selectedTags}
-            onChange={e =>
-              setSelectedTags(
-                Array.from(e.target.selectedOptions, option => option.value)
-              )
-            }
-            className="p-1 border rounded"
+            onChange={e => setSelectedTags(Array.from(e.target.selectedOptions, option => option.value))}
+            className="p-2 border rounded h-36"
           >
             {allTags.map(tag => (
               <option key={tag} value={tag}>{tag}</option>
             ))}
           </select>
-
           <button
-            type="button"
             onClick={() => setSelectedTags([])}
-            className="ml-2 px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
-            style={{marginLeft: 25}}
+            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
           >
             Reset
           </button>
         </div>
-
       </div>
 
-      <div style={{ padding: '20px' }}>
-        <table id="problemlist" className={styles.plsTable}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Est. Elo</th>
-              <th>Tags</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProblems.map((problem) => (
-              <tr key={problem.id}>
-                <td>{problem.id}</td>
-                <td className={getEloClass(problem.difficulty)}>
-                  <strong>
-                    <Link href={`/problems?id=${encodeURIComponent(problem.id)}`} prefetch={false}>
-                      {solvedProblems.has(problem.id) && "✅"} {problem.title} 
-                    </Link>
-                  </strong>
-                </td>
-                <td className={getEloClass(problem.difficulty)}>{problem.difficulty}</td>
-                <td>
-                  {problem.tags?.map(tag => (
-                    <span key={tag.tagName} className="inline-block bg-blue-600 text-white px-2 py-1 rounded mr-1 text-xs">
-                      {tag.tagName}
-                    </span>
-                  ))}
-                </td>
-                <td>{new Date(problem.created_at).toLocaleDateString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="space-y-4">
+        {filteredProblems.map(problem => (
+          <Link
+            key={problem.id}
+            href={`/problems?id=${encodeURIComponent(problem.id)}`}
+            className="flex flex-col md:flex-row md:justify-between border rounded-lg p-4 hover:shadow-lg transition bg-gray-800 hover:bg-gray-600"
+          >
+            <div className="flex flex-col md:flex-row md:items-center gap-2">
+              <span className="font-bold text-gray-400">#{problem.id}</span>
+              <h3 className={`font-semibold text-lg ${getEloClass(problem.difficulty)}`}>
+                {solvedProblems.has(problem.id) && <span>✅ </span>}
+                {problem.title}
+              </h3>
+            </div>
+            <div className="flex flex-col md:flex-row md:items-center gap-5 mt-2 md:mt-0">
+              <div className="flex flex-wrap gap-1">
+                {problem.tags?.map(tag => (
+                  <span key={tag.tagName} className="bg-blue-600 text-white px-2 py-0.5 rounded text-xs">{tag.tagName}</span>
+                ))}
+              </div>
+              <span className={`font-bold ${getEloClass(problem.difficulty)}`}>{problem.difficulty}</span>
+              <span className="text-gray-400 text-sm">{new Date(problem.created_at).toLocaleDateString()}</span>
+            </div>
+          </Link>
+        ))}
       </div>
     </main>
   )
