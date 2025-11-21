@@ -15,6 +15,10 @@ type TestResult = {
 
 }
 
+interface TestDropdownProps {
+  result: TestResult;
+}
+
 type Submission = {
   id: string
   username: string
@@ -81,6 +85,50 @@ function testColor(status: Verdict): string {
   }
 }
 
+function truncate(text: string, maxLength: number = 100) {
+  if (!text) return '';
+  return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+}
+
+function TestDropdown({ result }: TestDropdownProps) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="mb-4 rounded-xl bg-gray-800 shadow-md">
+      <div
+        className="flex justify-between items-center p-4 cursor-pointer"
+        onClick={() => setOpen(!open)}
+      >
+        <p className="text-blue-400 font-semibold">
+          Test #{result.test}:{' '}
+          <span className={testColor(result.status)}>{testText(result.status)}</span>
+        </p>
+        <span
+          className="text-white transition-transform duration-200"
+          style={{ transform: open ? 'rotate(90deg)' : 'rotate(0deg)' }}
+        >
+          ▶
+        </span>
+      </div>
+
+      {open && (
+        <div className="grid grid-cols-[100px_1fr] gap-2 p-4 border-t border-gray-700">
+          <p className="text-yellow-500">Expected:</p>
+          <span className={testColor(result.status)}>
+            {truncate(result.expected ?? "")}
+          </span>
+          <p className="text-white">Got:</p>
+          <span className={testColor(result.status)}>
+            {truncate(result.got ?? "")}
+          </span>
+          <p className="text-blue-500">Time:</p>
+          <span>{Math.round(((result.time ?? 0) * 1000) * 100) / 100} ms</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SubmissionContent() {
   const searchParams = useSearchParams()
   const submissionId = searchParams.get('id')
@@ -88,6 +136,7 @@ function SubmissionContent() {
   const [submission, setSubmission] = useState<Submission | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState<string | null>(null)
+  const [open, setOpen] = useState(false); // track dropdown state
 
   useEffect(() => {
     // fetch logged-in username
@@ -184,21 +233,9 @@ function SubmissionContent() {
       </pre>
 
       {submission.results?.map((r) => (
-        <div key={r.test} className="mb-4 p-4 rounded-xl bg-gray-800 shadow-md">
-          <p className="text-blue-400 font-semibold mb-2">
-            Test #{r.test}:{' '}
-            <span className={testColor(r.status)}>{testText(r.status)}</span>
-          </p>
-          <div className="grid grid-cols-[100px_1fr] gap-2">
-            <p className="text-yellow-500">Expected:</p>
-            <span className={testColor(r.status)}>{r.expected}</span>
-            <p className="text-white">Got:</p>
-            <span className={testColor(r.status)}>{r.got}</span>
-            <p className="text-blue-500">Time:</p>
-            <span>{Math.round(((r.time ?? 0) * 1000) * 100) / 100} ms</span>
-          </div>
-        </div>
+        <TestDropdown key={r.test} result={r} />
       ))}
+
     </main>
   )
 }
