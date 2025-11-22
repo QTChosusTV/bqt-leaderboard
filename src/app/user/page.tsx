@@ -1,23 +1,30 @@
-  'use client';
+'use client';
 
-  import { useEffect, useState } from 'react';
-  import { supabase } from '@/utils/supabaseClient';
-  import {
-    Chart as ChartJS,
-    LineElement,
-    PointElement,
-    CategoryScale,
-    LinearScale,
-    Tooltip,
-    Legend,
-    Filler
-  } from "chart.js";
-  import { Line } from "react-chartjs-2";
-  import './user.css';
-  import styles from './user.module.css';
-  import type { Chart } from 'chart.js';
-  import Image from 'next/image'
-  import parse from 'color-parse';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/utils/supabaseClient';
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+  Filler
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import './user.css';
+import styles from './user.module.css';
+import type { Chart } from 'chart.js';
+import Image from 'next/image'
+import parse from 'color-parse';
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import remarkBreaks from "remark-breaks";
+import "katex/dist/katex.min.css";
+import Link from "next/link";
 
   interface Contest {
     contestId: number;
@@ -239,6 +246,7 @@
     const [userElo, setUserElo] = useState<number | null>(null);
     const [handle, setHandle] = useState('');
     const [cfElo, setCFElo] = useState('');
+    const [desc, setDesc] = useState('');
 
     useEffect(() => {
       const params = new URLSearchParams(window.location.search);
@@ -260,6 +268,16 @@
           setHistory(data.history);
           setElo(data.elo || data.history[data.history.length - 1]?.elo || 0);
         }
+      };
+
+      const fetchDesc = async () => {
+        const { data: descData } = await supabase
+          .from('users')
+          .select('desc')
+          .eq('username', uname)
+          .single();
+
+          setDesc(descData?.desc ?? '');
       };
 
       const fetchCodeforcesRating = async () => {
@@ -296,6 +314,7 @@
 
       fetchHistory();
       fetchCodeforcesRating();
+      fetchDesc();
     }, []);
 
     useEffect(() => {
@@ -463,6 +482,15 @@
             {getEloTitle(elo)}
           </h2>
 
+        </div>
+
+        <div className="prose max-w-none [&_p]:mt-4 [&_p]:mb-3 [&_h2]:mt-2 [&_li]:my-1">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
+              rehypePlugins={[rehypeKatex]}
+            >
+            {desc}
+            </ReactMarkdown>
         </div>
 
         <table id="history" className={styles.urTable} style={{width: 1480}}>

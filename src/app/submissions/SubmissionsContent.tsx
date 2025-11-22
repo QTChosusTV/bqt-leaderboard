@@ -241,7 +241,6 @@ export default function SubmissionsPage() {
         </div>
       )}
 
-      {/* Pagination buttons */}
       <div className="flex justify-center gap-4 mt-4">
         {page > 1 && (
           <button
