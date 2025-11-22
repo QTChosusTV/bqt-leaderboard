@@ -17,6 +17,7 @@ type TestResult = {
 
 interface TestDropdownProps {
   result: TestResult;
+  isSpecial?: boolean;
 }
 
 type Submission = {
@@ -90,43 +91,41 @@ function truncate(text: string, maxLength: number = 100) {
   return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
 }
 
-function TestDropdown({ result }: TestDropdownProps) {
-  const [open, setOpen] = useState(false);
+function TestDropdown({ result, isSpecial = false }: TestDropdownProps) {
+  const [open, setOpen] = useState(false)
 
   return (
     <div className="mb-4 rounded-xl bg-gray-800 shadow-md">
       <div
-        className="flex justify-between items-center p-4 cursor-pointer"
-        onClick={() => setOpen(!open)}
+        className={`flex justify-between items-center p-4 ${!isSpecial ? 'cursor-pointer' : ''}`}
+        onClick={!isSpecial ? () => setOpen(!open) : undefined}
       >
         <p className="text-blue-400 font-semibold">
           Test #{result.test}:{' '}
           <span className={testColor(result.status)}>{testText(result.status)}</span>
         </p>
-        <span
-          className="text-white transition-transform duration-200"
-          style={{ transform: open ? 'rotate(90deg)' : 'rotate(0deg)' }}
-        >
-          ▶
-        </span>
+        {!isSpecial && (
+          <span
+            className="text-white transition-transform duration-200"
+            style={{ transform: open ? 'rotate(90deg)' : 'rotate(0deg)' }}
+          >
+            ▶
+          </span>
+        )}
       </div>
 
-      {open && (
+      {(!isSpecial && (open)) && (
         <div className="grid grid-cols-[100px_1fr] gap-2 p-4 border-t border-gray-700">
           <p className="text-yellow-500">Expected:</p>
-          <span className={testColor(result.status)}>
-            {truncate(result.expected ?? "")}
-          </span>
+          <span className={testColor(result.status)}>{truncate(result.expected ?? '')}</span>
           <p className="text-white">Got:</p>
-          <span className={testColor(result.status)}>
-            {truncate(result.got ?? "")}
-          </span>
+          <span className={testColor(result.status)}>{truncate(result.got ?? '')}</span>
           <p className="text-blue-500">Time:</p>
-          <span>{Math.round(((result.time ?? 0) * 1000) * 100) / 100} ms</span>
+          <span>{Math.round((result.time * 1000) * 100) / 100} ms</span>
         </div>
       )}
     </div>
-  );
+  )
 }
 
 function SubmissionContent() {
@@ -134,46 +133,38 @@ function SubmissionContent() {
   const submissionId = searchParams.get('id')
 
   const [submission, setSubmission] = useState<Submission | null>(null)
-  const [loading, setLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState<string | null>(null)
-  const [open, setOpen] = useState(false); // track dropdown state
+  const [loading, setLoading] = useState(true)
+  const [isSpecial, setIsSpecial] = useState(false)
 
+  // Fetch user
   useEffect(() => {
-    // fetch logged-in username
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-
-      if (!user) return
-
-      const { data } = await supabase
-        .from('users')
-        .select('username')
-        .eq('id', user.id)
-        .single()
-
-      if (data) setCurrentUser(data.username)
-    }
-
-    fetchUser()
+      const fetchUser = async () => {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+        const { data } = await supabase.from('users').select('username').eq('id', user.id).single()
+        if (data) setCurrentUser(data.username)
+        setLoading(false); 
+      }
+      fetchUser()
   }, [])
 
-  useEffect(() => {
-    if (!submissionId) return
+  useEffect(() => { 
+    if (!submissionId) return;
 
-    const fetchSubmission = async () => {
+    const fetchData = async () => {
       const { data } = await supabase
         .from('submissions')
         .select('*')
         .eq('id', submissionId)
-        .single()
+        .single();
 
-      if (data) setSubmission(data as Submission)
-      setLoading(false)
-    }
+      if (data) setSubmission(data);
 
-    fetchSubmission()
+      setLoading(false); 
+    };
+
+    fetchData();
 
     const channel = supabase
       .channel('submission-updates')
@@ -185,39 +176,52 @@ function SubmissionContent() {
           table: 'submissions',
           filter: `id=eq.${submissionId}`,
         },
-        (payload) => {
-          setSubmission(payload.new as Submission)
+        payload => {
+          setSubmission(payload.new as any);
         }
-      )
-      .subscribe()
+      );
+
+    channel.subscribe();
 
     return () => {
-      supabase.removeChannel(channel)
+      supabase.removeChannel(channel);
+    };
+  }, [submissionId]);
+
+  useEffect(() => {
+    if (!submission) return;
+
+    const fetchSpecialTag = async () => {
+      const { data: problemData } = await supabase
+        .from('problems')
+        .select('tags')
+        .eq('id', submission.problem_id)
+        .single()
+
+      if (problemData && Array.isArray(problemData.tags)) {
+        setIsSpecial((problemData.tags as { tagName: string }[]).some(t => t.tagName === 'special'))
+      }
     }
-  }, [submissionId])
+
+    fetchSpecialTag()
+  }, [submission])
+
+
+
 
   if (loading) return <p className="p-6">Loading...</p>
   if (!submission) return <p className="p-6 text-red-500">Submission not found.</p>
 
-  // 🚨 Permission check
   if (submission.username !== currentUser) {
-    return (
-      <p className="p-6 text-red-400 font-bold">
-        You don&apos;t have permission to view this submission.
-      </p>
-    )
+    return <p className="p-6 text-red-400 font-bold">You don&apos;t have permission to view this submission.</p>
   }
 
   return (
     <main className="max-w-4xl mx-auto p-6">
       <h1 className="text-xl font-bold mb-4">Submission #{submission.id}</h1>
 
-      <div className="mb-4">
-        <strong>Username:</strong> {submission.username}
-      </div>
-      <div className="mb-4">
-        <strong>Problem ID:</strong> {submission.problem_id}
-      </div>
+      <div className="mb-4"><strong>Username:</strong> {submission.username}</div>
+      <div className="mb-4"><strong>Problem ID:</strong> {submission.problem_id}</div>
       <div className="mb-4">
         <strong>Status:</strong>{' '}
         <span className={`px-2 py-1 rounded font-semibold ${overallColor(submission.overall)}`}>
@@ -225,17 +229,13 @@ function SubmissionContent() {
         </span>
       </div>
 
-      <pre
-        className={`whitespace-pre-wrap text-white p-4 rounded mt-2 text-sm shadow-inner ${overallBg(submission.overall)}`}
-        style={{ marginBottom: 20 }}
-      >
+      <pre className={`whitespace-pre-wrap text-white p-4 rounded mt-2 text-sm shadow-inner ${overallBg(submission.overall)}`} style={{ marginBottom: 20 }}>
         {submission.code}
       </pre>
 
       {submission.results?.map((r) => (
-        <TestDropdown key={r.test} result={r} />
+        <TestDropdown key={r.test} result={r} isSpecial={isSpecial} />
       ))}
-
     </main>
   )
 }
