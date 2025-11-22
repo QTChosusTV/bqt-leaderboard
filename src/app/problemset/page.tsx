@@ -133,7 +133,10 @@ export default function ProblemsetList() {
     "dsu",
     "offline-queries",
     "sorting",
-    "data structures"
+    "data structures",
+    "binary search",
+    "special",
+    "divide and conquer"
   ]
 
   const filteredProblems = problems

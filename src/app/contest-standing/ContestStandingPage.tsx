@@ -28,7 +28,7 @@ interface Contest {
   elo_min: number | null
   elo_max: number | null
   link: string | null
-  problems: { pid: number; pname: string }[]
+  problems: { pid: number; pname: string; score: number }[]
   descriptions: string
 }
 
@@ -60,7 +60,7 @@ export default function ContestStandingPage() {
   const searchParams = useSearchParams()
   const contestId = Number(searchParams.get('id'))
   const [standings, setStandings] = useState<Standing[]>([])
-  const [problems, setProblems] = useState<{ pid: string; pname: string }[]>([])
+  const [problems, setProblems] = useState<{ pid: string; pname: string; score: number }[]>([])
   const [eloMap, setEloMap] = useState<Record<string, number>>({})
   const [username, setUsername] = useState('')
   const [tick, setTick] = useState(0)
@@ -298,6 +298,16 @@ export default function ContestStandingPage() {
     return formatPenalty(diffSeconds)  // you already have formatPenalty
   }
 
+  function getScoreGradient(score: number, maxScore: number): string {
+    if (maxScore <= 0) return "gray";
+    const ratio = Math.min(1, Math.max(0, score / maxScore));
+
+    // green → yellow → red
+    const hue = 120 * ratio; 
+    return `hsl(${hue}, 100%, 60%)`;
+  }
+
+
 
 
   return (
@@ -336,9 +346,17 @@ export default function ContestStandingPage() {
                 <th className="px-4 py-2 text-center border">User</th>
                 {problems.map((p, idx) => (
                   <th key={idx} className="px-4 py-2 text-center border">
-                    {p.pname}
+                    <div className="flex flex-col">
+                      <span>{p.pname}</span>
+                      {p.score !== undefined && (
+                        <span className="text-[10px] text-yellow-300 font-mono">
+                          ({p.score})
+                        </span>
+                      )}
+                    </div>
                   </th>
-                ))} 
+                ))}
+
                 <th className="px-4 py-2 text-center border">Score</th>
                 <th className="px-4 py-2 text-center border">Penalty</th>
                   {(now <= timeEnd) && (
@@ -379,23 +397,40 @@ export default function ContestStandingPage() {
                       const info = s.problems?.[p.pid]
                       return (
                         <td key={idx} 
-                          className={info?.tries > 0
-                              ? (info?.verdict === 'AC'
-                                ? "px-4 py-2 text-center border text-green-500"
-                                : "px-4 py-2 text-center border text-red-500")
-                              : "px-4 py-2 text-center border"}
+                          style={{
+                            color:
+                              info?.score !== undefined
+                                ? getScoreGradient(info.score, p.score ?? 100)   // IOI
+                                : (info?.verdict === 'AC'
+                                    ? "green"
+                                    : info?.tries > 0
+                                      ? "red"
+                                      : "white")
+                          }}
+                          className="px-4 py-2 text-center border"
                         >
                           {info?.tries > 0 ? (
                             <div className="flex flex-col items-center">
-                              <span>
-                                  <strong>
-                                    <i>
-                                      {info?.verdict === 'AC'
-                                        ? '+' + ((info?.tries ?? 1) > 1 ? info.tries - 1 : '')
-                                        : '-' + (info?.tries > 0 ? info.tries : '')}
-                                      </i>
-                                  </strong>
+
+                              {/* Display + / - logic */}
+                              <span className="font-bold italic">
+                                {(() => {
+                                  // ACM scoring
+                                  if (info?.verdict === "AC")
+                                    return "+" + ((info?.tries ?? 1) > 1 ? info.tries - 1 : "");
+
+                                  // IOI scoring (positive score)
+                                  if (info?.score !== undefined && info.score > 0)
+                                    return "" + Math.round(info.score);
+
+                                  // Either WA or zero score
+                                  if (info?.tries)
+                                    return "-" + info.tries;
+
+                                  return "";
+                                })()}
                               </span>
+
                               {info?.verdict === 'AC' && (
                                 <span
                                   className="text-xs font-mono"
