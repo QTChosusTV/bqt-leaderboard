@@ -341,9 +341,9 @@ export default function ContestStandingPage() {
           <p className="text-yellow-400 mb-4 font-semibold">{countdownText()}</p>
           <table className="w-full border-collapse text-xs table-auto text-center align-middle">
             <thead className="bg-gray-700 text-white">
-              <tr className="">
-                <th className="px-4 py-2 text-center border">Rank</th>
-                <th className="px-4 py-2 text-center border">User</th>
+              <tr className={styles.cspTable}>
+                <th className={"px-4 py-2 text-center border"}>Rank</th>
+                <th className={"px-4 py-2 text-center border"}>User</th>
                 {problems.map((p, idx) => (
                   <th key={idx} className="px-4 py-2 text-center border">
                     <div className="flex flex-col">
@@ -375,9 +375,9 @@ export default function ContestStandingPage() {
                 return (
                   <tr
                     key={s.id}
-                    className={s.user_id === username
+                    className={styles.cspTable + " " + (s.user_id === username
                       ? 'bg-green-800 font-bold'
-                      : 'bg-black-900'}
+                      : 'bg-black-900')} 
                   >
                     <td className="px-4 py-2 text-center border">{rank}</td>
                     <td

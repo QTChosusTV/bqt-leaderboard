@@ -7,8 +7,19 @@
     border-top: 2px solid #434343;
     border-right: 2px solid #434343;
     font-size: 19px;
+    background-color: #23242c;
 }
 
+.cplsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  padding: 40px;
+}
+
+.cplsTable tr:hover {
+    background-color: #3a3a3a !important;
+}
 
 .cplsTable th {
     background-color: #505050;

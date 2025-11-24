@@ -9,32 +9,6 @@ h1 span {
     color: inherit;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #2a2a2a;
-    padding: 40px;
-}
-
-th, td {
-    padding: 10px;
-    border-bottom: 2px solid #434343;
-    border-left: 2px solid #434343;
-    border-top: 2px solid #434343;
-    border-right: 2px solid #434343;
-    font-size: 15px;
-}
-
-th {
-    background-color: #505050;
-}
-
-
-table tr:hover {
-    background-color: #3a3a3a !important;
-}
-
 .elo-3000-plus { color: #8b0000; } /* Red */
 .elo-2700-3000 { color: #ff0000; } /* Red */
 .elo-2500-2700 { color: #ff7575; } /* Red */
