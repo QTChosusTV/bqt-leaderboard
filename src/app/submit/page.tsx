@@ -111,10 +111,36 @@ function SubmitPageContent() {
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2"
       >
+        {submitting && (
+          <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            />
+          </svg>
+        )}
         {submitting ? 'Submitting...' : 'Submit'}
       </button>
+
+      {submitting && (
+        <p className="mt-2 text-sm text-gray-300">
+          Please be patient, we will redirect you after the submission is processed.
+        </p>
+      )}
+
+
     </main>
   )
 }
