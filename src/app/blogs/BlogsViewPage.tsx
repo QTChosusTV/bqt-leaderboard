@@ -60,34 +60,41 @@ export default function OJBlogPage() {
   const activeTag = searchParams.get("tag");
 
   useEffect(() => {
-    setTagFilter(activeTag);
     fetchPosts();
-  }, [page, search, activeTag]);
+  }, [page, search, activeTag]); // ✅ react to page, search, and URL tag changes
 
   async function fetchPosts() {
     setLoading(true);
     try {
+      // Base query
       let query = supabase
         .from("posts")
         .select("id,title,slug,summary,content,tags,username,created_at", { count: "exact" })
         .order("created_at", { ascending: false })
         .range((page - 1) * pageSize, page * pageSize - 1);
 
+      // Search filter
       if (search) {
-        query = query.or(`title.ilike.%${search}%,summary.ilike.%${search}%,content.ilike.%${search}%`);
+        query = query.or(
+          `title.ilike.%${search}%,summary.ilike.%${search}%,content.ilike.%${search}%`
+        );
       }
 
-      if (tagFilter) {
-        query = query.contains('tags', [tagFilter]);
+      // Tag filter
+      if (activeTag) {
+        query = query.contains('tags', [activeTag]);
       }
 
+      // Fetch posts
       const { data, error, count } = await query;
       if (error) throw error;
+
       setPosts(data || []);
       setTotal(count || 0);
 
+      // Fetch Elo for all usernames in posts
       if (data && data.length > 0) {
-        const usernames = data.map(p => p.username);
+        const usernames = Array.from(new Set(data.map(p => p.username)));
         const { data: eloData, error: eloErr } = await supabase
           .from('leaderboard')
           .select('username, elo')
@@ -99,14 +106,14 @@ export default function OJBlogPage() {
           setEloMap(map);
         }
       }
-
-
     } catch (err) {
       console.error("Fetch posts error:", err);
     } finally {
       setLoading(false);
     }
   }
+
+
 
   function renderExcerpt(md: string) {
     const stripped = md
