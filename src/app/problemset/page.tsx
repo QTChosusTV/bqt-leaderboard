@@ -143,6 +143,7 @@ export default function ProblemsetList() {
     .filter(problem => {
       // filter by tags
       const tagMatch = selectedTags.length === 0 || problem.tags?.some(tag => selectedTags.includes(tag.tagName))
+      const excludeContest = !problem.tags?.some(tag => tag.tagName === 'contest-problem')
       
       // filter by status
       const statusMatch =
@@ -150,7 +151,7 @@ export default function ProblemsetList() {
         (filterStatus === 'unsolved' && !solvedProblems.has(problem.id)) ||
         (filterStatus === 'submitted-not-ac' && submittedProblems.has(problem.id) && !solvedProblems.has(problem.id))
 
-      return tagMatch && statusMatch
+      return tagMatch && excludeContest && statusMatch
     })
     .sort((a, b) =>
       sortOrder === 'asc'
