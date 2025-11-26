@@ -15,11 +15,11 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('[DEBUG] Request headers:', Object.fromEntries(request.headers));
+    // console.log('[DEBUG] Request headers:', Object.fromEntries(request.headers));
 
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('[DEBUG] Missing or invalid Authorization header');
+      // console.log('[DEBUG] Missing or invalid Authorization header');
       return NextResponse.json(
         { success: false, error: 'Authentication required' },
         { status: 401 }
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error } = await supabase.auth.getUser(token);
     if (error || !user) {
-      console.log('[DEBUG] Supabase auth error:', error?.message);
+      // console.log('[DEBUG] Supabase auth error:', error?.message);
       return NextResponse.json(
         { success: false, error: 'Invalid or expired session', message: error?.message },
         { status: 401 }
@@ -39,9 +39,9 @@ export async function POST(request: NextRequest) {
     let body: RunCodeRequest;
     try {
       body = await request.json();
-      console.log('[DEBUG] Request body:', body);
+      // console.log('[DEBUG] Request body:', body);
     } catch (e) {
-      console.log('[DEBUG] Failed to parse request body:', e);
+      // console.log('[DEBUG] Failed to parse request body:', e);
       return NextResponse.json(
         { success: false, error: 'Invalid JSON payload' },
         { status: 400 }
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     const { code, input, language } = body;
     if (!code || !language || !['cpp', 'c', 'python', 'java'].includes(language)) {
-      console.log('[DEBUG] Invalid parameters:', { code, input, language });
+      // console.log('[DEBUG] Invalid parameters:', { code, input, language });
       return NextResponse.json(
         { success: false, error: 'Invalid or missing parameters' },
         { status: 400 }
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (code.length > 1_000_000 || input.length > 100_000) {
-      console.log('[DEBUG] Payload too large:', { codeLength: code.length, inputLength: input.length });
+      // console.log('[DEBUG] Payload too large:', { codeLength: code.length, inputLength: input.length });
       return NextResponse.json(
         { success: false, error: 'Code or input exceeds size limit' },
         { status: 400 }
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     }
 
     const codeExecutionUrl = process.env.CODE_EXECUTION_URL || 'https://bqt-submit.anhwaivo.xyz';
-    console.log('[DEBUG] Fetching from:', `${codeExecutionUrl}/ide`);
+    // console.log('[DEBUG] Fetching from:', `${codeExecutionUrl}/ide`);
 
     const response = await fetch(`${codeExecutionUrl}/ide`, {
       method: 'POST',
@@ -76,11 +76,11 @@ export async function POST(request: NextRequest) {
     });
 
     const responseBody = await response.text();
-    console.log('[DEBUG] External service response:', {
+    /* onsole.log('[DEBUG] External service response:', {
       status: response.status,
       statusText: response.statusText,
       body: responseBody,
-    });
+    });*/
 
     if (!response.ok) {
       let errorDetails;
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
     try {
       result = JSON.parse(responseBody);
     } catch (e) {
-      console.log('[DEBUG] Failed to parse external service response:', e);
+      // console.log('[DEBUG] Failed to parse external service response:', e);
       throw new Error('Invalid response from external service');
     }
 
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ success: true, output: result.output || '' });
+    return NextResponse.json(result);
   } catch (error) {
     console.error('[ERROR] Code execution failed:', error);
     return NextResponse.json(

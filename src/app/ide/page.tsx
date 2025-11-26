@@ -19,6 +19,7 @@ export default function IDEPage() {
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [rightPanelWidth, setRightPanelWidth] = useState(40);
   const [outputHeight, setOutputHeight] = useState(50);
+  const [timeExec, setTimeExec] = useState(0);
   const [isResizing, setIsResizing] = useState<'horizontal' | 'vertical' | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -141,12 +142,16 @@ export default function IDEPage() {
       const result = await response.json();
       if (result.success) {
         setOutput(result.output || 'Program executed successfully with no output.');
+        const rawTime = typeof result.time === 'number' ? result.time : 0;
+        setTimeExec(Math.round(rawTime * 1000)); 
+        // console.log(response);
+        // console.log(result);
       } else {
         setOutput(`⚠️ ${result.error || 'Execution failed'}\n\n${result.message || 'Check language support (cpp, c, python, java)'}`);
       }
     } catch (error) {
       setOutput(
-        `❌ Error connecting to server\n\n${error instanceof Error ? error.message : 'Unknown error'}\n\nPlease try again later.`
+        `Error connecting to server\n\n${error instanceof Error ? error.message : 'Unknown error'}\n\nPlease try again later.`
       );
     } finally {
       setIsRunning(false);
@@ -157,7 +162,7 @@ export default function IDEPage() {
     localStorage.setItem('ide-code', code);
     localStorage.setItem('ide-input', input);
     localStorage.setItem('ide-language', selectedLanguage);
-    console.log('Code saved to browser storage');
+    // console.log('Code saved to browser storage');
   };
 
   const handleLanguageChange = (language: string) => {
@@ -171,7 +176,7 @@ export default function IDEPage() {
 
   const handleCopyToClipboard = (text: string, type: string) => {
     navigator.clipboard.writeText(text).then(() => {
-      console.log(`${type} copied to clipboard`);
+      // console.log(`${type} copied to clipboard`);
     });
   };
 
@@ -396,7 +401,8 @@ export default function IDEPage() {
 
           <div className="overflow-hidden" style={{ height: `${outputHeight}%` }}>
             <div className="bg-gray-800 px-3 py-2 border-b border-gray-700 flex justify-between items-center">
-              <span className="text-sm font-medium">Output</span>
+              <span className="text-sm font-medium text-left">{"Output"}</span>
+              <span className="text-sm font-medium text-right flex-1 mr-2">{"Time: " + timeExec + "ms  "}</span>
               <div className="flex gap-2">
                 <button
                   onClick={() => handleCopyToClipboard(output, 'Output')}
