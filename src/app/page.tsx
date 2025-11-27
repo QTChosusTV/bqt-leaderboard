@@ -31,11 +31,18 @@ type Contest = {
   link: string | null
 }
 
+interface User {
+  username: string
+  elo: number
+}
+
+
 export default function HomePage() {
   const [email, setEmail] = useState<string | null>(null)
   const [username, setUsername] = useState<string | null>(null)
   const [upcoming, setUpcoming] = useState<Contest[]>([])
   const [ongoing, setOngoing] = useState<Contest[]>([])
+  const [elo, setElo] = useState<number>(0)
   const [past, setPast] = useState<Contest[]>([])
   const [tick, setTick] = useState(0)
 
@@ -108,6 +115,45 @@ export default function HomePage() {
     checkUser()
     fetchContests()
   }, [])
+
+  useEffect(() => {
+    if (!username) return; // wait until username is ready
+
+    const fetchEloData = async () => {
+      const { data, error } = await supabase
+        .from('leaderboard')
+        .select('elo')
+        .eq('username', username)
+        .single();
+
+      if (error) {
+        console.error('Supabase fetch error:', error.message);
+        return;
+      }
+
+      setElo(data.elo);
+    };
+
+    fetchEloData();
+  }, [username]); // <-- runs only when username is available
+
+
+
+  const getEloClass = (elo: number) => {
+    if (elo >= 3000) return 'elo-3000-plus'
+    if (elo >= 2700) return 'elo-2700-3000'
+    if (elo >= 2500) return 'elo-2500-2700'
+    if (elo >= 2300) return 'elo-2300-2500'
+    if (elo >= 2100) return 'elo-2100-2300'
+    if (elo >= 1900) return 'elo-1900-2100'
+    if (elo >= 1750) return 'elo-1750-1900'
+    if (elo >= 1600) return 'elo-1600-1750'
+    if (elo >= 1500) return 'elo-1500-1600'
+    if (elo >= 1400) return 'elo-1400-1500'
+    if (elo >= 1200) return 'elo-1200-1400'
+    if (elo >= 800) return 'elo-800-1200'
+    return 'elo-0-800'
+  }
 
   const formatTimeLeft = (toTime: string | null) => {
     if (!toTime) return ""
@@ -237,10 +283,23 @@ export default function HomePage() {
 
           <div className="mt-4">
             {email ? (
-              <p className="text-neutral-300">
-                Logged in as <strong>{email}</strong><br />
-                Username: <strong>{username}</strong>
-              </p>
+              <>
+                <p className="text-neutral-300">
+                  Logged in as <strong>{email}</strong><br />
+                </p>
+                
+                <p className="text-neutral-300 flex">
+                  Username: 
+                  <Image 
+                    src={`/assets/ranks/${getEloClass(elo)}.png`}
+                    alt={`${getEloClass(elo)}`}
+                    width={20}
+                    height={20}
+                    className="ml-1"
+                  ></Image>
+                  <strong className={`${getEloClass(elo)}`}>{username}</strong>
+                </p>
+              </>
             ) : (
               <p className="text-neutral-300">
                 <Link href="/login" className="text-blue-400 underline">Log in</Link> to continue

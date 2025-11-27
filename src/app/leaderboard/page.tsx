@@ -7,6 +7,8 @@ import './leaderboard.css'
 import Link from 'next/link';
 import Image from 'next/image'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+
 
 interface User {
   username: string
@@ -18,6 +20,22 @@ type HistoryEntry = {
   contest: string
   elo: number
 }
+
+const eloColorMap: Record<string, string> = {
+  'elo-0-800': '#ffffff',
+  'elo-800-1200': '#aaaaaa',
+  'elo-1200-1400': '#00aa00',
+  'elo-1400-1500': '#00aaaa',
+  'elo-1500-1600': '#15d0ff',
+  'elo-1600-1750': '#55aaff',
+  'elo-1750-1900': '#7900fa',
+  'elo-1900-2100': '#aa00aa',
+  'elo-2100-2300': '#fbff00',
+  'elo-2300-2500': '#ffaa00',
+  'elo-2500-2700': '#ff7575',
+  'elo-2700-3000': '#ff0000',
+  'elo-3000-plus': '#8b0000',
+};
 
 
 export default function LeaderboardPage() {
@@ -131,6 +149,26 @@ export default function LeaderboardPage() {
     if (elo >= 1200) return '[Pupil]'
     return '[Newbie]'
   }*/
+ const eloBins: { min: number, max: number, label: string }[] = [];
+  for (let start = 0; start <= 2400; start += 50) {
+    eloBins.push({
+      min: start,
+      max: start + 49,
+      label: `${start}`
+    });
+  }
+
+  const eloDistribution = eloBins.map(bin => {
+    const count = users.filter(u => u.elo >= bin.min && u.elo <= bin.max).length;
+    const eloClass = getEloClass(bin.min);         // Get class name
+    const color = eloColorMap[eloClass] ?? '#000'; // Map to color
+    return {
+      range: bin.label,
+      count,
+      color
+    };
+  });
+
 
   return (
     <main>
@@ -143,8 +181,58 @@ export default function LeaderboardPage() {
         <Link href="/submissions" className="redirect-button">Submissions</Link>
         <Link href="/blogs" className="redirect-button">Blogs</Link>
       </nav>
+
+      <div style={{ width: '100%', height: 300, marginBottom: '0px', marginTop: '50px' }}>
+        <ResponsiveContainer>
+          <BarChart 
+            data={eloDistribution} 
+            margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+          >
+            <XAxis 
+              dataKey="range" 
+              interval={0} 
+              angle={-45} 
+              textAnchor="end" 
+              height={60} 
+              tick={{ fontSize: 12, fill: '#ccc' }}
+            />
+            <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#ccc' }} />
+            
+            <Tooltip 
+              content={({ active, payload }) => {
+                if (active && payload && payload.length) {
+                  const data = payload[0].payload;
+                  return (
+                    <div style={{
+                      background: '#222',
+                      color: '#fff',
+                      padding: '5px 8px',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      boxShadow: '0 0 5px rgba(0,0,0,0.5)'
+                    }}>
+                      {data.range}: {data.count} user{data.count !== 1 ? 's' : ''}
+                    </div>
+                  );
+                }
+                return null;
+              }}
+            />
+
+            <Bar dataKey="count">
+              {eloDistribution.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={entry.color} 
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
       
-      <div style={{ padding: '20px' }}>
+      <div style={{ padding: '20px', marginTop: '-40px' }}>
         <AnimatedContent  
           distance={50}
           direction="vertical"

@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { supabase } from '@/utils/supabaseClient'
 import "./submissions.css"
 import styles from "./submissions.module.css"
+import Image from 'next/image'
 
 type Submission = {
   id: number
@@ -213,7 +214,14 @@ export default function SubmissionsPage() {
                       </span>
                     </Link>
                   </td>
-                  <td className="p-2">
+                  <td className="p-2 flex">
+                    <Image 
+                      src={`/assets/ranks/${getEloClass(s.elo ?? 0)}.png`}
+                      alt={`${getEloClass(s.elo ?? 0)}`}
+                      width={20}
+                      height={20}
+                      className="mr-1"
+                    ></Image>
                     <Link href={`/user?username=${s.username}`} prefetch={false}>
                       <span
                         className={`hover:underline cursor-pointer ${s.elo ? getEloClass(s.elo) : ''}`}

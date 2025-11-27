@@ -10,6 +10,7 @@ import rehypeKatex from "rehype-katex";
 import remarkBreaks from "remark-breaks";
 import "katex/dist/katex.min.css";
 import Link from "next/link";
+import Image from "next/image"
 
 interface Post {
   id: number;
@@ -99,13 +100,20 @@ export default function BlogPage() {
 
         <h1 className="text-3xl font-bold mb-2 mt-5">{post.title}</h1>
 
-        <div className="text-md text-gray-500 mb-6">
-            Đăng bởi{" "}
+        <div className="text-md text-gray-500 mb-6 flex">
+            Đăng bởi
+            <Image 
+              src={`/assets/ranks/${getEloClass(elo ?? 0)}.png`}
+              alt={`${getEloClass(elo ?? 0)}`}
+              width={20}
+              height={20}
+              className="ml-1"
+            ></Image>
             <a
-            href={`/user?username=${post.username}`}
-            className={getEloClass(elo ?? 0)}
+              href={`/user?username=${post.username}`}
+              className={getEloClass(elo ?? 0) + " mr-1"}
             >
-            <strong>{post.username}</strong>
+              <strong>{post.username}</strong>
             </a>{" "}
             vào {new Date(post.created_at).toLocaleString("vi-VN")}
         </div>
@@ -127,7 +135,7 @@ export default function BlogPage() {
                 <a
                 key={t}
                 href={`/blogs?tag=${t}`}
-                className="px-2 py-1 text-xs border rounded hover:bg-gray-100"
+                className="px-2 py-1 text-xs border rounded hover:bg-gray-600"
                 >
                 #{t}
                 </a>

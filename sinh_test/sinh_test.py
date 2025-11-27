@@ -1,143 +1,140 @@
-# trees.py
-
 import random
 import json
 import subprocess
 import os
+import math
 
-MAX_VAL = 10**4
 EXE = "solver.exe"
+TIMEOUT = 10
 
-
-# ================================================================
-# Prüfer sequence → tree
-# ================================================================
-def prufer_to_tree(prufer):
-    """Convert a Prüfer sequence to a tree (edges). Returns list of (u,v)."""
-    m = len(prufer)
-    n = m + 2
-    degree = [1] * n
-    for x in prufer:
-        degree[x] += 1
-
-    leaves = [i for i in range(n) if degree[i] == 1]
-    leaves.sort()
-
-    edges = []
-    ptr = 0
-
-    for v in prufer:
-        u = leaves[ptr]
-        edges.append((u, v))
-        degree[u] -= 1
-        degree[v] -= 1
-        ptr += 1
-
-        if degree[v] == 1:
-            leaves.append(v)
-            leaves[ptr:] = sorted(leaves[ptr:])
-
-    remaining = [i for i in range(n) if degree[i] == 1]
-    edges.append((remaining[0], remaining[1]))
-    return edges
-
-
-def generate_random_tree_prufer(n, seed=None):
-    """Uniform random labeled tree on n nodes (labels 0..n-1)."""
-    if n <= 1:
-        return []
-    if seed is not None:
-        random.seed(seed)
-    prufer = [random.randrange(0, n) for _ in range(n - 2)]
-    return prufer_to_tree(prufer)
-
-
-def generate_random_tree_edges(n):
-    """Return random tree edges with 1-based labels."""
-    edges = generate_random_tree_prufer(n)
-    return [(u + 1, v + 1) for (u, v) in edges]
-
-
-# ================================================================
-# Solver runner
-# ================================================================
 def run_solver(inp: str) -> str:
-    proc = subprocess.run(
-        [EXE],
-        input=inp.encode(),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
+    try:
+        proc = subprocess.run(
+            [EXE],
+            input=inp.encode('utf-8'),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=TIMEOUT
+        )
+        return proc.stdout.decode('utf-8').strip()
+    except:
+        return "0"
+
+def make_good_point(d):
+    """
+    Sinh một điểm nằm gần đường tròn Thales:
+        x^2 + y^2 = x*d
+    """
+    x = random.randint(0, d)
+    yy = max(0, x * (d - x))
+    y = int(math.sqrt(yy) + random.uniform(-2, 2))
+    return (x, y)
+
+def make_bad_point():
+    return (
+        random.randint(-10**9, 10**9),
+        random.randint(-10**9, 10**9)
     )
-    return proc.stdout.decode().strip()
 
-
-# ================================================================
-# Generate one test case in format:
-# n
-# u v
-# u v
-# ...
-# q
-# u v w
-# ...
-# ================================================================
-def gen_case_tree(n, q):
-    edges = generate_random_tree_edges(n)
-
-    # queries
-    queries = []
-    for _ in range(q):
-        u = random.randint(1, n)
-        v = random.randint(1, n)
-        while v == u:
-            v = random.randint(1, n)
-        w = random.randint(1, MAX_VAL)
-        queries.append((u, v, w))
-
-    # build input
-    inp_lines = [str(n)]
-    for u, v in edges:
-        inp_lines.append(f"{u} {v}")
-
-    inp_lines.append(str(q))
-    for u, v, w in queries:
-        inp_lines.append(f"{u} {v} {w}")
-
-    inp = "\n".join(inp_lines)
-
-    # run solver
-    out = run_solver(inp)
-
-    return {"input": inp, "output": out}
-
-
-# ================================================================
-# Main test generation
-# ================================================================
 if __name__ == "__main__":
     random.seed(2025)
     tests = []
 
-    # small tests
-    for _ in range(15):
-        n = random.randint(2, 10)
-        q = random.randint(1, 20)
-        tests.append(gen_case_tree(n, q))
+    # Test 1: ví dụ cơ bản
+    tests.append({
+        "input": "1\n5 4\n0 0\n4 0\n2 0\n2 2\n2 -1\n",
+        "output": "3"
+    })
 
-    # medium-large
-    for _ in range(4):
-        n = random.randint(100, 300)
-        q = random.randint(100, 500)
-        tests.append(gen_case_tree(n, q))
+    # Test 2~5: n nhỏ tới trung bình
+    for n, good in [(50, 12), (200, 40), (500, 110), (800, 190)]:
+        d = random.randint(100, 10**9)
+        points = []
 
-    # massive
-    for _ in range(1):
-        n = 10000
-        q = 10000
-        tests.append(gen_case_tree(n, q))
+        for _ in range(good):
+            points.append(make_good_point(d))
+        for _ in range(n - good):
+            points.append(make_bad_point())
 
-    os.makedirs("sinh_test", exist_ok=True)
-    with open("testcases.json", "w") as f:
-        json.dump(tests, f, indent=2)
+        random.shuffle(points)
+        inp = "1\n{} {}\n{}\n".format(
+            n, d,
+            "\n".join(f"{x} {y}" for x, y in points)
+        )
+        tests.append({
+            "input": inp,
+            "output": run_solver(inp)
+        })
 
-    print(f"{len(tests)} testcases generated.")
+    # Test 6~10: T lớn, mỗi test n ~ 500–1000
+    for T, n_per_test in [(10, 900), (20, 450), (40, 230), (70, 130), (100, 90)]:
+        inp_lines = [str(T)]
+        outputs = []
+        current_sum = 0
+
+        for _ in range(T):
+            n = n_per_test + random.randint(-30, 30)
+            n = max(50, min(n, 2000))
+
+            current_sum += n
+            if current_sum > 60000:
+                n -= (current_sum - 60000)
+
+            d = random.randint(1, 10**9)
+            good = random.randint(max(1, n // 20), n // 8)
+
+            points = []
+            for _ in range(good):
+                points.append(make_good_point(d))
+            for _ in range(n - good):
+                points.append(make_bad_point())
+            random.shuffle(points)
+
+            inp_lines.append(f"{n} {d}")
+            for x, y in points:
+                inp_lines.append(f"{x} {y}")
+
+            single = "1\n{} {}\n{}\n".format(
+                n, d,
+                "\n".join(f"{x} {y}" for x, y in points)
+            )
+            outputs.append(run_solver(single))
+
+        full_inp = "\n".join(inp_lines) + "\n"
+        full_out = "\n".join(outputs)
+        tests.append({"input": full_inp, "output": full_out})
+
+    # Test cuối: n rất lớn 50k
+    n = 50000
+    d = 10**9
+    good = 4000
+    points = []
+    for _ in range(good):
+        points.append(make_good_point(d))
+    for _ in range(n - good):
+        points.append(make_bad_point())
+    random.shuffle(points)
+
+    inp_max = "1\n{} {}\n{}\n".format(
+        n, d,
+        "\n".join(f"{x} {y}" for x, y in points)
+    )
+    tests.append({"input": inp_max, "output": run_solver(inp_max)})
+
+    # Tính tổng n
+    total_n = 0
+    for test in tests:
+        for line in test["input"].splitlines():
+            parts = line.split()
+            if len(parts) == 2:
+                try:
+                    v = int(parts[0])
+                    if 1 <= v <= 200000:
+                        total_n += v
+                except:
+                    pass
+
+    with open("testcases.json", "w", encoding="utf-8") as f:
+        json.dump(tests, f, indent=2, ensure_ascii=False)
+
+    print("Sinh xong", len(tests), "test. Tổng n =", total_n)

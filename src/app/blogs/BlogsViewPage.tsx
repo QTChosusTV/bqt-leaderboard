@@ -9,6 +9,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeKatex from "rehype-katex";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image"
 
 interface Post {
   id: string;
@@ -185,11 +186,18 @@ export default function OJBlogPage() {
                         </div>
                     </div>
 
-                    <div className="w-24 text-right">
+                    <div className="w-24 text-right flex">
+                      <Image 
+                          src={`/assets/ranks/${getEloClass(eloMap[post.username] ?? 0)}.png`}
+                          alt={`${getEloClass(eloMap[post.username] ?? 0)}`}
+                          width={20}
+                          height={20}
+                          className="mr-1"
+                      ></Image>
                         <a href={`/user?username=${post.username}`} className="text-sm">
-                        <strong className={getEloClass(eloMap[post.username] ?? 0)}>
-                        {post.username}
-                        </strong>
+                          <strong className={getEloClass(eloMap[post.username] ?? 0)}>
+                          {post.username}
+                          </strong>
                         </a>
                     </div>
                     </div>
