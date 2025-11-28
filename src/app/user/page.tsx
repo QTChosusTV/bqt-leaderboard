@@ -25,6 +25,8 @@ import rehypeKatex from "rehype-katex";
 import remarkBreaks from "remark-breaks";
 import "katex/dist/katex.min.css";
 import Link from "next/link";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
+
 
   interface Contest {
     contestId: number;
@@ -235,8 +237,6 @@ import Link from "next/link";
       : `hsl(0, 100%, ${clampedLightness}%)`;
   };
 
-
-
   export default function UserPage() {
     const [username, setUsername] = useState('');
     const [history, setHistory] = useState<Contest[]>([]);
@@ -433,7 +433,21 @@ import Link from "next/link";
     };
 
     const eloClass = getEloClass(elo);
-    //const title = getEloTitle(elo);
+    
+    // inside UserPage component, after solvedElos is set
+    const eloBins: { min: number; max: number; label: string }[] = [];
+    for (let start = 400; start <= 3000; start += 50) {
+      eloBins.push({ min: start, max: start + 49, label: `${start}` }); // show only start
+    }
+
+    const eloDistribution = eloBins.map(bin => {
+      const count = solvedElos.filter(s => s.elo >= bin.min && s.elo <= bin.max).length;
+      return {
+        range: bin.label,
+        count,
+        color: getEloColor(bin.min),
+      };
+    });
 
     return (
       <div style={{padding: '20px'}}>
@@ -592,6 +606,22 @@ import Link from "next/link";
               #{id} <span style={{ opacity: 0.85 }}>({elo})</span>
             </div>
           ))}
+
+          <div style={{ width: '100%', height: 300, marginTop: '30px' }}>
+            <h3>Solved Elo Distribution</h3>
+            <ResponsiveContainer>
+              <BarChart data={eloDistribution} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                <XAxis dataKey="range" interval={0} angle={-45} textAnchor="end" height={60} tick={{ fontSize: 12, fill: '#ccc' }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#ccc' }} /> 
+                <Bar dataKey="count">
+                  {eloDistribution.map((entry, index) => (
+                    <Cell key={index} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
 
           </div>
         </div>

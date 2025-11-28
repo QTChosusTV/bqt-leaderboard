@@ -79,7 +79,7 @@ export default function BlogPage() {
       const { data: eloData } = await supabase
         .from('leaderboard')
         .select('elo')
-        .eq('username', userData.username)
+        .eq('username', post?.username)
         .single();
 
       if (eloData) setElo(eloData.elo ?? 0);

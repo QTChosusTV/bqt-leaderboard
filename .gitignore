@@ -20,6 +20,8 @@
 # production
 /build
 
+sinh_test/
+/sinh_test/
 /sinh_test
 
 # misc
@@ -41,3 +43,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.py
