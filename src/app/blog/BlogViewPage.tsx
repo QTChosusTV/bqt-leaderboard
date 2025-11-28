@@ -63,6 +63,7 @@ export default function BlogPage() {
   }, [id]);
 
   useEffect(() => {
+    if (!post) return;
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -76,17 +77,21 @@ export default function BlogPage() {
       if (!userData) return;
 
       setUsername(userData.username);
+
       const { data: eloData } = await supabase
         .from('leaderboard')
         .select('elo')
         .eq('username', post?.username)
         .single();
 
+      console.log(eloData);
+      
+
       if (eloData) setElo(eloData.elo ?? 0);
 
     };
     fetchUser();
-  }, []);
+  }, [post]);
 
 
   if (!id) return <p className="mt-3 ml-3">❌ Thiếu id bài viết.</p>;
