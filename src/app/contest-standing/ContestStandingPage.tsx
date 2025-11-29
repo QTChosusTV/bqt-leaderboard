@@ -339,7 +339,7 @@ export default function ContestStandingPage() {
         >
           
           <p className="text-yellow-400 mb-4 font-semibold">{countdownText()}</p>
-          <table className="w-full border-collapse text-xs table-auto text-center align-middle">
+          <table className="w-full border-collapse text-xs table-auto text-center align-middle bg-gray-800">
             <thead className="bg-gray-700 text-white">
               <tr className={styles.cspTable}>
                 <th className={"px-4 py-2 text-center border"}>Rank</th>
@@ -412,18 +412,14 @@ export default function ContestStandingPage() {
                           {info?.tries > 0 ? (
                             <div className="flex flex-col items-center">
 
-                              {/* Display + / - logic */}
                               <span className="font-bold italic">
                                 {(() => {
-                                  // ACM scoring
                                   if (info?.verdict === "AC")
                                     return "+" + ((info?.tries ?? 1) > 1 ? info.tries - 1 : "");
 
-                                  // IOI scoring (positive score)
                                   if (info?.score !== undefined && info.score > 0)
                                     return "" + Math.round(info.score);
 
-                                  // Either WA or zero score
                                   if (info?.tries)
                                     return "-" + info.tries;
 
