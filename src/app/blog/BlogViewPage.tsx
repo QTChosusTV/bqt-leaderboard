@@ -123,7 +123,7 @@ export default function BlogPage() {
             vào {new Date(post.created_at).toLocaleString("vi-VN")}
         </div>
 
-        <div className="prose max-w-none [&_p]:my-5 [&_h2]:mt-2 [&_li]:my-1">
+        <div className="prose max-w-none [&_p]:my-5 [&_h2]:mt-2 [&_li]:my-1 [&_table]:border [&_table]:border-gray-500 [&_th]:bg-gray-500 [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-gray-500">
             <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
             rehypePlugins={[rehypeKatex]}
