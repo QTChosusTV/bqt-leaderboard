@@ -590,7 +590,8 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
             }}
           >
             {solvedElos.map(({ id, elo }) => (
-            <div
+            <Link
+              href={`/problems?id=${id}`}
               key={id}
               style={{
                 padding: "8px 14px",
@@ -599,12 +600,14 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
                 color: "#000",
                 fontWeight: "bold",
                 fontSize: "14px",
-                cursor: "default",
+                cursor: "pointer",
                 boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-              }}
+              }}  
+              onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+              onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
             >
               #{id} <span style={{ opacity: 0.85 }}>({elo})</span>
-            </div>
+            </Link>
           ))}
 
           <div style={{ width: '100%', height: 300, marginTop: '30px' }}>
