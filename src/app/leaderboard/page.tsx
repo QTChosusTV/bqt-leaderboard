@@ -135,20 +135,6 @@ export default function LeaderboardPage() {
     return 'elo-0-800'
   }
 
-  /*const getEloTitle = (elo: number) => {
-    if (elo >= 3000) return '[Legendary master]'
-    if (elo >= 2700) return '[Grandmaster]'
-    if (elo >= 2500) return '[International master]'
-    if (elo >= 2300) return '[National master]'
-    if (elo >= 2100) return '[Master]'
-    if (elo >= 1900) return '[Candidate master]'
-    if (elo >= 1750) return '[Semi master]'
-    if (elo >= 1600) return '[Expert]'
-    if (elo >= 1500) return '[Semi expert]'
-    if (elo >= 1400) return '[Specialist]'
-    if (elo >= 1200) return '[Pupil]'
-    return '[Newbie]'
-  }*/
  const eloBins: { min: number, max: number, label: string }[] = [];
   for (let start = 0; start <= 2400; start += 50) {
     eloBins.push({

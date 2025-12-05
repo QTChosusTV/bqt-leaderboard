@@ -24,9 +24,9 @@ export default function ProblemsetList() {
   const [problems, setProblems] = useState<Problem[]>([])
   const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set())
   const [submittedProblems, setSubmittedProblems] = useState<Set<number>>(new Set())
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [filterStatus, setFilterStatus] = useState<'all' | 'unsolved' | 'submitted-not-ac'>('all')
+  const [sortMode, setSortMode] = useState<'elo-asc' | 'elo-desc' | 'time-asc' | 'time-desc'>('time-desc')
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -153,11 +153,21 @@ export default function ProblemsetList() {
 
       return tagMatch && excludeContest && statusMatch
     })
-    .sort((a, b) =>
-      sortOrder === 'asc'
-        ? a.difficulty - b.difficulty
-        : b.difficulty - a.difficulty
-    )
+    .sort((a, b) => {
+      switch (sortMode) {
+        case 'elo-asc':
+          return a.difficulty - b.difficulty
+        case 'elo-desc':
+          return b.difficulty - a.difficulty
+        case 'time-asc':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        case 'time-desc':
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        default:
+          return 0
+      }
+    })
+
 
 
 
@@ -176,16 +186,19 @@ export default function ProblemsetList() {
 
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
         <div>
-          <label className="mr-2 font-semibold">Sort by Difficulty:</label>
+          <label className="mr-2 font-semibold">Sort:</label>
           <select
-            value={sortOrder}
-            onChange={e => setSortOrder(e.target.value as 'asc' | 'desc')}
+            value={sortMode}
+            onChange={e => setSortMode(e.target.value as any)}
             className="p-2 border rounded bg-gray-500"
           >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
+            <option value="elo-asc">Easiest</option>
+            <option value="elo-desc">Hardest</option>
+            <option value="time-asc">Oldest </option>
+            <option value="time-desc">Newest</option>
           </select>
         </div>
+
 
         <div className="flex items-center gap-2">
           <label className="font-semibold">Filter by Tags:</label>
