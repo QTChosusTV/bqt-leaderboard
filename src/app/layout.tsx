@@ -14,7 +14,12 @@ export const metadata = {
   icons: {
     icon: 'assets/web-icon.png'
   },
-}
+} 
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 0.75,
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

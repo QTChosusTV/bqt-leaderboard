@@ -131,7 +131,7 @@ export default function OJBlogPage() {
 
   return (
     <div className="max-w-10xl mx-auto p-4">
-            <nav style={{marginTop: '8px', marginLeft: '-7px', marginBottom: '20px'}}>
+            <nav style={{marginTop: '8px', marginLeft: '8px', marginBottom: '20px'}}>
             <Link href="/leaderboard" className="redirect-button" prefetch={false}>Leaderboard</Link>
             <Link href="/chat" className="redirect-button" prefetch={false}>Chat</Link>
             <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>
@@ -240,7 +240,7 @@ interface LatestPostsListProps {
 }
 
 function LatestPostsList({ onOpen }: { onOpen: (slug: string) => void }) {
-  const [latest, setLatest] = useState<LatestPost[]>([]); // 👈 thêm type ở đây
+  const [latest, setLatest] = useState<LatestPost[]>([]);
 
   useEffect(() => {
     let mounted = true;
@@ -251,7 +251,7 @@ function LatestPostsList({ onOpen }: { onOpen: (slug: string) => void }) {
         .order('created_at', { ascending: false })
         .limit(5);
       if (error) return console.error(error);
-      if (mounted) setLatest(data || []); // OK rồi ✅
+      if (mounted) setLatest(data || []); 
     })();
     return () => { mounted = false; };
   }, []);

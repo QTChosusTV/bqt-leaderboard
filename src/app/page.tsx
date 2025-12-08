@@ -262,7 +262,7 @@ export default function HomePage() {
     <>
       {tick > 0 && null}
       <main className="p-6">
-        <nav className="mb-0 ml-[-15px] mt-0">
+        <nav className="mb-0 mt-0">
           <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
           <Link href="/chat" className="redirect-button">Chat</Link>
           <Link href="/problemset" className="redirect-button">Problemset</Link>

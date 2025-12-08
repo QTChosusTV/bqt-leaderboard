@@ -25,8 +25,11 @@ export default function ProblemsetList() {
   const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set())
   const [submittedProblems, setSubmittedProblems] = useState<Set<number>>(new Set())
   const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [filterStatus, setFilterStatus] = useState<'all' | 'unsolved' | 'submitted-not-ac'>('all')
+  const [filterStatus, setFilterStatus] = useState<'all' | 'unsolved' | 'submitted-not-ac' | 'solved'>('all')
   const [sortMode, setSortMode] = useState<'elo-asc' | 'elo-desc' | 'time-asc' | 'time-desc'>('time-desc')
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -149,9 +152,15 @@ export default function ProblemsetList() {
       const statusMatch =
         filterStatus === 'all' ||
         (filterStatus === 'unsolved' && !solvedProblems.has(problem.id)) ||
-        (filterStatus === 'submitted-not-ac' && submittedProblems.has(problem.id) && !solvedProblems.has(problem.id))
+        (filterStatus === 'submitted-not-ac' && submittedProblems.has(problem.id) && !solvedProblems.has(problem.id)) ||
+        (filterStatus === 'solved' && solvedProblems.has(problem.id))
 
-      return tagMatch && excludeContest && statusMatch
+      const searchMatch =
+        searchQuery.trim() === "" ||
+        problem.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+
+      return tagMatch && excludeContest && statusMatch && searchMatch;
     })
     .sort((a, b) => {
       switch (sortMode) {
@@ -174,7 +183,7 @@ export default function ProblemsetList() {
 
   return (
     <main className="p-6">
-      <nav style={{marginTop: '0px', marginLeft: '-15px', marginBottom: '20px'}}>
+      <nav style={{marginTop: '0px', marginBottom: '20px'}}>
         <Link href="/leaderboard" className="redirect-button" prefetch={false}>Leaderboard</Link>
         <Link href="/chat" className="redirect-button" prefetch={false}>Chat</Link>
         <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>
@@ -227,6 +236,44 @@ export default function ProblemsetList() {
             <option value="unsolved">Unsolved</option>
             <option value="submitted-not-ac">Submitted</option>
           </select>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <label className="mr-2 font-semibold">Search:</label>
+
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search by title..."
+            className="p-2 border rounded bg-gray-500 text-white"
+          />
+
+          <button
+            onClick={() => {
+              setSearchQuery("orzlmfaoidontknowwhatisthisgoingon")
+              setTimeout(() => {
+                setSearchQuery(searchInput)
+              }, 300)
+            }}
+            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Search
+          </button>
+
+          <button
+            onClick={() => {
+              setSearchInput("")
+              setSearchQuery("orzlmfaoidontknowwhatisthisgoingon")
+              setTimeout(() => {
+                setSearchInput("")
+                setSearchQuery("")
+              }, 300)
+            }}
+            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Reset
+          </button>
         </div>
 
       </div>

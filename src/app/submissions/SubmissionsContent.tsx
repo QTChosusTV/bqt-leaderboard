@@ -171,7 +171,7 @@ export default function SubmissionsPage() {
   return (
     <main className="p-6" style={{fontSize: 15}}>
 
-      <nav style={{marginTop: '0px', marginLeft: '-15px', marginBottom: '20px'}}>
+      <nav style={{marginTop: '0px', marginBottom: '20px'}}>
           <Link href="/leaderboard" className="redirect-button" prefetch={false}>Leaderboard</Link>
           <Link href="/chat" className="redirect-button" prefetch={false}>Chat</Link>
           <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>

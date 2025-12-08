@@ -158,7 +158,7 @@ export default function LeaderboardPage() {
 
   return (
     <main>
-      <nav style={{marginTop: '24px', marginLeft: '9px', marginBottom: '-20px'}}>
+      <nav style={{marginTop: '24px', marginLeft: '24px', marginBottom: '-20px'}}>
         <Link href="/leaderboard" className="redirect-button" prefetch={false}>Leaderboard</Link>
         <Link href="/chat" className="redirect-button" prefetch={false}>Chat</Link>
         <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>
