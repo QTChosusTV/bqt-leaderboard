@@ -186,12 +186,12 @@ export default function OJBlogPage() {
                         </div>
                     </div>
 
-                    <div className="w-24 text-right flex">
+                    <div className="w-auto text-right flex">
                       <Image 
                           src={`/assets/ranks/${getEloClass(eloMap[post.username] ?? 0)}.png`}
                           alt={`${getEloClass(eloMap[post.username] ?? 0)}`}
                           width={20}
-                          height={20}
+                          height={20} 
                           className="mr-1"
                       ></Image>
                         <a href={`/user?username=${post.username}`} className="text-sm">
