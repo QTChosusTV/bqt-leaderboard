@@ -345,6 +345,10 @@ export default function IDEPage() {
             height="100%"
             onMount={(editor) => {
               editorRef.current = editor;
+              const model = editor.getModel();
+              /*console.log('MODEL OPTIONS:', model?.getOptions());*/
+              console.log('tab x space:', model?.getOptions().tabSize);
+              /*console.log('insertSpaces:', model?.getOptions().insertSpaces);*/
             }}
           />
         </div>
