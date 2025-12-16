@@ -136,7 +136,7 @@ export const MonacoEditor = ({
       scrollBeyondLastLine: false,
       wordWrap: 'off',
       automaticLayout: true,
-      tabSize: 4,
+      tabSize: 8,
       insertSpaces: true,
       cursorStyle: 'line',
       lineNumbers: 'on',
