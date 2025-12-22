@@ -98,7 +98,9 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     return { elo: theta, sd: postSd }
   }
 
-  ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, Filler, TimeScale, zoomPlugin);
+  useEffect(() => {
+    ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, Filler, TimeScale, zoomPlugin, gradientBackgroundPlugin);
+  }, [])
 
   const gradientBackgroundPlugin = {
     id: "gradientBackground",
@@ -168,7 +170,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     }
   };
 
-  ChartJS.register(gradientBackgroundPlugin);
+  
 
       const getEloClass = (elo: number) => {
         if (elo >= 3000) return 'elo-3000-plus'
