@@ -346,6 +346,12 @@ export default function IDEPage() {
             onMount={(editor) => {
               editorRef.current = editor;
               const model = editor.getModel();
+              if (model) {
+                model.updateOptions({
+                  tabSize: 4,
+                  insertSpaces: true,
+                });
+              }
               /*console.log('MODEL OPTIONS:', model?.getOptions());*/
               console.log('tab x space:', model?.getOptions().tabSize);
               /*console.log('insertSpaces:', model?.getOptions().insertSpaces);*/

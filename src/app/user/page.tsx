@@ -10,8 +10,11 @@ import {
   LinearScale,
   Tooltip,
   Legend,
-  Filler
+  TimeScale,
+  Filler,
+  TooltipItem
 } from "chart.js";
+import type { ChartOptions } from 'chart.js';
 import { Line } from "react-chartjs-2";
 import './user.css';
 import styles from './user.module.css';
@@ -23,6 +26,9 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import remarkBreaks from "remark-breaks";
+import zoomPlugin from 'chartjs-plugin-zoom';
+
+import 'chartjs-adapter-date-fns';
 import "katex/dist/katex.min.css";
 import Link from "next/link";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
@@ -91,7 +97,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     return { elo: theta, sd: postSd }
   }
 
-  ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, Filler);
+  ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, Filler, TimeScale, zoomPlugin);
 
   const gradientBackgroundPlugin = {
     id: "gradientBackground",
@@ -225,6 +231,9 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     return '#aaaaaa';
   };
 
+  
+
+
   type Solved = { id: number; elo: number };
 
   const getRatingChangeColor = (ratingChange: number) => {
@@ -239,7 +248,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
 
   export default function UserPage() {
     const [username, setUsername] = useState('');
-    const [history, setHistory] = useState<Contest[]>([]);
+    const [contestHistory, setHistory] = useState<Contest[]>([]);
     const [elo, setElo] = useState(0);
     const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set())
     const [solvedElos, setSolvedElos] = useState<Solved[]>([]);
@@ -247,6 +256,118 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     const [handle, setHandle] = useState('');
     const [cfElo, setCFElo] = useState('');
     const [desc, setDesc] = useState('');
+    const [yBounds, setYBounds] = useState<{ min: number; max: number } | null>(null);
+
+    useEffect(() => {
+      if (!contestHistory.length) return;
+      if (yBounds !== null) return; // 🔒 already locked
+
+      const eloValues = contestHistory.map(c => c.elo);
+      const padding = contestHistory.length === 1 ? 250 : 100;
+
+      const minElo = Math.min(...eloValues);
+      const maxElo = Math.max(...eloValues);
+
+      setYBounds({
+        min: Math.max(0, Math.floor((minElo - padding) / 10) * 10),
+        max: Math.ceil((maxElo + padding) / 10) * 10,
+      });
+    }, [contestHistory, yBounds]);
+
+
+    const options: ChartOptions<'line'> = {
+      responsive: true,
+      layout: { padding: 10 },
+      animation: false,
+
+      onHover: (event, elements) => {
+        const target = event?.native?.target as HTMLElement | undefined;
+        if (!target) return;
+
+        target.style.cursor = elements.length ? 'pointer' : 'default';
+      },
+
+      onClick: (event, elements, chart) => {
+        if (!elements.length) return;
+
+        const pointIndex = elements[0].index;
+        const contest = contestHistory[pointIndex];
+        if (!contest) return;
+          window.location.href = `/contest?id=${contest.contestId}`;
+        },
+
+        plugins: {
+          legend: {
+            labels: { color: '#ffffff' },
+          },
+
+          tooltip: {
+            callbacks: {
+              label: (ctx: TooltipItem<'line'>) => {
+                const c = contestHistory[ctx.dataIndex];
+                if (!c) return '';
+                return [
+                  `Contest: ${c.name}`,
+                  `Date: ${c.date}`,
+                  `Rank: ${c.rank}`,
+                  `Elo: ${c.elo}`,
+                ];
+              },
+            },
+          },
+
+          zoom: {
+            
+            pan: {
+              enabled: true,
+              mode: 'x', // move left/right
+              modifierKey: 'shift', // prevent accidental pan
+            },
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true, // touchpad / mobile
+              },
+              mode: 'x', // zoom on time axis
+            },
+            limits: {
+              x: { min: 'original', max: 'original' },
+              y: { min: 'original', max: 'original' },
+            },
+          },
+        },
+
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'day',
+              tooltipFormat: 'yyyy-MM-dd',
+              displayFormats: {
+                day: 'yyyy-MM-dd',
+                month: 'yyyy-MM',
+                year: 'yyyy',
+              },
+            },
+            ticks: {
+              display: true,
+              autoSkip: true,
+              maxRotation: 0,
+              minRotation: 0,
+            },
+            grid: { color: '#666666' },
+            title: { display: false },
+          },
+
+          y: {
+            grid: { color: '#444444' },
+            min: yBounds?.min,
+            max: yBounds?.max,
+          },
+        },
+    };
 
     useEffect(() => {
       const params = new URLSearchParams(window.location.search);
@@ -359,10 +480,11 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
       fetchSolved();
     }, [username]);
 
-      const labels = history.map(c => `${c.name} (#${c.contestId})`);
-      const data = history.map(c => c.elo);
+      // const labels = history.map(c => `${c.name} (#${c.contestId})`);
+      
+      const data = contestHistory.map(c => c.elo);
       const pointColors = data.map(getEloColor);
-      const eloValues = history.map(c => c.elo);
+      const eloValues = contestHistory.map(c => c.elo);
       const minElo = Math.min(...eloValues);
       const maxElo = Math.max(...eloValues);
       const padding = history.length === 1   ? 250 : 100;
@@ -375,62 +497,25 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
       // console.log("Calculated step:", stepSizeChart, " with 2 val(s): ", yMin, ", ", yMax);
 
       const chartData = {
-      labels,
-      datasets: [
-        {
-          label: "Elo Rating",
-          data,
-          borderColor: '#f1f1f1',
-          backgroundColor: 'rgba(255,255,255,0.9)',
-          pointBackgroundColor: pointColors,
-          pointBorderColor: "#fff",
-          pointRadius: 5,
-          tension: 0.1,
-          fill: false
-        }
-      ]
-    };
-
-    const chartOptions = {
-      responsive: true,
-      layout: { padding: 10 },
-      plugins: {
-        legend: { labels: { color: '#e0e0e0' } },
-        tooltip: {
-          callbacks: {
-              label: (ctx: { dataIndex: number }) => {
-                  const c = history[ctx.dataIndex];
-                  return [`Contest: ${c.name}`, `Date: ${c.date}`, `Rank: ${c.rank}`, `Elo: ${c.elo}`];
-              }
+        datasets: [
+          {
+            label: "Elo Rating",
+            data: contestHistory.map(c => ({
+              x: c.date,
+              y: c.elo,
+            })),
+            borderColor: '#dda600ff',
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            pointBackgroundColor: pointColors,
+            pointBorderColor: "#b28500ff",
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 6,
+            tension: 0.0,
+            fill: false,
           }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: '#e0e0e0' },
-          grid: { color: '#444' },
-          title: { display: true, text: "Contests", color: '#e0e0e0' }
-        },
-        y: {
-          type: 'linear' as const,
-          ticks: {
-              color: '#e0e0e0',
-              stepSize: stepSizeChart, 
-              callback: function(this: unknown, tickValue: number | string): string {
-    return `${tickValue}`;
-  }
-          },
-          grid: {
-              color: '#555', 
-              lineWidth: 1,
-              borderDash: [5, 5],
-          },
-          min: yMin,
-          max: yMax,
-          title: { display: true, text: "Elo Rating", color: '#e0e0e0' }
-        }
-      }
-    };
+        ]
+      };
 
     const eloClass = getEloClass(elo);
     
@@ -514,8 +599,8 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
             </tr>
           </thead>
           <tbody className={styles.contestList}>
-            {history.map((c, i) => {
-              const prevElo = i > 0 ? history[i - 1].elo : 0;
+            {contestHistory.map((c, i) => {
+              const prevElo = i > 0 ? contestHistory[i - 1].elo : 0;
               const change = c.elo - prevElo;
               const color = getRatingChangeColor(change);
               return (
@@ -576,7 +661,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
         {history.length > 0 && (
           <Line
             data={chartData}
-            options={chartOptions}
+            options={options}
           />
         )}
 
@@ -614,8 +699,8 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
             <h3>Solved Elo Distribution</h3>
             <ResponsiveContainer>
               <BarChart data={eloDistribution} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                <XAxis dataKey="range" interval={0} angle={-45} textAnchor="end" height={60} tick={{ fontSize: 12, fill: '#ccc' }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#ccc' }} /> 
+                <XAxis dataKey="range" interval={0} angle={-45} textAnchor="end" height={60} tick={{ fontSize: 12, fill: '#fff' }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#111' }} /> 
                 <Bar dataKey="count">
                   {eloDistribution.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
