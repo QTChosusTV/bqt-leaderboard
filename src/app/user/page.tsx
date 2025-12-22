@@ -98,9 +98,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     return { elo: theta, sd: postSd }
   }
 
-  useEffect(() => {
-    ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, Filler, TimeScale, zoomPlugin, gradientBackgroundPlugin);
-  }, [])
+  
 
   const gradientBackgroundPlugin = {
     id: "gradientBackground",
@@ -263,6 +261,10 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
 
     const searchParams = useSearchParams();
     const router = useRouter();
+
+    useEffect(() => {
+      ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, Filler, TimeScale, zoomPlugin, gradientBackgroundPlugin);
+    }, [])
 
     useEffect(() => {
       if (!contestHistory.length) return;
