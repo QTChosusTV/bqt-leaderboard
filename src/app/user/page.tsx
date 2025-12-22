@@ -14,8 +14,8 @@ import {
   Filler,
   TooltipItem
 } from "chart.js";
+import dynamic from 'next/dynamic';
 import type { ChartOptions } from 'chart.js';
-import { Line } from "react-chartjs-2";
 import './user.css';
 import styles from './user.module.css';
 import type { Chart } from 'chart.js';
@@ -47,6 +47,12 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     elo: number
     sd: number
   }
+
+
+  const Line = dynamic(
+    () => import('react-chartjs-2').then(m => m.Line),
+    { ssr: false }
+  );
 
   function estimateUserElo(
     solvedElos: number[],
@@ -263,8 +269,23 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     const router = useRouter();
 
     useEffect(() => {
-      ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, Filler, TimeScale, zoomPlugin, gradientBackgroundPlugin);
-    }, [])
+      (async () => {
+        const zoomPlugin = (await import('chartjs-plugin-zoom')).default;
+        ChartJS.register(
+          LineElement,
+          PointElement,
+          CategoryScale,
+          LinearScale,
+          Tooltip,
+          Legend,
+          Filler,
+          TimeScale,
+          zoomPlugin,
+          gradientBackgroundPlugin
+        );
+      })();
+    }, []);
+
 
     useEffect(() => {
       if (!contestHistory.length) return;
