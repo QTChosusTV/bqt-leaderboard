@@ -27,6 +27,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import remarkBreaks from "remark-breaks";
 import zoomPlugin from 'chartjs-plugin-zoom';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import 'chartjs-adapter-date-fns';
 import "katex/dist/katex.min.css";
@@ -258,6 +259,9 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     const [desc, setDesc] = useState('');
     const [yBounds, setYBounds] = useState<{ min: number; max: number } | null>(null);
 
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
     useEffect(() => {
       if (!contestHistory.length) return;
       if (yBounds !== null) return; // 🔒 already locked
@@ -293,7 +297,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
         const pointIndex = elements[0].index;
         const contest = contestHistory[pointIndex];
         if (!contest) return;
-          window.location.href = `/contest?id=${contest.contestId}`;
+          router.push(`/contest?id=${contest.contestId}`);
         },
 
         plugins: {
@@ -370,8 +374,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     };
 
     useEffect(() => {
-      const params = new URLSearchParams(window.location.search);
-      const uname = params.get('username');
+      const uname = searchParams.get('username');
       if (!uname) return;
       setUsername(uname);
 
