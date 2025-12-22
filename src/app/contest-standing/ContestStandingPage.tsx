@@ -395,38 +395,38 @@ export default function ContestStandingPage() {
                     </td>
                     {problems.map((p, idx) => {
                       const info = s.problems?.[p.pid]
+                      const isFullScore = info?.score !== undefined && info.score === (p.score ?? 100)
+                      const colScore = p.score / (isFullScore ? 1 : 1.4)
+
+                      let color = "white"
+
+                      if (info?.score !== undefined) {
+                        color = getScoreGradient(colScore ?? 100, info.score) 
+                      } else if (info?.verdict === 'AC') {
+                        color = "green"
+                      } else if (info?.tries > 0) {
+                        color = "red"
+                      }
+
                       return (
-                        <td key={idx} 
-                          style={{
-                            color:
-                              info?.score !== undefined
-                                ? getScoreGradient(info.score, p.score ?? 100)   // IOI
-                                : (info?.verdict === 'AC'
-                                    ? "green"
-                                    : info?.tries > 0
-                                      ? "red"
-                                      : "white")
-                          }}
+                        <td
+                          key={idx}
+                          style={{ color }}
                           className="px-4 py-2 text-center border"
                         >
                           {info?.tries > 0 ? (
                             <div className="flex flex-col items-center">
-
-                              <span className="font-bold italic">
+                              <span className={isFullScore ? "font-black italic" : "font-medium text-sm italic"}>
                                 {(() => {
                                   if (info?.verdict === "AC")
-                                    return "+" + ((info?.tries ?? 1) > 1 ? info.tries - 1 : "");
-
+                                    return "+" + ((info?.tries ?? 1) > 1 ? info.tries - 1 : "")
                                   if (info?.score !== undefined && info.score > 0)
-                                    return "" + Math.round(info.score);
-
+                                    return "" + Math.round(info.score)
                                   if (info?.tries)
-                                    return "-" + info.tries;
-
-                                  return "";
+                                    return "-" + info.tries
+                                  return ""
                                 })()}
                               </span>
-
                               {info?.verdict === 'AC' && (
                                 <span
                                   className="text-xs font-mono"
@@ -434,7 +434,6 @@ export default function ContestStandingPage() {
                                 >
                                   <strong>{formatSolveTime(info.time, contest?.time_start ?? null)}</strong>
                                 </span>
-
                               )}
                             </div>
                           ) : ''}
