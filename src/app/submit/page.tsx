@@ -44,7 +44,7 @@ function SubmitPageContent() {
         if (data?.username) setUsername(data.username)
         else setUsername(user.email)
 
-        console.log(error)
+        //console.log(error)
       }
     }
 
@@ -72,16 +72,17 @@ function SubmitPageContent() {
       })
 
       const result = await res.json()
-      // console.log("Submit response:", result)
+      //console.log("Submit language:", language)
+      //console.log("Submit response:", result)
       if (!result.id) {
-        console.error('No submission ID returned')
+        //console.error('No submission ID returned')
         setSubmitting(false)
         return
       }
 
       router.push(`/submission?id=${result.id}`)
     } catch (err) {
-      console.error('Error while triggering judge:', err)
+      //console.error('Error while triggering judge:', err)
       setSubmitting(false)
     }
   }
@@ -97,7 +98,8 @@ function SubmitPageContent() {
         onChange={(e) => setLanguage(e.target.value)}
         className="mb-4 p-2 rounded bg-gray-800 text-white w-full"
       >
-        <option value="cpp">C++</option>
+        <option value="cpp">C++20</option>
+        <option value="python">Python3</option>
       </select>
 
       <textarea
