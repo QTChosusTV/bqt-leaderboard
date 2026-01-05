@@ -8,7 +8,8 @@ import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 
 const eloRanks = [
-  { class: 'elo-0-800', min: 0 },
+  { class: 'elo-0-400', min: 0 },
+  { class: 'elo-400-800', min: 400 },
   { class: 'elo-800-1200', min: 800 },
   { class: 'elo-1200-1400', min: 1200 },
   { class: 'elo-1400-1500', min: 1400 },
