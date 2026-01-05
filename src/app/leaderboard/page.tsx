@@ -25,8 +25,8 @@ type HistoryEntry = {
 
 const eloColorMap: Record<string, string> = {
   'elo-0-400': '#ffffff',
-  'elo-400-800': '#aa5500',
-  'elo-800-1200': '#aaaaaa',
+  'elo-400-800': '#aaaaaa',
+  'elo-800-1200': '#aa5500',
   'elo-1200-1400': '#00aa00',
   'elo-1400-1500': '#00aaaa',
   'elo-1500-1600': '#15d0ff',

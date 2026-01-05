@@ -82,8 +82,8 @@ body {
 .elo-1500-1600 { color: #15d0ff; } /* Cyan */
 .elo-1400-1500 { color: #00aaaa; } /* Cyan */
 .elo-1200-1400 { color: #00aa00; } /* Green */
-.elo-800-1200 { color: #aaaaaa; } /* Gray */
-.elo-400-800 { color: #aa5500; } /* White */
+.elo-800-1200 { color: #aa5500; } /* Gray */
+.elo-400-800 { color: #aaaaaa; } /* White */
 .elo-0-400 { color: #ffffff; } /* White */
 
 #currentRating.elo-3000-plus { color: #8b0000; } /* Red */
@@ -97,8 +97,8 @@ body {
 #currentRating.elo-1500-1600 { color: #4bdbff; } /* Cyan */
 #currentRating.elo-1400-1500 { color: #00aaaa; } /* Cyan */
 #currentRating.elo-1200-1400 { color: #00aa00; } /* Green */
-#currentRating.elo-800-1200 { color: #aaaaaa; } /* Gray */
-#currentRating.elo-400-800 { color: #aa5500; } /* Write */
+#currentRating.elo-800-1200 { color: #aa5500; } /* Gray */
+#currentRating.elo-400-800 { color: #aaaaaa; } /* Write */
 #currentRating.elo-0-400 { color: #ffffff; } /* Write */
 
 .redirect-button {

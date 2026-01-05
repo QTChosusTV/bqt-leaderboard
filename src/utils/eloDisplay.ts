@@ -10,8 +10,8 @@ const ELO_TIERS = [
   { min: 1500, class: 'elo-1500-1600', color: '#15d0ff' },
   { min: 1400, class: 'elo-1400-1500', color: '#00aaaa' },
   { min: 1200, class: 'elo-1200-1400', color: '#00aa00' },
-  { min: 800,  class: 'elo-800-1200',  color: '#aaaaaa' },
-  { min: 400,  class: 'elo-400-800',   color: '#aa5500' },
+  { min: 800,  class: 'elo-800-1200',  color: '#aa5500' },
+  { min: 400,  class: 'elo-400-800',   color: '#aaaaaa' },
   { min: 0,    class: 'elo-0-400',     color: '#ffffff' },
 ] as const
 
