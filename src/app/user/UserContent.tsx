@@ -1,7 +1,8 @@
 'use client';
-
+import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 import { useEffect, useState } from 'react';
 import { supabase } from '@/utils/supabaseClient';
+import { getDisplayedElo } from "@/utils/eloAccumulation"
 import {
   Chart as ChartJS,
   LineElement,
@@ -175,23 +176,6 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     }
   };
 
-  
-
-      const getEloClass = (elo: number) => {
-        if (elo >= 3000) return 'elo-3000-plus'
-        if (elo >= 2700) return 'elo-2700-3000'
-        if (elo >= 2500) return 'elo-2500-2700'
-        if (elo >= 2300) return 'elo-2300-2500'
-        if (elo >= 2100) return 'elo-2100-2300'
-        if (elo >= 1900) return 'elo-1900-2100'
-        if (elo >= 1750) return 'elo-1750-1900'
-        if (elo >= 1600) return 'elo-1600-1750'
-        if (elo >= 1500) return 'elo-1500-1600'
-        if (elo >= 1400) return 'elo-1400-1500'
-        if (elo >= 1200) return 'elo-1200-1400'
-        if (elo >= 800) return 'elo-800-1200'
-        return 'elo-0-800'
-      }
 
 
     const getEloTitle = (elo: number) => {
@@ -210,22 +194,6 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
       return 'Beginner'
     }
 
-  const getEloColor = (elo: number) => {
-    if (elo >= 3000) return '#8b0000';
-    if (elo >= 2700) return '#ff0000';
-    if (elo >= 2500) return '#ff7575';
-    if (elo >= 2300) return '#ffaa00';
-    if (elo >= 2100) return '#fbff00';
-    if (elo >= 1900) return '#aa00aa';
-    if (elo >= 1750) return '#7900fa';
-    if (elo >= 1600) return '#55aaff';
-    if (elo >= 1500) return '#15d0ff';
-    if (elo >= 1400) return '#00aaaa';
-    if (elo >= 1200) return '#00aa00';
-    if (elo >= 800) return '#aaaaaa';
-    return '#ffffff';
-  };
-
   const getCFEloColor = (elo: number) => {
     if (elo >= 3000) return '#8b0000';
     if (elo >= 2600) return '#ff0000';
@@ -239,16 +207,6 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     if (elo >= 800) return '#aaaaaa';
     return '#ffffff';
   };
-
-  function getDisplayedElo(rawElo: number, contestCount: number) {
-    const x = Math.min(contestCount, 6)
-    const norm = rawElo - 1500
-    const boost = (x * (11 - x) * 100) / 2
-    return Math.max(0, Math.round(norm + boost))
-  }
-
-
-  
 
 
   type Solved = { id: number; elo: number };

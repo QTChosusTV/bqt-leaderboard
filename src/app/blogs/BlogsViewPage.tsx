@@ -10,6 +10,8 @@ import rehypeKatex from "rehype-katex";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image"
+import { getDisplayedElo } from "@/utils/eloAccumulation"
+import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 
 interface Post {
   id: string;
@@ -27,30 +29,6 @@ interface LatestPost {
   title: string;
   slug: string | null;
 }
-
-const getEloClass = (elo: number) => {
-  if (elo >= 3000) return 'elo-3000-plus'
-  if (elo >= 2700) return 'elo-2700-3000'
-  if (elo >= 2500) return 'elo-2500-2700'
-  if (elo >= 2300) return 'elo-2300-2500'
-  if (elo >= 2100) return 'elo-2100-2300'
-  if (elo >= 1900) return 'elo-1900-2100'
-  if (elo >= 1750) return 'elo-1750-1900'
-  if (elo >= 1600) return 'elo-1600-1750'
-  if (elo >= 1500) return 'elo-1500-1600'
-  if (elo >= 1400) return 'elo-1400-1500'
-  if (elo >= 1200) return 'elo-1200-1400'
-  if (elo >= 800) return 'elo-800-1200'
-  return 'elo-0-800'
-}
-
-function getDisplayedElo(rawElo: number, contestCount: number) {
-  const x = Math.min(contestCount, 6)
-  const norm = rawElo - 1500
-  const boost = (x * (11 - x) * 100) / 2
-  return Math.max(0, Math.round(norm + boost))
-}
-
 
 
 export default function OJBlogPage() {

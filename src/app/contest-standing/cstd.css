@@ -9,20 +9,6 @@ h1 span {
     color: inherit;
 }
 
-.elo-3000-plus { color: #8b0000; } /* Red */
-.elo-2700-3000 { color: #ff0000; } /* Red */
-.elo-2500-2700 { color: #ff7575; } /* Red */
-.elo-2300-2500 { color: #ffaa00; } /* Orange */
-.elo-2100-2300 { color: #fbff00; } /* Yellow */
-.elo-1900-2100 { color: #aa00aa; } /* Purple */
-.elo-1750-1900 { color: #7900fa; } /* Blue */
-.elo-1600-1750 { color: #55aaff; } /* Blue */
-.elo-1500-1600 { color: #15d0ff; } /* Cyan */
-.elo-1400-1500 { color: #00aaaa; } /* Cyan */
-.elo-1200-1400 { color: #00aa00; } /* Green */
-.elo-800-1200 { color: #aaaaaa; } /* Gray */
-.elo-0-800 { color: #ffffff; } /* White */
-
 button {
     padding: 5px 10px;
     background-color: #55aaff;

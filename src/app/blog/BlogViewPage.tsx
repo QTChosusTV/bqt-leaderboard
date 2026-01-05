@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabaseClient";
+import { getDisplayedElo } from "@/utils/eloAccumulation"
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -12,6 +13,7 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
 import remarkHeadingId from "remark-heading-id";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 
 import "highlight.js/styles/github-dark.css"; // or any theme you like
 import "katex/dist/katex.min.css";
@@ -27,37 +29,11 @@ interface Post {
   created_at: string;
 }
 
-const getEloClass = (elo: number) => {
-  if (elo >= 3000) return 'elo-3000-plus'
-  if (elo >= 2700) return 'elo-2700-3000'
-  if (elo >= 2500) return 'elo-2500-2700'
-  if (elo >= 2300) return 'elo-2300-2500'
-  if (elo >= 2100) return 'elo-2100-2300'
-  if (elo >= 1900) return 'elo-1900-2100'
-  if (elo >= 1750) return 'elo-1750-1900'
-  if (elo >= 1600) return 'elo-1600-1750'
-  if (elo >= 1500) return 'elo-1500-1600'
-  if (elo >= 1400) return 'elo-1400-1500'
-  if (elo >= 1200) return 'elo-1200-1400'
-  if (elo >= 800) return 'elo-800-1200'
-  return 'elo-0-800'
-}
-
 interface EloHistoryEntry {
   elo: number
   created_at?: string
   contest_id?: number
 }
-
-
-function getDisplayedElo(rawElo: number, contestCount: number) {
-  const x = Math.min(contestCount, 6)
-  const norm = rawElo - 1500
-  const boost = (x * (11 - x) * 100) / 2
-  return Math.max(0, Math.round(norm + boost))
-}
-
-
 
 export default function BlogPage() {
   const searchParams = useSearchParams();
