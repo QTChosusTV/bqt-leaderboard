@@ -352,6 +352,9 @@ export default function IDEPage() {
                   insertSpaces: true,
                 });
               }
+              editor.updateOptions({
+                fontSize: 16, 
+              });
               /*console.log('MODEL OPTIONS:', model?.getOptions());*/
               console.log('tab x space:', model?.getOptions().tabSize);
               /*console.log('insertSpaces:', model?.getOptions().insertSpaces);*/
