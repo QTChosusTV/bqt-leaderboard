@@ -9,6 +9,7 @@ import styles from './cstd.module.css'
 import Link from 'next/link'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
+import { getDisplayedElo } from '@/utils/eloAccumulation'
 
 interface Standing {
   id: string
@@ -19,6 +20,7 @@ interface Standing {
   problems: Record<string, any>
   pi: number
   delta: number
+  contest_count: number
 }
 
 interface Contest {
@@ -102,7 +104,7 @@ export default function ContestStandingPage() {
 
       const { data: leaderboard } = await supabase
         .from('leaderboard')
-        .select('username, elo')
+        .select('username, elo, history')
 
       const eloObj: Record<string, number> = {}
 
@@ -173,15 +175,14 @@ export default function ContestStandingPage() {
 
         // rating delta
         const delta = Math.round(newElo) - elo;
+        const contestCount = (leaderboard?.find(u => u.username === s.user_id)?.history?.length) ?? 0;
 
-
-        // performance rating (Π)
-
-        return {
-          ...s,
-          pi: performance,
-          delta,
-        };
+          return {
+            ...s,
+            pi: performance,
+            delta,
+            contest_count: contestCount, // << add this
+          };
       });
 
       setStandings(enriched.sort((a, b) => {
@@ -368,7 +369,7 @@ export default function ContestStandingPage() {
                     <td className="px-4 py-2 text-center border">{rank}</td>
                     <td
                       className={`px-4 py-2 text-center border font-bold ${getEloClass(
-                        eloMap[s.user_id] || 800
+                        getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0)
                       )}`}
                     >
                       <Link
@@ -441,12 +442,14 @@ export default function ContestStandingPage() {
                           {s.delta > 0 ? '+' : ''}{s.delta ?? 0}
                         </td>
                         <td className={`px-2 py-1 text-center border`}>
-                          <span style={{fontFamily: "Oswald"}} className={getEloClass(eloMap[s.user_id])}>
-                            {eloMap[s.user_id]}
+                          {/* old displayed Elo */}
+                          <span style={{ fontFamily: "Oswald" }} className={getEloClass(getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0))}>
+                            {getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0)}
                           </span>
                           {" -> "}
-                          <span style={{fontFamily: "Oswald"}} className={getEloClass(eloMap[s.user_id] + s.delta)}>
-                            {eloMap[s.user_id] + s.delta}
+                          {/* new displayed Elo */}
+                          <span style={{ fontFamily: "Oswald" }} className={getEloClass(getDisplayedElo((eloMap[s.user_id] ?? 1500) + s.delta, s.contest_count ?? 0))}>
+                            {getDisplayedElo((eloMap[s.user_id] ?? 1500) + s.delta, s.contest_count ?? 0)}
                           </span>
                         </td>
                       </>
