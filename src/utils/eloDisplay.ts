@@ -16,9 +16,20 @@ const ELO_TIERS = [
 ] as const
 
 export function getEloClass(elo: number) {
-  return ELO_TIERS.find(t => elo >= t.min)!.class
+  if (!Number.isFinite(elo)) return 'elo-0-400';
+
+  return (
+    ELO_TIERS.find(t => elo >= t.min)?.class
+    ?? 'elo-0-400'
+  );
 }
 
 export function getEloColor(elo: number) {
-  return ELO_TIERS.find(t => elo >= t.min)!.color
+  if (!Number.isFinite(elo)) return '#ffffff';
+
+  return (
+    ELO_TIERS.find(t => elo >= t.min)?.color
+    ?? '#ffffff'
+  );
 }
+

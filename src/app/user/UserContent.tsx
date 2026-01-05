@@ -116,9 +116,10 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
       const chartYMax = y.max;
       const yRange = chartYMax - chartYMin;
 
-      const transitionWidth = 50;
+      const transitionWidth = 26;
       const eloRanges = [
-        { start: 0, end: 800, color: "#ffffff" },
+        { start: 0, end: 400, color: "#ffffff" },
+        { start: 400, end: 800-transitionWidth/2, color: "#aa5500" },
         { start: 800, end: 1200-transitionWidth/2, color: "#aaaaaa" },
         { start: 1200, end: 1400-transitionWidth/2, color: "#00aa00" },
         { start: 1400, end: 1500-transitionWidth/2, color: "#00aaaa" },
