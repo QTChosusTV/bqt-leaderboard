@@ -21,6 +21,8 @@ interface Standing {
   pi: number
   delta: number
   contest_count: number
+  new_display_elo: number
+  old_display_elo: number
 }
 
 interface Contest {
@@ -171,17 +173,23 @@ export default function ContestStandingPage() {
 
         // new rating
         let newElo = elo + (performance - elo) * f;
-        newElo = Math.max(0, Math.min(4000, newElo));
+        newElo = Math.round(Math.max(0, Math.min(4000, newElo)));
 
-        // rating delta
-        const delta = Math.round(newElo) - elo;
+        
         const contestCount = (leaderboard?.find(u => u.username === s.user_id)?.history?.length) ?? 0;
+
+        const newEloDisplay = getDisplayedElo(newElo ?? 1500, contestCount + 1);
+        const oldEloDisplay = getDisplayedElo(elo ?? 1500, contestCount);
+
+        const delta = Math.round(newEloDisplay) - Math.round(oldEloDisplay);
 
           return {
             ...s,
             pi: performance,
             delta,
-            contest_count: contestCount, // << add this
+            contest_count: contestCount,
+            new_display_elo: newEloDisplay,
+            old_display_elo: oldEloDisplay,
           };
       });
 
@@ -442,14 +450,12 @@ export default function ContestStandingPage() {
                           {s.delta > 0 ? '+' : ''}{s.delta ?? 0}
                         </td>
                         <td className={`px-2 py-1 text-center border`}>
-                          {/* old displayed Elo */}
-                          <span style={{ fontFamily: "Oswald" }} className={getEloClass(getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0))}>
-                            {getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0)}
+                          <span style={{ fontFamily: "Oswald" }} className={getEloClass(s.old_display_elo)}>
+                            {(s.old_display_elo)}
                           </span>
                           {" -> "}
-                          {/* new displayed Elo */}
-                          <span style={{ fontFamily: "Oswald" }} className={getEloClass(getDisplayedElo((eloMap[s.user_id] ?? 1500) + s.delta, s.contest_count ?? 0))}>
-                            {getDisplayedElo((eloMap[s.user_id] ?? 1500) + s.delta, s.contest_count ?? 0)}
+                          <span style={{ fontFamily: "Oswald" }} className={getEloClass(s.new_display_elo)}>
+                            {(s.new_display_elo)}
                           </span>
                         </td>
                       </>
