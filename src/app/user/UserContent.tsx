@@ -119,8 +119,8 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
       const transitionWidth = 26;
       const eloRanges = [
         { start: 0, end: 400, color: "#ffffff" },
-        { start: 400, end: 800-transitionWidth/2, color: "#aa5500" },
-        { start: 800, end: 1200-transitionWidth/2, color: "#aaaaaa" },
+        { start: 400, end: 800-transitionWidth/2, color: "#aaaaaa" },
+        { start: 800, end: 1200-transitionWidth/2, color: "#aa5500" },
         { start: 1200, end: 1400-transitionWidth/2, color: "#00aa00" },
         { start: 1400, end: 1500-transitionWidth/2, color: "#00aaaa" },
         { start: 1500, end: 1600-transitionWidth/2, color: "#4bdbff" },
