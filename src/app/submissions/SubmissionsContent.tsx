@@ -36,6 +36,12 @@ const getEloClass = (elo: number) => {
   return 'elo-0-800'
 }
 
+function getDisplayedElo(rawElo: number, contestCount: number) {
+  const n = Math.min(contestCount, 10)
+  const norm = rawElo - 1500
+  return Math.max(0, Math.round(n * 150 + norm))
+}
+
 export default function SubmissionsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -134,14 +140,15 @@ export default function SubmissionsPage() {
       if (usernames.length > 0) {
         const { data: leaderboardData, error: lbError } = await supabase
           .from("leaderboard")
-          .select("username, elo")
+          .select("username, elo, history")
           .in("username", usernames)
 
         if (lbError) {
           console.error("Error fetching leaderboard:", lbError.message)
         } else {
           leaderboardData?.forEach(lb => {
-            eloMap[lb.username] = lb.elo
+            const contestCount = lb.history?.length ?? 0
+            eloMap[lb.username] = getDisplayedElo(lb.elo, contestCount)
           })
         }
       }

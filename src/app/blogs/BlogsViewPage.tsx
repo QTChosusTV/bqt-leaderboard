@@ -44,6 +44,13 @@ const getEloClass = (elo: number) => {
   return 'elo-0-800'
 }
 
+function getDisplayedElo(rawElo: number, contestCount: number) {
+  const n = Math.min(contestCount, 10)
+  const norm = rawElo - 1500
+  return Math.max(0, Math.round(n * 150 + norm))
+}
+
+
 export default function OJBlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
@@ -98,12 +105,16 @@ export default function OJBlogPage() {
         const usernames = Array.from(new Set(data.map(p => p.username)));
         const { data: eloData, error: eloErr } = await supabase
           .from('leaderboard')
-          .select('username, elo')
+          .select('username, elo, history')
           .in('username', usernames);
 
         if (!eloErr && eloData) {
           const map: Record<string, number> = {};
-          eloData.forEach(e => map[e.username] = e.elo ?? 0);
+          eloData.forEach(e => {
+            const contestCount = e.history?.length ?? 0
+            map[e.username] = getDisplayedElo(e.elo ?? 0, contestCount)
+          })
+
           setEloMap(map);
         }
       }

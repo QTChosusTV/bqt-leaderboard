@@ -43,6 +43,20 @@ const getEloClass = (elo: number) => {
   return 'elo-0-800'
 }
 
+interface EloHistoryEntry {
+  elo: number
+  created_at?: string
+  contest_id?: number
+}
+
+
+function getDisplayedElo(rawElo: number, contestCount: number) {
+  const n = Math.min(contestCount, 10)
+  const norm = rawElo - 1500
+  return Math.max(0, Math.round(n * 150 + norm))
+}
+
+
 
 export default function BlogPage() {
   const searchParams = useSearchParams();
@@ -86,14 +100,24 @@ export default function BlogPage() {
 
       const { data: eloData } = await supabase
         .from('leaderboard')
-        .select('elo')
+        .select('elo, history')
         .eq('username', post?.username)
         .single();
 
-      console.log(eloData);
-      
+      // console.log(eloData);
 
-      if (eloData) setElo(eloData.elo ?? 0);
+      if (eloData?.history?.length) {
+        const history = (eloData.history as EloHistoryEntry[]).map((h, idx) => ({
+          ...h,
+          elo: getDisplayedElo(h.elo, idx + 1),
+        }))
+
+
+        setElo(history.at(-1)?.elo ?? 0)
+      } else if (eloData) {
+        setElo(eloData.elo ?? 0)
+      }
+
 
     };
     fetchUser();

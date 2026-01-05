@@ -117,7 +117,8 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
 
       const transitionWidth = 50;
       const eloRanges = [
-        { start: 0, end: 1200, color: "#aaaaaa" },
+        { start: 0, end: 800, color: "#ffffff" },
+        { start: 800, end: 1200-transitionWidth/2, color: "#aaaaaa" },
         { start: 1200, end: 1400-transitionWidth/2, color: "#00aa00" },
         { start: 1400, end: 1500-transitionWidth/2, color: "#00aaaa" },
         { start: 1500, end: 1600-transitionWidth/2, color: "#4bdbff" },
@@ -235,8 +236,15 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     if (elo >= 1600) return '#55aaff';
     if (elo >= 1400) return '#00aaaa';
     if (elo >= 1200) return '#00aa00';
-    return '#aaaaaa';
+    if (elo >= 800) return '#aaaaaa';
+    return '#ffffff';
   };
+
+  function getDisplayedElo(rawElo: number, contestCount: number) {
+    const n = Math.min(contestCount, 10)
+    const norm = rawElo - 1500
+    return Math.round(n * 150 + norm)
+  }
 
   
 
@@ -414,8 +422,16 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
         // console.log(data)
 
         if (data && data.history) {
-          setHistory(data.history);
-          setElo(data.elo || data.history[data.history.length - 1]?.elo || 0);
+          const rawHistory = data.history as Contest[]
+
+          const displayedHistory = rawHistory.map((c, i) => ({
+            ...c,
+            rawElo: c.elo, // preserve original 
+            elo: getDisplayedElo(c.elo, i + 1), // 👈 overwrite ONLY locally
+          }))
+
+          setHistory(displayedHistory)
+          setElo(displayedHistory.at(-1)?.elo ?? 0)
         }
       };
 
@@ -628,8 +644,8 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
           </thead>
           <tbody className={styles.contestList}>
             {contestHistory.map((c, i) => {
-              const prevElo = i > 0 ? contestHistory[i - 1].elo : 0;
-              const change = c.elo - prevElo;
+              const prevElo = i > 0 ? contestHistory[i - 1].elo : null;
+              const change = prevElo === null ? c.elo : c.elo - prevElo;
               const color = getRatingChangeColor(change);
               return (
                 <tr key={c.contestId}>

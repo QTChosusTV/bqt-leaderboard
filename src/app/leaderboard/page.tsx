@@ -13,6 +13,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 interface User {
   username: string
   elo: number
+  rawElo: number
   history: HistoryEntry[]
 }
 
@@ -54,8 +55,21 @@ export default function LeaderboardPage() {
         return
       }
 
-      const sorted = data?.sort((a, b) => b.elo - a.elo)
-      setUsers(sorted)
+      const transformed = data?.map(u => {
+        const contestCount = u.history?.length ?? 0
+        const displayedElo = getDisplayedElo(u.elo, contestCount)
+
+        return {
+          ...u,
+          rawElo: u.elo,
+          elo: displayedElo,
+        }
+      })
+
+      const sorted = transformed?.sort((a, b) => b.elo - a.elo)
+
+      setUsers(sorted ?? [])
+
     }
 
     fetchData()
@@ -134,6 +148,13 @@ export default function LeaderboardPage() {
     if (elo >= 800) return 'elo-800-1200'
     return 'elo-0-800'
   }
+
+  function getDisplayedElo(rawElo: number, contestCount: number) {
+    const n = Math.min(contestCount, 10)
+    const norm = rawElo - 1500
+    return Math.max(0, Math.round(n * 150 + norm))
+  }
+
 
  const eloBins: { min: number, max: number, label: string }[] = [];
   for (let start = 0; start <= 2400; start += 50) {

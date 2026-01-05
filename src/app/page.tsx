@@ -31,10 +31,23 @@ type Contest = {
   link: string | null
 }
 
+type HistoryEntry = {
+  contest: string
+  elo: number
+}
+
 interface User {
   username: string
   elo: number
+  history: HistoryEntry[]
 }
+
+function getDisplayedElo(rawElo: number, contestCount: number) {
+  const n = Math.min(contestCount, 10)
+  const norm = rawElo - 1500
+  return Math.max(0, Math.round(n * 150 + norm))
+}
+
 
 
 export default function HomePage() {
@@ -122,7 +135,7 @@ export default function HomePage() {
     const fetchEloData = async () => {
       const { data, error } = await supabase
         .from('leaderboard')
-        .select('elo')
+        .select('elo, history')
         .eq('username', username)
         .single();
 
@@ -131,7 +144,8 @@ export default function HomePage() {
         return;
       }
 
-      setElo(data.elo);
+      const contestCount = data.history?.length ?? 0
+      setElo(getDisplayedElo(data.elo, contestCount));
     };
 
     fetchEloData();
