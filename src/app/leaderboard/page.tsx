@@ -150,10 +150,12 @@ export default function LeaderboardPage() {
   }
 
   function getDisplayedElo(rawElo: number, contestCount: number) {
-    const n = Math.min(contestCount, 10)
+    const x = Math.min(contestCount, 6)
     const norm = rawElo - 1500
-    return Math.max(0, Math.round(n * 150 + norm))
+    const boost = (x * (11 - x) * 100) / 2
+    return Math.max(0, Math.round(norm + boost))
   }
+
 
 
  const eloBins: { min: number, max: number, label: string }[] = [];
