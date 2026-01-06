@@ -9,7 +9,7 @@ export default function PostRegisterPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  console.log('Inserting username:', username)
+  // console.log('Inserting username:', username)
 
   const handleFinalizeAccount = async () => {
     // reset messages

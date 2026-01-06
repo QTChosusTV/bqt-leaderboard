@@ -356,7 +356,7 @@ export default function IDEPage() {
                 fontSize: 16, 
               });
               /*console.log('MODEL OPTIONS:', model?.getOptions());*/
-              console.log('tab x space:', model?.getOptions().tabSize);
+              // console.log('tab x space:', model?.getOptions().tabSize);
               /*console.log('insertSpaces:', model?.getOptions().insertSpaces);*/
             }}
           />

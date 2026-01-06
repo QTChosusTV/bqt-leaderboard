@@ -23,6 +23,8 @@ interface Standing {
   contest_count: number
   new_display_elo: number
   old_display_elo: number
+  isRated: boolean,
+  rank: number
 }
 
 interface Contest {
@@ -56,6 +58,8 @@ export default function ContestStandingPage() {
   const [tick, setTick] = useState(0)
   const [currUser, setCurrUser] = useState<any>(null);
   const [contest, setContest] = useState<Contest | null>(null);
+  const [ratedOnly, setRatedOnly] = useState(false); // toggle filter
+  const debuggg = useState(false);
   
   useEffect(() => {
     if (!contestId) return;
@@ -96,14 +100,8 @@ export default function ContestStandingPage() {
   }, [])
 
   useEffect(() => {
-    if (!contestId) return
-
-    const fetchData = async () => {
-      const { data: standingData } = await supabase
-        .from('contest_standing')
-        .select('*')
-        .eq('contest_id', contestId)
-
+    if (!contestId || !contest) return
+    const fetchStanding = async () => {
       const { data: leaderboard } = await supabase
         .from('leaderboard')
         .select('username, elo, history')
@@ -116,14 +114,17 @@ export default function ContestStandingPage() {
 
       setEloMap(eloObj)
 
-
-
-
       const { data: contestData } = await supabase
         .from('contests')
         .select('problems')
         .eq('id', contestId)
         .single()
+
+      const { data: standingData } = await supabase
+        .from('contest_standing')
+        .select('*')
+        .eq('contest_id', contestId)
+
 
       const sorted = (standingData ?? []).sort((a, b) => {
         if (b.score !== a.score) return b.score - a.score
@@ -144,64 +145,73 @@ export default function ContestStandingPage() {
       const MAX_RATING_CHANGE = 500.0;
       const MAX_SCORE = (contestData?.problems ?? []).length;
 
-      const enriched = (standingData ?? []).map((s, idx) => {
-        const elo = eloObj[s.user_id] ?? 1200
-        const rank = idx + 1;
+      const enriched = (standingData ?? []).map((s) => {
+      const elo = eloObj[s.user_id] ?? 1500;
+      const contestCount = (leaderboard?.find(u => u.username === s.user_id)?.history?.length) ?? 0;
+      const oldEloDisplay = getDisplayedElo(elo, contestCount);
+      const isRated = contest ? oldEloDisplay >= (contest.elo_min ?? 0) && oldEloDisplay <= (contest.elo_max ?? 4000) : true;
 
-        // expected rank
-        let expectedRank = 1.0;
-        for (const other of participants) {
-          if (other.user_id !== s.user_id) {
-            expectedRank += 1.0 - expectedProbability(elo, other.elo);
-          }
-        }
+      if (!isRated) {
+        return { ...s, pi: 0, delta: 0, contest_count: contestCount, new_display_elo: oldEloDisplay, old_display_elo: oldEloDisplay, isRated };
+      }
 
-        // rating change (Δ)
-        // performance rating (Π)
-        const performance = computePerformance({ user_id: s.user_id, elo, rank }, participants);
+      const ratedParticipants = (standingData ?? [])
+        .map((p) => ({
+          user_id: p.user_id,
+          elo: eloObj[p.user_id] ?? 1500,
+          score: p.score,
+          penalty: p.penalty,
+        }))
+        .filter(p => {
+          const disp = getDisplayedElo(p.elo, (leaderboard?.find(u => u.username === p.user_id)?.history?.length) ?? 0);
+          return contest ? disp >= (contest.elo_min ?? 0) && disp <= (contest.elo_max ?? 4000) : true;
+        })
+        .sort((a, b) => b.score - a.score || a.penalty - b.penalty);
 
-        // polynomial factor f(o)
-        let f = 0.5375590444025147 
+        console.log("=== Rated Participants ===");
+          ratedParticipants.forEach((p, idx) => {
+            const disp = getDisplayedElo(
+              p.elo,
+              (leaderboard?.find(u => u.username === p.user_id)?.history?.length) ?? 0
+            );
+            console.log(idx + 1, p.user_id, "elo:", p.elo, "disp:", disp, "score:", p.score);
+          });
+
+      const rank = ratedParticipants.findIndex(rp => rp.user_id === s.user_id) + 1;
+      const performance = computePerformance({ user_id: s.user_id, elo, rank }, ratedParticipants);
+
+      
+
+      // polynomial factor f(o)
+      let f = 0.5375590444025147 
        - 1.609673516547565e-4 * elo 
        + 6.436497743378832e-9 * elo * elo;
+      if (ratedParticipants.length > 1) f *= Math.log10(Math.sqrt(ratedParticipants.length));
 
-        // contest size clamp
-        const n = participants.length;
-        if (n > 1) {
-          f *= Math.log10(Math.sqrt(n));
-        }
+      let newElo = Math.round(Math.max(0, Math.min(4000, elo + (performance - elo) * f)));
+      const newEloDisplay = getDisplayedElo(newElo, contestCount + 1);
+      const delta = Math.round(newEloDisplay - oldEloDisplay);
 
-        // new rating
-        let newElo = elo + (performance - elo) * f;
-        newElo = Math.round(Math.max(0, Math.min(4000, newElo)));
-
-        
-        const contestCount = (leaderboard?.find(u => u.username === s.user_id)?.history?.length) ?? 0;
-
-        const newEloDisplay = getDisplayedElo(newElo ?? 1500, contestCount + 1);
-        const oldEloDisplay = getDisplayedElo(elo ?? 1500, contestCount);
-
-        const delta = Math.round(newEloDisplay) - Math.round(oldEloDisplay);
-
-          return {
-            ...s,
-            pi: performance,
-            delta,
-            contest_count: contestCount,
-            new_display_elo: newEloDisplay,
-            old_display_elo: oldEloDisplay,
-          };
-      });
-
-      setStandings(enriched.sort((a, b) => {
-        if (b.score !== a.score) return b.score - a.score;
-        return a.penalty - b.penalty;
-      }));
-      setProblems(contestData?.problems || [])
-    }
-
-    fetchData()
-  }, [contestId])
+      return {
+        ...s,
+        pi: performance,
+        delta,
+        contest_count: contestCount,
+        new_display_elo: newEloDisplay,
+        old_display_elo: oldEloDisplay,
+        isRated,
+        rank
+      };
+      
+    });
+    setStandings(enriched.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.penalty - b.penalty;
+    }));
+    setProblems(contestData?.problems || [])
+  }
+  fetchStanding()
+}, [contestId, contest])
 
   const now = Date.now()
   const timeStart = contest?.time_start ? new Date(contest.time_start).getTime() : 0
@@ -334,6 +344,20 @@ export default function ContestStandingPage() {
         >
           
           <p className="text-yellow-400 mb-4 font-semibold">{countdownText()}</p>
+          <div className="flex gap-2 mb-4">
+            <button
+              className={`px-3 py-1 rounded ${!ratedOnly ? 'bg-yellow-400 text-black' : 'bg-gray-700 text-white'}`}
+              onClick={() => setRatedOnly(false)}
+            >
+              All
+            </button>
+            <button
+              className={`px-3 py-1 rounded ${ratedOnly ? 'bg-yellow-400 text-black' : 'bg-gray-700 text-white'}`}
+              onClick={() => setRatedOnly(true)}
+            >
+              Rated only
+            </button>
+          </div>
           <table className="w-full border-collapse text-xs table-auto text-center align-middle bg-gray-800">
             <thead className="bg-gray-700 text-white">
               <tr className={styles.cspTable}>
@@ -366,7 +390,7 @@ export default function ContestStandingPage() {
             </thead>
             <tbody>
               {standings.map((s, index) => {
-                const rank = index + 1
+                if (ratedOnly && !s.isRated) return null;
                 return (
                   <tr
                     key={s.id}
@@ -374,20 +398,24 @@ export default function ContestStandingPage() {
                       ? 'bg-green-800 font-bold'
                       : 'bg-black-900')} 
                   >
-                    <td className="px-4 py-2 text-center border">{rank}</td>
-                    <td
-                      className={`px-4 py-2 text-center border font-bold ${getEloClass(
-                        getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0)
-                      )}`}
-                    >
-                      <Link
-                        href={`/user?username=${encodeURIComponent(s.user_id)}`}
-                        className="no-underline hover:underline text-left"
-                        prefetch={false}
+                    {(
+                    <>
+                      <td className="px-4 py-2 text-center border">{index + 1}</td>
+                      <td
+                        className={`px-4 py-2 text-center border font-bold ${getEloClass(
+                          getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0)
+                        )}`}
                       >
-                        {s.user_id}
-                      </Link>
-                    </td>
+                        <Link
+                          href={`/user?username=${encodeURIComponent(s.user_id)}`}
+                          className="no-underline hover:underline text-left"
+                          prefetch={false}
+                        >
+                          {s.isRated ? s.user_id : '*' + s.user_id}
+                        </Link>
+                      </td>
+                    </>
+                    )}
                     {problems.map((p, idx) => {
                       const info = s.problems?.[p.pid]
                       const isFullScore = info?.score !== undefined && info.score === (p.score ?? 100)
@@ -444,18 +472,18 @@ export default function ContestStandingPage() {
                     {(now <= timeEnd) && (
                       <>
                         <td className={"px-1 py-1 text-center border text-blue-400 " + getEloClass(s.pi)} style={{fontFamily: "Oswald"}}>
-                          {Math.round(s.pi ?? 0) >= 4000 ? '∞' : Math.round(s.pi ?? 0)}
+                          {(!s.isRated) ? '' : (Math.round(s.pi ?? 0) >= 4000 ? '∞' : Math.round(s.pi ?? 0))}
                         </td>
                         <td style={{fontFamily: "Oswald"}} className={`px-4 py-2 text-center border ${s.delta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                          {s.delta > 0 ? '+' : ''}{s.delta ?? 0}
+                          {(!s.isRated) ? '' : (s.delta > 0 ? '+' : '') + (s.delta ?? 0)}
                         </td>
                         <td className={`px-2 py-1 text-center border`}>
                           <span style={{ fontFamily: "Oswald" }} className={getEloClass(s.old_display_elo)}>
-                            {(s.old_display_elo)}
+                            {(!s.isRated) ? '' : (s.old_display_elo)}
                           </span>
-                          {" -> "}
+                          {!s.isRated ? '' : " → "}
                           <span style={{ fontFamily: "Oswald" }} className={getEloClass(s.new_display_elo)}>
-                            {(s.new_display_elo)}
+                            {(!s.isRated) ? '' : (s.new_display_elo)}
                           </span>
                         </td>
                       </>

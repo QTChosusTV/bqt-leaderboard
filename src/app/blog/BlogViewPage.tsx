@@ -105,7 +105,7 @@ export default function BlogPage() {
   if (loading) return <p className="mt-3 ml-3">⏳ Đang tải...</p>;
   if (!post) return <p className="mt-3 ml-3">😵 Không tìm thấy bài viết.</p>;
 
-  console.log("RAW MARKDOWN:", JSON.stringify(post?.content?.slice(0, 2000)));
+  // console.log("RAW MARKDOWN:", JSON.stringify(post?.content?.slice(0, 2000)));
 
   return (
     <div className="max-w-7xl mx-auto p-6">

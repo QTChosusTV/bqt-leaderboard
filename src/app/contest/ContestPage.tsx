@@ -110,9 +110,9 @@ export default function ContestPage() {
         return
       }
 
-      console.log('currUser before update:', currUser)
-      console.log('contest before update:', contest)
-      console.log('contest id update:', contestIdSafe)
+      // console.log('currUser before update:', currUser)
+      // console.log('contest before update:', contest)
+      // console.log('contest id update:', contestIdSafe)
 
       const { data: updatedUser, error } = await supabase
         .from('users')
@@ -131,7 +131,7 @@ export default function ContestPage() {
       if (now >= timeStart && now <= timeEnd) {
         router.push('/contest-problemset')
       } else {
-        console.log('Registered for contest', contestIdSafe)
+        // ('Registered for contest', contestIdSafe)
       }
     } catch (err) {
       console.error('handleClick error', err)
@@ -177,7 +177,7 @@ export default function ContestPage() {
     if (error) {
       console.error("Error fetching submissions:", error)
     } else {
-      console.log("Fetched submissions:", data)
+      // console.log("Fetched submissions:", data)
     }
   }
 
