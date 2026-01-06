@@ -188,7 +188,7 @@ export default function ContestStandingPage() {
        + 6.436497743378832e-9 * elo * elo;
       if (ratedParticipants.length > 1) f *= Math.log10(Math.sqrt(ratedParticipants.length));
 
-      let newElo = Math.round(Math.max(0, Math.min(4000, elo + (performance - elo) * f)));
+      const newElo = Math.round(Math.max(0, Math.min(4000, elo + (performance - elo) * f)));
       const newEloDisplay = getDisplayedElo(newElo, contestCount + 1);
       const delta = Math.round(newEloDisplay - oldEloDisplay);
 
