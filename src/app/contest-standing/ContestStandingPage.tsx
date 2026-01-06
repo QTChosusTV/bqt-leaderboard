@@ -168,13 +168,13 @@ export default function ContestStandingPage() {
         })
         .sort((a, b) => b.score - a.score || a.penalty - b.penalty);
 
-        console.log("=== Rated Participants ===");
+        // console.log("=== Rated Participants ===");
           ratedParticipants.forEach((p, idx) => {
             const disp = getDisplayedElo(
               p.elo,
               (leaderboard?.find(u => u.username === p.user_id)?.history?.length) ?? 0
             );
-            console.log(idx + 1, p.user_id, "elo:", p.elo, "disp:", disp, "score:", p.score);
+            // console.log(idx + 1, p.user_id, "elo:", p.elo, "disp:", disp, "score:", p.score);
           });
 
       const rank = ratedParticipants.findIndex(rp => rp.user_id === s.user_id) + 1;
