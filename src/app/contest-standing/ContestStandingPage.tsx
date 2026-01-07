@@ -400,7 +400,7 @@ export default function ContestStandingPage() {
                   >
                     {(
                     <>
-                      <td className="px-4 py-2 text-center border">{index + 1}</td>
+                      <td className="px-4 py-2 text-center border">{ratedOnly ? s.rank : index + 1}</td>
                       <td
                         className={`px-4 py-2 text-center border font-bold ${getEloClass(
                           getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0)
