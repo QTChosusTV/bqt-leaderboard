@@ -5,13 +5,15 @@ import { supabase } from '@/utils/supabaseClient';
 import './chat.css';
 import styles from './chat.module.css'
 import Link from 'next/link';
+import Image from 'next/image'
+import { getEloClass } from '@/utils/eloDisplay'
 
 interface Message {
   id: number;
   user: string;
   text: string;
   time: string;
-  title: string;
+  elo: number;
 }
 
 export default function ChatPage() {
@@ -19,22 +21,6 @@ export default function ChatPage() {
   const [input, setInput] = useState('');
   const [username, setUsername] = useState('');
   const [elo, setElo] = useState<number>(0);
-
-  const getEloTitle = (elo: number) => {
-    if (elo >= 3000) return 'Legendary master';
-    if (elo >= 2700) return 'Grandmaster';
-    if (elo >= 2500) return 'International master';
-    if (elo >= 2300) return 'National master';
-    if (elo >= 2100) return 'Master';
-    if (elo >= 1900) return 'Candidate master';
-    if (elo >= 1750) return 'Semi master';
-    if (elo >= 1600) return 'Expert';
-    if (elo >= 1500) return 'Semi expert';
-    if (elo >= 1400) return 'Specialist';
-    if (elo >= 1200) return 'Pupil';
-    if (elo >= 800) return 'Newbie';
-    return 'Beginner';
-  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -94,7 +80,7 @@ export default function ChatPage() {
     loadMessages();
     const interval = setInterval(loadMessages, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [username]);
 
   const sendMessage = async () => {
     if (!input.trim() || !username) return;
@@ -103,7 +89,7 @@ export default function ChatPage() {
       user: username,
       text: input.trim(),
       time: new Date().toISOString(),
-      title: `[${getEloTitle(elo)}]`,
+      elo
     });
 
     if (error) {
@@ -134,12 +120,21 @@ export default function ChatPage() {
 
       <div className="border p-3 rounded-md max-h-[60vh] overflow-y-auto bg-gray-900 text-white">
         {messages.map((msg) => (
-          <p key={msg.id}>
-            <strong>{msg.title} {msg.user}</strong>: {msg.text}{' '}
-            <span className="text-xs text-gray-400">
-              ({new Date(msg.time).toLocaleString()})
+         
+          <span key={msg.id} className="flex items-center mg-2">
+            <Image 
+              src={`/assets/ranks/${getEloClass(msg.elo ?? 0)}.png`}
+              alt={`${getEloClass(msg.elo ?? 0)}`}
+              width={24}
+              height={24}
+              className="mb-2"
+           ></Image> 
+            <strong className={`${getEloClass(msg.elo ?? 0)}`}>{msg.user}{':'}</strong>
+            <p className="ml-1 mr-1">{msg.text}</p>
+            <span className="flex text-xs text-gray-400 ml-2 mt-1">
+              {' '}({new Date(msg.time).toLocaleString()})
             </span>
-          </p>
+          </span>
         ))}
       </div>
 

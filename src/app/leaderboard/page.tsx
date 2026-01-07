@@ -23,24 +23,6 @@ type HistoryEntry = {
   elo: number
 }
 
-const eloColorMap: Record<string, string> = {
-  'elo-0-400': '#ffffff',
-  'elo-400-800': '#aaaaaa',
-  'elo-800-1200': '#aa5500',
-  'elo-1200-1400': '#00aa00',
-  'elo-1400-1500': '#00aaaa',
-  'elo-1500-1600': '#15d0ff',
-  'elo-1600-1750': '#55aaff',
-  'elo-1750-1900': '#7900fa',
-  'elo-1900-2100': '#aa00aa',
-  'elo-2100-2300': '#fbff00',
-  'elo-2300-2500': '#ffaa00',
-  'elo-2500-2700': '#ff7575',
-  'elo-2700-3000': '#ff0000',
-  'elo-3000-plus': '#8b0000',
-};
-
-
 export default function LeaderboardPage() {
   const [users, setUsers] = useState<User[]>([])
   const [email, setEmail] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -146,8 +128,7 @@ export default function LeaderboardPage() {
 
   const eloDistribution = eloBins.map(bin => {
     const count = users.filter(u => u.elo >= bin.min && u.elo <= bin.max).length;
-    const eloClass = getEloClass(bin.min);         // Get class name
-    const color = eloColorMap[eloClass] ?? '#000'; // Map to color
+    const color = getEloColor(bin.min) ?? '#000'; // Map to color
     return {
       range: bin.label,
       count,
