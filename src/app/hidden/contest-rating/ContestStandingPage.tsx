@@ -327,14 +327,16 @@ export default function ContestStandingPage() {
       <aside className="w-40 bg-gray-800 p-4 flex flex-col">
         <h2 className="text-lg font-bold mb-4">Contest</h2>
         <Link href={`/contest?id=${contestId}`} className={styles.cpButton} prefetch={false}>Info</Link>
-          {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
-            <Link href="/contest-problemset" className={styles.cpButton} prefetch={false}>Problems</Link>
+          {/*{currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
+            <Link href="/contest-problemset" className={styles.cpButton} prefetch={false}>
+              Problems
+            </Link>
           )}
           {contest && (
             <Link href={`/contest-standing?id=${contest.id}`} className={styles.cpButton} prefetch={false}>
               Standing
             </Link>
-          )}
+          )}*/}
       </aside>
 
       {/* Main content */}
