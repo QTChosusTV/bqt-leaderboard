@@ -9,13 +9,14 @@ import Image from 'next/image'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { getDisplayedElo } from "@/utils/eloAccumulation"
-import { getEloClass, getEloColor } from "@/utils/eloDisplay"
+import { getEloClass, getEloColor, ELO_TIERS } from "@/utils/eloDisplay"
 
 interface User {
   username: string
   elo: number
   rawElo: number
   history: HistoryEntry[]
+  cnt: number
 }
 
 type HistoryEntry = {
@@ -47,6 +48,7 @@ export default function LeaderboardPage() {
           ...u,
           rawElo: u.elo,
           elo: displayedElo,
+          cnt: contestCount
         }
       })
 
@@ -217,6 +219,7 @@ export default function LeaderboardPage() {
               <tr>
                 <th style={{ textAlign: 'center' }}>Rank</th>
                 <th style={{ paddingLeft: '25px' }}>Username</th>
+                <th style={{ textAlign: 'center' }} className="w-15">Contests</th>
                 <th style={{ textAlign: 'center' }}>Elo</th>
               </tr>
             </thead>
@@ -250,7 +253,23 @@ export default function LeaderboardPage() {
                         {user.username}
                       </Link>
                     </td>
-                    <td style={{ textAlign: 'center' }} className={eloClass}>
+                    <td style={{ textAlign: 'center' }} className={ELO_TIERS[Math.min(13-user.cnt, 13)].class}>
+                      <span className="flex justify-center items-center">
+                        <strong className="mr-2">{user.cnt}</strong> 
+                        {(user.cnt < 5)? 
+                          <Image src={`/assets/progress-bar/progress-${Math.min(user.cnt, 5)}.png`} alt="" title="Users has to do 5 contests to get thier true skill rating."
+                            width="30"
+                            height="30"
+                            className={`recor hue-${(Math.min(user.cnt, 5) + 2)*30}`}
+                          ></Image>
+                          : 
+                          <p title="Users has to do 5 contests to get thier true skill rating.">✅</p>
+                        }
+                        
+                        {/*<p>{user.cnt >= 5? '✅' : '⏳'}</p>*/}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: 'center' }} className={getEloClass(user.elo)}>
                       {user.elo}
                     </td>
                   </tr>

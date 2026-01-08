@@ -101,6 +101,17 @@ body {
 #currentRating.elo-400-800 { color: #aaaaaa; } /* Write */
 #currentRating.elo-0-400 { color: #ffffff; } /* Write */
 
+.recor {filter: brightness(100%) saturate(100%);}
+.hue-0   { filter: hue-rotate(0deg); }
+.hue-30   { filter: hue-rotate(30deg); }
+.hue-60  { filter: hue-rotate(60deg); }
+.hue-90  { filter: hue-rotate(90deg); }
+.hue-120 { filter: hue-rotate(120deg); }
+.hue-150 { filter: hue-rotate(150deg); }
+.hue-180 { filter: hue-rotate(180deg); }
+.hue-210 { filter: hue-rotate(210deg); }
+.hue-240 { filter: hue-rotate(240deg); }
+
 .redirect-button {
   padding: 10px 68.3px;
   border: 1px outset buttonborder;

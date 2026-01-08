@@ -1,4 +1,4 @@
-const ELO_TIERS = [
+export const ELO_TIERS = [
   { min: 3000, class: 'elo-3000-plus', color: '#8b0000' },
   { min: 2700, class: 'elo-2700-3000', color: '#ff0000' },
   { min: 2500, class: 'elo-2500-2700', color: '#ff7575' },
