@@ -265,8 +265,6 @@ export default function LeaderboardPage() {
                           : 
                           <p title="Users has to do 5 contests to get thier true skill rating.">✅</p>
                         }
-                        
-                        {/*<p>{user.cnt >= 5? '✅' : '⏳'}</p>*/}
                       </span>
                     </td>
                     <td style={{ textAlign: 'center' }} className={getEloClass(user.elo)}>

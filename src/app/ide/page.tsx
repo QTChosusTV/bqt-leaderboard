@@ -147,6 +147,8 @@ export default function IDEPage() {
         // console.log(response);
         // console.log(result);
       } else {
+        //console.log(response);
+        //console.log(result);
         setOutput(`⚠️ ${result.error || 'Execution failed'}\n\n${result.message || 'Check language support (cpp, c, python, java)'}`);
       }
     } catch (error) {

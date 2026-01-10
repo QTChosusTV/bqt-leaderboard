@@ -165,7 +165,12 @@ export default function ProblemsetList() {
     })
 
 
-
+  function hexToRgba(hex: string, alpha: number) {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
 
 
   return (
@@ -265,28 +270,66 @@ export default function ProblemsetList() {
 
       </div>
 
-      <div className="space-y-4">
-        {filteredProblems.map(problem => (
-          <Link key={problem.id} href={`/problems?id=${encodeURIComponent(problem.id)}`} className="flex flex-col md:flex-row md:justify-between border rounded-lg p-4 hover:shadow-lg transition bg-gray-800 hover:bg-gray-600">
-            <div className="flex flex-col md:flex-row md:items-center gap-2">
-              <span className="font-bold text-gray-400">#{problem.id}</span>
-              <h3 className={`font-semibold text-lg ${getEloClass(problem.difficulty)}`}>
-                {solvedProblems.has(problem.id) && <span>✅ </span>}
-                {(!solvedProblems.has(problem.id) && submittedProblems.has(problem.id)) && <span>❌ </span>}
-                {problem.title}
-              </h3>
-            </div>
-            <div className="flex flex-col md:flex-row md:items-center gap-5 mt-2 md:mt-0">
-              <div className="flex flex-wrap gap-1">
-                {problem.tags?.map(tag => (
-                  <span key={tag.tagName} className="bg-blue-600 text-white px-2 py-0.5 rounded text-xs">{tag.tagName}</span>
-                ))}
+      <div className="space-y-0">
+        {filteredProblems.map(problem => {
+
+          const baseBg = hexToRgba(getEloColor(problem.difficulty), 0.15)
+          const hoverBg = hexToRgba(getEloColor(problem.difficulty), 0.3)
+
+          return (
+            <Link
+              key={problem.id}
+              href={`/problems?id=${encodeURIComponent(problem.id)}`}
+              className="block"
+            >
+              <div
+                className="flex flex-col md:flex-row md:justify-between
+                          border p-5 bg-gray-800
+                          hover:shadow-lg transition-colors duration-200"
+                style={{
+                  backgroundColor: baseBg,
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = hoverBg
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = baseBg
+                }}
+              >
+                <div className="flex flex-col md:flex-row md:items-center gap-2">
+                  <span className="font-bold text-gray-400">#{problem.id}</span>
+                  <h3 className={`font-semibold text-lg ${getEloClass(problem.difficulty)}`}>
+                    {solvedProblems.has(problem.id) && '✅ '}
+                    {!solvedProblems.has(problem.id) &&
+                      submittedProblems.has(problem.id) && '❌ '}
+                    {problem.title}
+                  </h3>
+                </div>
+
+                <div className="flex flex-col md:flex-row md:items-center gap-5 mt-2 md:mt-0">
+                  <div className="flex flex-wrap gap-1">
+                    {problem.tags?.map(tag => (
+                      <span
+                        key={tag.tagName}
+                        className="bg-blue-600 text-white px-2 py-0.5 rounded text-xs"
+                      >
+                        {tag.tagName}
+                      </span>
+                    ))}
+                  </div>
+
+                  <span className={`font-bold ${getEloClass(problem.difficulty)}`}>
+                    {problem.difficulty}
+                  </span>
+
+                  <span className="text-gray-400 text-sm">
+                    {new Date(problem.created_at).toLocaleDateString()}
+                  </span>
+                </div>
               </div>
-              <span className={`font-bold ${getEloClass(problem.difficulty)}`}>{problem.difficulty}</span>
-              <span className="text-gray-400 text-sm">{new Date(problem.created_at).toLocaleDateString()}</span>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          )
+        })}
       </div>
     </main>
   )
