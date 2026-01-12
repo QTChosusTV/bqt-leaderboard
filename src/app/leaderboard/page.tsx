@@ -253,7 +253,7 @@ export default function LeaderboardPage() {
                         {user.username}
                       </Link>
                     </td>
-                    <td style={{ textAlign: 'center' }} className={ELO_TIERS[Math.min(13-user.cnt, 13)].class}>
+                    <td style={{ textAlign: 'center' }} className={ELO_TIERS[Math.max(13-user.cnt, 0)].class}>
                       <span className="flex justify-center items-center">
                         <strong className="mr-2">{user.cnt}</strong> 
                         {(user.cnt < 5)? 
