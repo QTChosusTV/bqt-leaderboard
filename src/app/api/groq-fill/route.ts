@@ -7,6 +7,7 @@ You must return ONLY a valid JSON object with these exact fields:
 - title: Problem title string
 - difficulty: Integer rating using the following scale:
   * 500: Super simple (I/O, A+B, trivial tasks)
+  * 800: Simple math problems (Straightforward)
   * 1200: Easy (sum of arrays, count divisors, simple counting)
   * 1400: Normal (simple 1D DP with 2 cases, primes, basic algorithms)
   * 1600: Lower-hard (smallest subsegment, queries, pairs, harder DP, backtracking, permutations)
