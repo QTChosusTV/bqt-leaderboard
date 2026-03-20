@@ -19,7 +19,7 @@ You must return ONLY a valid JSON object with these exact fields:
 - tags: Comma-separated tags (e.g. "math, sieve, number theory")
 - statement: Full problem statement. Use LaTeX: $...$ for inline math, $$...$$ for block math on its own line
 - constrains: Constraints section (e.g. "$1 \\le N \\le 10^5$")
-- examples: Sample input/output formatted as plain text
+- examples: Sample input/output formatted as plain text, each line of input, output starts with '[i] ', '[o] ' respectively.
 - testcases: JSON array of objects with "input" and "output" string fields (3-5 examples)
 - explaination: Explanation of the sample examples
 - test_generator: Python test generator script (see style guide in guidance)
