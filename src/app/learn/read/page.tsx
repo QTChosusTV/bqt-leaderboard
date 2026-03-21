@@ -129,7 +129,7 @@ export default function ReadPage() {
             onClick={() => setPhase('quiz')}
             className="w-full py-3 bg-purple-700 hover:bg-purple-600 text-white font-semibold rounded-xl transition"
           >
-            I've read it — start questions →
+            I&apos;ve read it — start questions →
           </button>
         </div>
       </div>
