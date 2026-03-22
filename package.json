@@ -12,7 +12,7 @@
     "@appletosolutions/reactbits": "^1.0.3",
     "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-slot": "^1.2.3",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.55.0",
     "chart.js": "^4.5.0",
     "chartjs-adapter-date-fns": "^3.0.0",

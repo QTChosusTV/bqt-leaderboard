@@ -1,10 +1,6 @@
-'use client'
-import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL // eslint-disable-line @typescript-eslint/no-unused-vars
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY // eslint-disable-line @typescript-eslint/no-unused-vars
-
-export const supabase = createPagesBrowserClient()
-
-
-
+export const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)

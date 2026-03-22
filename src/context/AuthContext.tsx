@@ -15,6 +15,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
   const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    console.log('[AUTH] event:', _event)
     const user = session?.user ?? null
 
     if (!user) {
@@ -37,6 +38,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return () => subscription.unsubscribe()
 }, [])
+
+
 
   return <AuthContext.Provider value={{ username, email, loading }}>{children}</AuthContext.Provider>
 }
