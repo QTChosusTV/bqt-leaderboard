@@ -61,7 +61,7 @@ export default function LoginPage() {
       }
 
       setSuccess('Login successful! Redirecting...')
-      router.replace('/')
+      window.location.href = '/'
     /*} catch (err) {
       setError('An error occurred during login. Please try again.')
       console.error(err)
