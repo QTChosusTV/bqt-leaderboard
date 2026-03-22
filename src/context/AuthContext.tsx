@@ -14,26 +14,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+  let currentUserId: string | null = null
+
   const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-    console.log('[AUTH] event:', _event)
-    const user = session?.user ?? null
+  console.log('[AUTH] event:', _event, 'user:', session?.user?.email)
+    try {
+      const user = session?.user ?? null
 
-    if (!user) {
-      setUsername(null)
-      setEmail(null)
-      setLoading(false)
-      return
+      if (user?.id === currentUserId) {
+        setLoading(false)  // ← still resolve loading even if skipping
+        return
+      }
+      currentUserId = user?.id ?? null
+
+      if (!user) {
+        setUsername(null)
+        setEmail(null)
+        return
+      }
+
+      const { data } = await supabase
+        .from('users')
+        .select('username')
+        .eq('id', user.id)
+        .single()
+
+      setUsername(data?.username ?? user.email?.split('@')[0] ?? null)
+      setEmail(user.email ?? null)
+    } catch(e) {
+      console.error('[AUTH] failed:', e)
+    } finally {
+      setLoading(false)  // ← ALWAYS runs no matter what
     }
-
-    const { data } = await supabase
-      .from('users')
-      .select('username')
-      .eq('id', user.id)
-      .single()
-
-    setUsername(data?.username ?? user.email?.split('@')[0] ?? null)
-    setEmail(user.email ?? null)
-    setLoading(false)
   })
 
   return () => subscription.unsubscribe()
