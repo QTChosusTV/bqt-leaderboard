@@ -17,15 +17,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   let currentUserId: string | null = null
 
   const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-  console.log('[AUTH] event:', _event, 'user:', session?.user?.email)
+    console.log('[AUTH] event:', _event, 'user:', session?.user?.email)
     try {
       const user = session?.user ?? null
-
-      if (user?.id === currentUserId) {
-        setLoading(false)  // ← still resolve loading even if skipping
-        return
-      }
-      currentUserId = user?.id ?? null
 
       if (!user) {
         setUsername(null)
@@ -39,12 +33,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .eq('id', user.id)
         .single()
 
+      console.log('[AUTH] fetched username:', data?.username)  // ← add this
       setUsername(data?.username ?? user.email?.split('@')[0] ?? null)
       setEmail(user.email ?? null)
     } catch(e) {
       console.error('[AUTH] failed:', e)
     } finally {
-      setLoading(false)  // ← ALWAYS runs no matter what
+      setLoading(false)
     }
   })
 
