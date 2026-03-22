@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .eq('id', user.id)
           .single()
 
-        console.log('[AUTH] fetched username:', data?.username)
+        console.log('[AUTH] fetched data:', data, 'for user:', user.id)
         setUsername(data?.username ?? user.email?.split('@')[0] ?? null)
         setEmail(user.email ?? null)
       } catch(e) {
