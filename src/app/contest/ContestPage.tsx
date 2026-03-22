@@ -1,6 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
+import { useAuth } from '@/context/AuthContext'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
@@ -30,7 +31,7 @@ export default function ContestPage() {
 
   const [contest, setContest] = useState<Contest | null>(null)
   const [currUser, setCurrUser] = useState<any>(null)
-  const [username, setUsername] = useState<string>()
+  const { username } = useAuth()
   const [tick, setTick] = useState(0)
   const router = useRouter()
 
@@ -56,7 +57,6 @@ export default function ContestPage() {
       }
 
       setCurrUser(userData)
-      setUsername(userData.username)
       //console.log("Auth user.id:", user.id)
       //console.log("Fetched userData:", userData)
     }

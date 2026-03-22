@@ -7,6 +7,7 @@ import styles from './chat.module.css'
 import Link from 'next/link';
 import Image from 'next/image'
 import { getEloClass } from '@/utils/eloDisplay'
+import { useAuth } from '@/context/AuthContext'
 
 interface Message {
   id: number;
@@ -19,36 +20,16 @@ interface Message {
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [username, setUsername] = useState('');
+  const { username } = useAuth()
   const [elo, setElo] = useState<number>(0);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user?.id) {
-        console.error('Auth error or user not found:', userError);
-        return;
-      }
-
-      // Get username
-      const { data: userData, error: userFetchError } = await supabase
-        .from('users')
-        .select('username')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (userFetchError || !userData?.username) {
-        console.error('Error fetching username:', userFetchError);
-        return;
-      }
-
-      setUsername(userData.username);
-
       // Get elo from leaderboard
       const { data: lbData, error: lbError } = await supabase
         .from('leaderboard')
         .select('elo')
-        .eq('username', userData.username)
+        .eq('username', username)
         .maybeSingle();
 
       if (lbError) {

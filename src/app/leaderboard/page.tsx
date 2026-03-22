@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuth } from '@/context/AuthContext'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import styles from './leaderboard.module.css'
@@ -26,9 +27,9 @@ type HistoryEntry = {
 
 export default function LeaderboardPage() {
   const [users, setUsers] = useState<User[]>([])
-  const [email, setEmail] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
-  const [username, setUsername] = useState<string | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
   const [tick, setTick] = useState(1)
+  const { username } = useAuth()
+
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase
@@ -71,55 +72,7 @@ export default function LeaderboardPage() {
     return () => clearTimeout(timer)
   }, [tick, users.length])
 
-
-    useEffect(() => {
-    const checkUser = async () => {
-      const {
-        data: { user },
-        error: authError,
-      } = await supabase.auth.getUser()
-
-      if (authError || !user) {
-        console.error("Auth error or no user found")
-        return
-      }
-
-      const id = user.id
-      const email = user.email ?? null
-
-      const { data: userData, error: fetchError } = await supabase
-        .from("users")
-        .select("username")
-        .eq("id", id)
-        .single()
-
-      if (fetchError && fetchError.code !== "PGRST116") {
-        console.error("Fetch user error:", fetchError.message)
-      }
-
-      if (!userData) {
-        const generatedUsername = email?.split("@")[0] ?? "user"
-        const { error: insertError } = await supabase
-          .from("users")
-          .insert([{ id, email, username: generatedUsername }])
-
-        if (insertError) {
-          console.error("Insert error:", insertError.message)
-        } else {
-          setUsername(generatedUsername)
-        }
-      } else {
-        setUsername(userData.username ?? null)
-      }
-
-      setEmail(email)
-    }
-
-    checkUser()
-  }, [])
-
-
- const eloBins: { min: number, max: number, label: string }[] = [];
+  const eloBins: { min: number, max: number, label: string }[] = [];
   for (let start = 0; start <= 2400; start += 50) {
     eloBins.push({
       min: start,

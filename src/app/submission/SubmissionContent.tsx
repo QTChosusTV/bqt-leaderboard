@@ -2,6 +2,7 @@
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState, Suspense } from 'react'
 import { supabase } from '@/utils/supabaseClient'
+import { useAuth } from '@/context/AuthContext'
 
 type Verdict = 'AC' | 'WA' | 'TLE' | 'MLE' | 'RE' | 'CE' | 'Pending'
 
@@ -43,6 +44,7 @@ function overallColor(overall: string): string {
     case 'Runtime Error': return 'text-orange-400'
     case 'Compile Error': return 'text-yellow-400'
     case 'Judging...': return 'text-blue-400'
+    case 'Pending': return 'text-blue-400'
     default: return 'text-white'
   }
 }
@@ -56,6 +58,7 @@ function overallBg(overall: string): string {
     case 'Runtime Error': return 'bg-orange-900/40'
     case 'Compile Error': return 'bg-yellow-900/40'
     case 'Judging...': return 'bg-blue-900/40'
+    case 'Pending': return 'bg-blue-900/40'
     default: return 'bg-gray-900'
   }
 }
@@ -90,6 +93,7 @@ function truncate(text: string, maxLength: number = 100) {
   if (!text) return '';
   return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
 }
+
 
 function TestDropdown({ result, isSpecial = false }: TestDropdownProps) {
   const [open, setOpen] = useState(false)
@@ -133,23 +137,11 @@ function SubmissionContent() {
   const submissionId = searchParams.get('id')
 
   const [submission, setSubmission] = useState<Submission | null>(null)
-  const [currentUser, setCurrentUser] = useState<string | null>(null)
+  const { username, loading: authLoading } = useAuth()
   const [loading, setLoading] = useState(true)
   const [isSpecial, setIsSpecial] = useState(false)
 
-  // Fetch user
   useEffect(() => {
-      const fetchUser = async () => {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
-        const { data } = await supabase.from('users').select('username').eq('id', user.id).single()
-        if (data) setCurrentUser(data.username)
-        setLoading(false); 
-      }
-      fetchUser()
-  }, [])
-
-  useEffect(() => { 
     if (!submissionId) return;
 
     const fetchData = async () => {
@@ -160,14 +152,14 @@ function SubmissionContent() {
         .single();
 
       if (data) setSubmission(data);
-
       setLoading(false); 
     };
 
     fetchData();
 
+    // Use unique channel name per submission
     const channel = supabase
-      .channel('submission-updates')
+      .channel(`submission-${submissionId}`)  // ← unique per submission
       .on(
         'postgres_changes',
         {
@@ -177,11 +169,22 @@ function SubmissionContent() {
           filter: `id=eq.${submissionId}`,
         },
         payload => {
-          setSubmission(payload.new as any);
+          console.log('[REALTIME] results type:', typeof payload.new.results)
+          console.log('[REALTIME] results value:', payload.new.results)
+          console.log('[REALTIME] Got update:', payload.new)
+          const newSub = payload.new as Submission
+          setSubmission({
+            ...newSub,
+            results: typeof newSub.results === 'string' 
+              ? JSON.parse(newSub.results) 
+              : newSub.results
+          })
         }
-      );
-
-    channel.subscribe();
+        
+      )
+      .subscribe((status) => {
+        console.log('[REALTIME] Channel status:', status)  // ← add this to debug
+      });
 
     return () => {
       supabase.removeChannel(channel);
@@ -206,13 +209,17 @@ function SubmissionContent() {
     fetchSpecialTag()
   }, [submission])
 
+  useEffect(() => {
+    if (submission?.overall === 'Judging...' || submission?.overall === 'Pending') {
+      window.scrollBy({ top: 120, behavior: 'smooth' })
+    }
+  }, [submission?.results?.length])
 
-
-
-  if (loading) return <p className="p-6">Loading...</p>
+  if (loading || authLoading) return <p className="p-6">Loading...</p>
   if (!submission) return <p className="p-6 text-red-500">Submission not found.</p>
 
-  if (submission.username !== currentUser) {
+  // Only check permission once both are fully loaded
+  if (!authLoading && username && submission.username !== username) {
     return <p className="p-6 text-red-400 font-bold">You don&apos;t have permission to view this submission.</p>
   }
 
@@ -233,9 +240,19 @@ function SubmissionContent() {
         {submission.code}
       </pre>
 
-      {submission.results?.map((r) => (
-        <TestDropdown key={r.test} result={r} isSpecial={isSpecial} />
-      ))}
+      {/* Live test results */}
+      {submission.results && submission.results.length > 0 && (
+        submission.results.map((r) => (
+          <TestDropdown key={r.test} result ={r} isSpecial={isSpecial} />
+        ))
+      )}
+
+      {/* Show which test is currently being judged */}
+      {(submission.overall === 'Judging...' || submission.overall === 'Pending') && (
+        <div className="mb-4 rounded-xl bg-gray-800 shadow-md p-4 text-blue-400 animate-pulse">
+          ⏳ Judging test {(submission.results?.length ?? 0) + 1}...
+        </div>
+      )}
     </main>
   )
 }

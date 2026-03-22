@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 type ReadQuestion = {
   question: string
   choices: { A: string; B: string; C: string; D: string }
+  explanations?: { A: string; B: string; C: string; D: string }
   answer: string
 }
 
@@ -18,11 +19,27 @@ type Phase = 'loading' | 'error' | 'reading' | 'quiz' | 'done'
 
 const QUEST_ID = 'reading'
 
+function getTodayKey(questId: string) {
+  const d = new Date()
+  return `quest_done_${questId}_${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+}
+
+function alreadyClaimed(questId: string) {
+  return !!localStorage.getItem(getTodayKey(questId))
+}
+
+function markClaimed(questId: string) {
+  localStorage.setItem(getTodayKey(questId), '1')
+}
+
 function sendCompletion() {
+  if (alreadyClaimed(QUEST_ID)) return  // already got reward today
+  markClaimed(QUEST_ID)
   if (window.opener) {
     window.opener.postMessage({ type: 'QUEST_COMPLETE', questId: QUEST_ID }, 'https://www.youtube.com')
   }
 }
+
 
 export default function ReadPage() {
   const [phase, setPhase] = useState<Phase>('loading')
@@ -87,7 +104,9 @@ export default function ReadPage() {
             You got <span className="text-white font-bold">{score} / 3</span> correct
           </p>
           {passed ? (
-            <p className="text-purple-400 font-medium mb-6">+15 min of Shorts unlocked! You can close this window.</p>
+            alreadyClaimed(QUEST_ID)
+            ? <p className="text-amber-400 font-medium mb-6">You already claimed this quest today. Come back tomorrow!</p>
+            : <p className="text-green-400 font-medium mb-6">+15 min of Shorts unlocked! You can close this window.</p>
           ) : (
             <p className="text-neutral-400 mb-6">You need 2/3 to pass. Read more carefully!</p>
           )}
@@ -178,7 +197,6 @@ export default function ReadPage() {
           <div className="bg-purple-500 h-1.5 rounded-full transition-all" style={{ width: `${(current / data.questions.length) * 100}%` }} />
         </div>
 
-        {/* Passage reminder */}
         <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-4 mb-4 text-sm text-neutral-400 italic">
           {data.passage.slice(0, 120)}...
         </div>
@@ -193,45 +211,60 @@ export default function ReadPage() {
           <div className="space-y-2">
             {choices.map(letter => {
               const isSelected = pickedLetter === letter
-              const isCorrectChoice = isSubmitted && letter === q.answer
-              const isWrongChoice = isSubmitted && isSelected && letter !== q.answer
+              const isCorrectChoice = letter === q.answer
+              const isDimmed = isSubmitted
+                ? false // after submit show all with their state
+                : !!pickedLetter && !isSelected // before submit: dim unselected if something is picked
+
+              // State after submit
+              const showCorrect = isSubmitted && isCorrectChoice
+              const showWrong   = isSubmitted && isSelected && !isCorrectChoice
+              const showDimmed  = isSubmitted && !isCorrectChoice && !isSelected
+
+              const explanation = q.explanations?.[letter]
 
               return (
                 <button
                   key={letter}
                   onClick={() => pick(letter)}
                   disabled={isSubmitted}
-                  className={`w-full text-left px-4 py-3 rounded-xl border transition text-sm
-                    ${isCorrectChoice
-                      ? 'bg-green-900/40 border-green-500 text-green-300'
-                      : isWrongChoice
-                      ? 'bg-red-900/40 border-red-500 text-red-300'
-                      : isSelected
-                      ? 'bg-purple-900/40 border-purple-500 text-purple-200'
-                      : 'bg-neutral-800 border-neutral-700 hover:border-neutral-500 text-neutral-300'
+                  className={`w-full text-left px-4 py-3 rounded-xl border transition-all text-sm
+                    ${showCorrect  ? 'bg-green-900 border-green-500 text-green-200' :
+                      showWrong    ? 'bg-red-900 border-red-500 text-red-200' :
+                      showDimmed   ? 'bg-neutral-900 border-neutral-800 text-neutral-600' :
+                      isDimmed     ? 'bg-neutral-800 border-neutral-700/50 text-neutral-500' :
+                      isSelected   ? 'bg-white-900 border-purple-400 text-purple-100' :
+                      'bg-neutral-800 border-neutral-700 hover:border-neutral-500 text-neutral-300'
                     }`}
                 >
-                  <span className="font-bold mr-2">{letter}.</span>{q.choices[letter]}
+                  <div className="flex items-start gap-2">
+                    <span className={`font-bold shrink-0 mt-0.5 ${
+                      showCorrect ? 'text-green-400' :
+                      showWrong   ? 'text-red-400' :
+                      showDimmed  ? 'text-neutral-700' :
+                      isSelected  ? 'text-purple-300' : 'text-neutral-500'
+                    }`}>{letter}.</span>
+                    <div className="flex-1">
+                      <span>{q.choices[letter]}</span>
+                      {isSubmitted && explanation && (
+                        <p className={`mt-1.5 text-xs leading-relaxed ${
+                          showCorrect ? 'text-green-400/80' :
+                          showWrong   ? 'text-red-400/80' :
+                          'text-neutral-500'
+                        }`}>
+                          {explanation}
+                        </p>
+                      )}
+                    </div>
+                    {showCorrect && <span className="text-green-400 shrink-0">✓</span>}
+                    {showWrong   && <span className="text-red-400 shrink-0">✗</span>}
+                  </div>
                 </button>
               )
             })}
           </div>
 
-          {/* Result banner */}
-          {isSubmitted && (
-            <div className={`mt-4 px-4 py-3 rounded-xl text-sm font-medium ${
-              isCorrectPick
-                ? 'bg-green-900/40 border border-green-700/50 text-green-300'
-                : 'bg-red-900/40 border border-red-700/50 text-red-300'
-            }`}>
-              {isCorrectPick
-                ? '✓ Correct!'
-                : `✗ Wrong — correct answer is ${q.answer}: ${q.choices[q.answer as keyof typeof q.choices]}`
-              }
-            </div>
-          )}
-
-          <div className="mt-4">
+          <div className="mt-5">
             {!isSubmitted ? (
               <button
                 onClick={checkAnswer}
@@ -243,7 +276,9 @@ export default function ReadPage() {
             ) : (
               <button
                 onClick={next}
-                className="w-full py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white font-semibold rounded-lg transition"
+                className={`w-full py-2.5 text-white font-semibold rounded-lg transition ${
+                  isCorrectPick ? 'bg-green-700 hover:bg-green-600' : 'bg-neutral-700 hover:bg-neutral-600'
+                }`}
               >
                 {current + 1 >= data.questions.length ? 'See results →' : 'Next question →'}
               </button>

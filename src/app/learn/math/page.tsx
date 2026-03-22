@@ -13,7 +13,22 @@ type Phase = 'loading' | 'error' | 'quiz' | 'done'
 const PASS_THRESHOLD = 8 // out of 10
 const QUEST_ID = 'math'
 
+function getTodayKey(questId: string) {
+  const d = new Date()
+  return `quest_done_${questId}_${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+}
+
+function alreadyClaimed(questId: string) {
+  return !!localStorage.getItem(getTodayKey(questId))
+}
+
+function markClaimed(questId: string) {
+  localStorage.setItem(getTodayKey(questId), '1')
+}
+
 function sendCompletion() {
+  if (alreadyClaimed(QUEST_ID)) return  // already got reward today
+  markClaimed(QUEST_ID)
   if (window.opener) {
     window.opener.postMessage({ type: 'QUEST_COMPLETE', questId: QUEST_ID }, 'https://www.youtube.com')
   }
@@ -112,7 +127,9 @@ export default function MathPage() {
             You got <span className="text-white font-bold">{score} / {questions.length}</span>
           </p>
           {passed ? (
-            <p className="text-green-400 font-medium mb-6">+20 min of Shorts unlocked! You can close this window.</p>
+            alreadyClaimed(QUEST_ID)
+              ? <p className="text-amber-400 font-medium mb-6">You already claimed this quest today. Come back tomorrow!</p>
+              : <p className="text-green-400 font-medium mb-6">+20 min of Shorts unlocked! You can close this window.</p>
           ) : (
             <p className="text-neutral-400 mb-6">You need {PASS_THRESHOLD}/10 to pass. Try again!</p>
           )}

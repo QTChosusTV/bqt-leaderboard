@@ -11,7 +11,7 @@ You must return ONLY a valid JSON object with these exact fields:
   * 1200: Easy (sum of arrays, count divisors, simple counting)
   * 1400: Normal (simple 1D DP with 2 cases, primes, basic algorithms)
   * 1600: Lower-hard (smallest subsegment, queries, pairs, harder DP, backtracking, permutations)
-  * 1900: Hard (stars and bars, simple DSU, simple sweep line, tier 3-4 algo)
+  * 1900: Hard (stars and bars, simple DSU, simple sweep line, ...)
   * 2200: Really hard (DFS, BFS, Fenwick Tree, Segment Tree, heavy thinking required)
   * 2600-3200: NOI tech difficulty (Bellman-Ford, Floyd, SCC, Kruskal, Prim, DP on Tree)
   * 3200+: NOI prize level (HLD, 2D Segtree, 2D BIT, Aho-Corasick, Suffix Array, SOS DP, Convex Hull Trick)
@@ -20,10 +20,10 @@ You must return ONLY a valid JSON object with these exact fields:
 - tags: Comma-separated tags (e.g. "math, sieve, number theory")
 - statement: Full problem statement. Use LaTeX: $...$ for inline math, $$...$$ for block math on its own line
 - constrains: Constraints section (e.g. "$1 \\le N \\le 10^5$")
-- examples: Sample input/output formatted as plain text, each line of input, output starts with '[i] ', '[o] ' respectively.
+- examples: Sample input/output formatted as plain text, each line of input, output starts with '[i] ', '[o] ' respectively. If the input has multiple lines, add [i] or [o] at the start of each lines.
 - testcases: JSON array of objects with "input" and "output" string fields (3-5 examples)
-- explaination: Explanation of the sample examples
-- test_generator: Python test generator script (see style guide in guidance)
+- explaination: Explanation of the sample examples, not the explaination of the problem statement. i.e. if the problem is a binary search, explain each test and each step iteration. Can use LaTeX.
+- test_generator: Python test generator script (MAX_TEST = 50) (see style guide in guidance)
 - ac_code: Complete C++ accepted solution (see style guide in guidance)
 
 Return ONLY the JSON object. No markdown. No code blocks. No extra explanation.`

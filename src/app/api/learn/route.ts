@@ -16,24 +16,61 @@ Return ONLY a valid JSON array of exactly 10 objects, each with:
 
 No markdown, no code blocks, just the raw JSON array.`
 
-const READ_PROMPT = `Generate a short interesting fact for a student to read, then 3 comprehension questions.
-Pick a completely random topic — science, history, geography, animals, space, inventions, food, sports, culture — be as random and varied as possible. Use high temperature thinking.
+function getReadPrompt() {
+  const salt = Math.random().toString(36).slice(2, 10)
+  const rand = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)]
+
+  const subjects = [
+    'a deep sea creature', 'a extinct animal', 'a poisonous plant', 'a desert animal',
+    'a tiny insect', 'a bird that cannot fly', 'a fish that glows in the dark',
+    'a mushroom', 'a parasite', 'a symbiotic relationship between two animals',
+    'the mantis shrimp', 'the tardigrade', 'the axolotl', 'the platypus', 'the pistol shrimp',
+    'how volcanoes form', 'how tsunamis start', 'how caves are made', 'how diamonds form',
+    'how salt gets into the ocean', 'why the sky is blue', 'why leaves change color',
+    'why we yawn', 'why fingerprints exist', 'why we dream',
+    'the invention of bubble gum', 'the invention of velcro', 'the invention of post-it notes',
+    'the invention of the microwave', 'the invention of sunscreen',
+    'an ancient Roman habit', 'an ancient Egyptian food', 'how Vikings navigated',
+    'what ancient Greeks thought about the brain', 'how medieval people told time',
+    'a bizarre world record', 'the worlds largest living thing', 'the worlds deepest lake',
+    'the worlds hottest place', 'the worlds loudest animal',
+    'how chocolate is made', 'how cheese is made', 'where chewing gum comes from',
+    'why spicy food feels hot', 'why onions make you cry',
+    'how the internet sends data', 'how a touchscreen works', 'how GPS knows where you are',
+    'how a refrigerator works', 'how planes stay in the air',
+    'a surprising fact about Mars', 'a surprising fact about the Moon',
+    'a surprising fact about black holes', 'how stars die', 'what comets are made of',
+  ]
+
+  const subject = rand(subjects)
+  const angle = rand([
+    'Focus on the most surprising or weird part of this.',
+    'Focus on something most people would never guess.',
+    'Focus on how it affects or relates to humans.',
+    'Focus on the science behind how it works.',
+    'Focus on a specific record-breaking or extreme aspect.',
+  ])
+
+  return `[uid:${salt}] Write a short reading passage about: ${subject}. ${angle}
 
 Rules:
-- The fact/passage should be 3-5 sentences long, genuinely interesting and educational
-- Questions should test if they actually read and understood it (not just guessing)
-- Each question should have 4 answer choices labeled A, B, C, D
-- Only one is correct
+- 3-5 sentences, genuinely surprising, specific details not vague generalities
+- Grade 5 English only — short sentences, simple words. BANNED words: phenomenon, substantial, organisms, inhabit, renowned, crucial, vital, primarily, approximately, consumption, predator (use hunter instead), nocturnal (use active at night instead)
+- The passage must contain at least one specific number or measurement
+- 3 questions that can ONLY be answered by reading the passage (not general knowledge)
+- 4 choices per question A B C D, one correct
 
-Return ONLY a valid JSON object with:
-- "topic": string (short topic name)
-- "passage": string (the reading passage, 3-5 sentences)
-- "questions": array of 3 objects, each with:
-  - "question": string
-  - "choices": object with keys "A", "B", "C", "D" as strings
-  - "answer": string (just the letter: "A", "B", "C", or "D")
+Return ONLY valid JSON:
+{
+  "topic": "short topic name",
+  "passage": "...",
+  "questions": [
+    { "question": "...", "choices": { "A": "...", "B": "...", "C": "...", "D": "..." }, "answer": "A" }
+  ]
+}
 
-No markdown, no code blocks, just the raw JSON object.`
+Raw JSON only, no markdown.`
+}
 
 export async function POST(req: NextRequest) {
   const { type } = await req.json()
@@ -43,7 +80,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'GROQ_API_KEY not configured' }, { status: 500 })
   }
 
-  const prompt = type === 'math' ? MATH_PROMPT : READ_PROMPT
+  const prompt = type === 'math' ? MATH_PROMPT : getReadPrompt()
 
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',

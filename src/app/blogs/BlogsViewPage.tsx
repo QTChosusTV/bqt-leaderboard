@@ -39,7 +39,6 @@ export default function OJBlogPage() {
   const [search, setSearch] = useState("");
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
-  const [username, setUsername] = useState<string | null>(null);
   const [eloMap, setEloMap] = useState<Record<string, number>>({});
 
 

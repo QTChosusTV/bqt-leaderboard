@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from '@/context/AuthContext'
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabaseClient";
@@ -40,8 +41,8 @@ export default function BlogPage() {
   const id = searchParams.get("id");
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState<string | null>(null);
   const [elo, setElo] = useState<number | null>(null);
+  const { username } = useAuth();
 
   useEffect(() => {
     if (!id) return;
@@ -62,18 +63,6 @@ export default function BlogPage() {
   useEffect(() => {
     if (!post) return;
     const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: userData } = await supabase
-        .from('users')
-        .select('id, username')
-        .eq('id', user.id)
-        .single();
-
-      if (!userData) return;
-
-      setUsername(userData.username);
 
       const { data: eloData } = await supabase
         .from('leaderboard')

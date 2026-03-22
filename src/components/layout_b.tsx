@@ -3,37 +3,28 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/utils/supabaseClient';
+import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link';
 
 export default function AuthButtons() {
-  const [username, setUsername] = useState('');
+  const { username, loading } = useAuth()
   const router = useRouter(); 
 
   const handleProfileClick = () => {
     router.push(`/user?username=${username}`);
   };
 
-  useEffect(() => {
-    const fetch = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user?.id) {
-        const { data } = await supabase
-          .from('users')
-          .select('username')
-          .eq('id', user.id)
-          .maybeSingle();
-        if (data?.username) {
-          setUsername(data.username);
-        }
-      }
-    };
-    fetch();
-  }, []);
 
   const logout = async () => {
     await supabase.auth.signOut();
     window.location.reload();
   };
+
+  if (loading) return (
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <span className="auth-button" style={{ opacity: 0.4 }}>...</span>
+    </div>
+  )
 
   if (!username) {
     return (

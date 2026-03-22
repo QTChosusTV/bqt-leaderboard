@@ -40,9 +40,9 @@ const DEFAULT_GUIDANCE = `Test generator style (match sinh_test.py):
 AC code style (match solver.cpp):
 - Start with: #include <bits/stdc++.h>
 using namespace std;
-- Add: ios::sync_with_stdio(false); cin.tie(nullptr);
 - Write clean, efficient competitive programming C++
 - End with: return 0;
+- Use macro to shorten the code as much as possible (i.e. fito(i, a, b) = for(int i=a; i<=b; i++), fastio = ios::sync_with_stdio(false); cin.tie(nullptr);)
 
 Problem format:
 - Statement: use LaTeX math — $...$ for inline, $$...$$ for block on its own line

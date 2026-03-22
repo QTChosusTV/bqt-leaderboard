@@ -7,6 +7,7 @@ import './cpls.css'
 import styles from './cpls.module.css'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
+import { useAuth } from '@/context/AuthContext'
 
 interface Problem {
   id: number
@@ -39,7 +40,7 @@ interface Contest {
 }
 
 export default function ContestProblemset() {
-  const [username, setUsername] = useState<string | null>(null)
+  const { username } = useAuth()
   const [contestId, setContestId] = useState<number | null>(null)
   const [contestProblems, setContestProblems] = useState<Problem[]>([])
   const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set())
@@ -75,7 +76,6 @@ export default function ContestProblemset() {
       if (!userData) return;
 
       setCurrUser(userData);
-      setUsername(userData.username);
     };
     fetchUser();
   }, []);
@@ -99,7 +99,6 @@ export default function ContestProblemset() {
 
       if (!userData) return
 
-      setUsername(userData.username)
       if (userData.current_contest_id && userData.current_contest_id !== 0) {
         setContestId(userData.current_contest_id)
 

@@ -5,6 +5,7 @@ import Image from 'next/image'
 import AuthButtons from '@/components/layout_b'; 
 import Link from 'next/link';
 import '@pitininja/cap-react-widget/dist/index.css';
+import { AuthProvider } from '@/context/AuthContext'
 
 // const firaCode = Fira_Code({ subsets: ['latin'], variable: '--font-fira', weight: ['400', '500', '700'] })
 
@@ -31,19 +32,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`antialiased`}>
-        <nav className="p-4 flex justify-between items-center main-top">
-          <Link href="/" className="flex items-center gap-4 bqtoj">
-            <Image src="/assets/web-icon.png" alt="Website Logo" width={40} height={40} />
-            BQTOJ Home
-          </Link>
-          <div className="flex gap-4">
-            <AuthButtons />
-          </div>
-        </nav>
-
-        {children}
+        <AuthProvider>  {/* ← moved up to wrap everything */}
+          <nav className="p-4 flex justify-between items-center main-top">
+            <Link href="/" className="flex items-center gap-4 bqtoj">
+              <Image src="/assets/web-icon.png" alt="Website Logo" width={40} height={40} />
+              BQTOJ Home
+            </Link>
+            <div className="flex gap-4">
+              <AuthButtons />
+            </div>
+          </nav>
+          {children}
+        </AuthProvider>
       </body>
     </html>
-  );
+  )
 }
-

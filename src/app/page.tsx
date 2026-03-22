@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
+import { useAuth } from '@/context/AuthContext'
 
 const eloRanks = [
   { class: 'elo-0-400', min: 0 },
@@ -14,7 +15,7 @@ const eloRanks = [
   { class: 'elo-1200-1400', min: 1200 },
   { class: 'elo-1400-1500', min: 1400 },
   { class: 'elo-1500-1600', min: 1500 },
-  { class: 'elo-1600-1750', min: 1600 },
+  { class: 'elo-1600-1750', min: 1600 }, 
   { class: 'elo-1750-1900', min: 1750 },
   { class: 'elo-1900-2100', min: 1900 },
   { class: 'elo-2100-2300', min: 2100 },
@@ -50,13 +51,12 @@ interface User {
 
 
 export default function HomePage() {
-  const [email, setEmail] = useState<string | null>(null)
-  const [username, setUsername] = useState<string | null>(null)
   const [upcoming, setUpcoming] = useState<Contest[]>([])
   const [ongoing, setOngoing] = useState<Contest[]>([])
   const [elo, setElo] = useState<number>(0)
   const [past, setPast] = useState<Contest[]>([])
   const [tick, setTick] = useState(0)
+  const { username, email } = useAuth()
 
   useEffect(() => {
     const interval = setInterval(() => setTick(prev => prev + 1), 1000)
@@ -64,40 +64,7 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
-    const checkUser = async () => {
-      const {
-        data: { user },
-        error: authError,
-      } = await supabase.auth.getUser()
-
-      if (authError || !user) return console.error("Auth error or no user found")
-
-      const id = user.id
-      const email = user.email ?? null
-
-      const { data: userData, error: fetchError } = await supabase
-        .from("users")
-        .select("username")
-        .eq("id", id)
-        .single()
-
-      if (fetchError && fetchError.code !== "PGRST116") {
-        console.error("Fetch user error:", fetchError.message)
-      }
-
-      if (!userData) {
-        const generatedUsername = email?.split("@")[0] ?? "user"
-        const { error: insertError } = await supabase
-          .from("users")
-          .insert([{ id, email, username: generatedUsername }])
-
-        if (!insertError) setUsername(generatedUsername)
-      } else {
-        setUsername(userData.username ?? null)
-      }
-
-      setEmail(email)
-    }
+    
 
     const fetchContests = async () => {
       const { data, error } = await supabase
@@ -124,7 +91,6 @@ export default function HomePage() {
       setPast(past.sort((a, b) => new Date(b.time_end ?? 0).getTime() - new Date(a.time_end ?? 0).getTime()).slice(0, 10))
     }
 
-    checkUser()
     fetchContests()
   }, [])
 
@@ -136,12 +102,9 @@ export default function HomePage() {
         .from('leaderboard')
         .select('elo, history')
         .eq('username', username)
-        .single();
+        .maybeSingle()  // ✅ won't error if no row found
 
-      if (error) {
-        console.error('Supabase fetch error:', error.message);
-        return;
-      }
+      if (!data) return  // user just hasn't competed yet
 
       const contestCount = data.history?.length ?? 0
       setElo(getDisplayedElo(data.elo, contestCount));

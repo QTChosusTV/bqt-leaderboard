@@ -10,6 +10,7 @@ import Link from 'next/link'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 import { getDisplayedElo } from '@/utils/eloAccumulation'
+import { useAuth } from '@/context/AuthContext'
 
 interface Standing {
   id: string
@@ -54,12 +55,12 @@ export default function ContestStandingPage() {
   const [standings, setStandings] = useState<Standing[]>([])
   const [problems, setProblems] = useState<{ pid: string; pname: string; score: number }[]>([])
   const [eloMap, setEloMap] = useState<Record<string, number>>({})
-  const [username, setUsername] = useState('')
   const [tick, setTick] = useState(0)
   const [currUser, setCurrUser] = useState<any>(null);
   const [contest, setContest] = useState<Contest | null>(null);
   const [ratedOnly, setRatedOnly] = useState(false); // toggle filter
   const debuggg = useState(false);
+  const { username } = useAuth()
   
   useEffect(() => {
     if (!contestId) return;
@@ -76,24 +77,21 @@ export default function ContestStandingPage() {
   
   
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-  
+    if (!username) return  // wait for useAuth to resolve
+    
+    const fetchCurrUser = async () => {
       const { data: userData } = await supabase
         .from('users')
-        .select('id, username, current_contest_id')
-        .eq('id', user.id)
-        .single();
-  
-      if (!userData) return;
-  
-      setCurrUser(userData);
-      setUsername(userData.username);
-    };
-    fetchUser();
-  }, []);
-  
+        .select('id, current_contest_id')  // username already known, skip it
+        .eq('username', username)
+        .single()
+
+      if (userData) setCurrUser(userData)
+    }
+
+    fetchCurrUser()
+  }, [username])
+    
   useEffect(() => {
     const interval = setInterval(() => setTick(prev => prev + 1), 1000)
     return () => clearInterval(interval)

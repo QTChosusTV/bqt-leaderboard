@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuth } from '@/context/AuthContext'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState, Suspense } from 'react'
 import { supabase } from '@/utils/supabaseClient'
@@ -16,40 +17,7 @@ function SubmitPageContent() {
   const [code, setCode] = useState('')
   const [language, setLanguage] = useState('cpp')
   const [submitting, setSubmitting] = useState(false)
-  const [username, setUsername] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchUsername = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      const metadata = user?.user_metadata as UserMetadata | undefined
-      if (metadata?.username) {
-        setUsername(metadata.username)
-        return
-      }
-
-      if (user?.user_metadata?.username) {
-        setUsername(user.user_metadata.username)
-        return
-      }
-
-      if (user?.email) {
-        const { data, error } = await supabase
-          .from('users')
-          .select('username')
-          .eq('email', user.email)
-          .single()
-
-        if (data?.username) setUsername(data.username)
-        else setUsername(user.email)
-
-        //console.log(error)
-      }
-    }
-
-    fetchUsername()
-  }, [])
+  const { username } = useAuth()
 
   const handleSubmit = async () => {
     if (!username || !problemId) {

@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth } from '@/context/AuthContext'
 import { useState, useEffect, useRef } from 'react';
 import { MonacoEditor } from '@/components/ide/monaco-editor';
 import { ThemeSwitcher } from '@/components/ide/theme-switcher';
@@ -25,21 +26,9 @@ export default function IDEPage() {
   const [isLoading, setIsLoading] = useState(true);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const autoSaveInterval = useRef<NodeJS.Timeout | null>(null);
+  const { username } = useAuth()
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
-      } catch (error) {
-        console.error('Error checking auth:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
@@ -110,7 +99,7 @@ export default function IDEPage() {
   }, [isResizing]);
 
   const handleRunCode = async () => {
-    if (!user) {
+    if (!username) {
       setOutput('❌ Authentication Required\n\nYou must be signed in to run code.\n\nPlease sign in at /auth');
       return;
     }

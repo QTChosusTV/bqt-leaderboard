@@ -1,6 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
+import { useAuth } from '@/context/AuthContext'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
@@ -54,7 +55,7 @@ export default function ContestStandingPage() {
   const [standings, setStandings] = useState<Standing[]>([])
   const [problems, setProblems] = useState<{ pid: string; pname: string; score: number }[]>([])
   const [eloMap, setEloMap] = useState<Record<string, number>>({})
-  const [username, setUsername] = useState('')
+  const { username } = useAuth()
   const [tick, setTick] = useState(0)
   const [currUser, setCurrUser] = useState<any>(null);
   const [contest, setContest] = useState<Contest | null>(null);
@@ -89,7 +90,6 @@ export default function ContestStandingPage() {
       if (!userData) return;
   
       setCurrUser(userData);
-      setUsername(userData.username);
     };
     fetchUser();
   }, []);

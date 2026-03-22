@@ -9,6 +9,7 @@ import styles from "./submissions.module.css"
 import Image from 'next/image'
 import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
+import { useAuth } from '@/context/AuthContext'
 
 type Submission = {
   id: number
@@ -29,59 +30,11 @@ export default function SubmissionsPage() {
 
   const [subs, setSubs] = useState<Submission[]>([])
   const [loading, setLoading] = useState(true)
-  const [username, setUsername] = useState<string | null>(null)
-  const [email, setEmail] = useState<string | null>(null)
+  const { username } = useAuth()
 
   useEffect(() => {
     router.refresh()
   }, [page])
-
-
-  useEffect(() => {
-    const checkUser = async () => {
-      const {
-        data: { user },
-        error: authError,
-      } = await supabase.auth.getUser()
-
-      if (authError || !user) {
-        console.error("Auth error or no user found")
-        return
-      }
-
-      const id = user.id
-      const email = user.email ?? null
-
-      const { data: userData, error: fetchError } = await supabase
-        .from("users")
-        .select("username")
-        .eq("id", id)
-        .single()
-
-      if (fetchError && fetchError.code !== "PGRST116") {
-        console.error("Fetch user error:", fetchError.message)
-      }
-
-      if (!userData) {
-        const generatedUsername = email?.split("@")[0] ?? "user"
-        const { error: insertError } = await supabase
-          .from("users")
-          .insert([{ id, email, username: generatedUsername }])
-
-        if (insertError) {
-          console.error("Insert error:", insertError.message)
-        } else {
-          setUsername(generatedUsername)
-        }
-      } else {
-        setUsername(userData.username ?? null)
-      }
-
-      setEmail(email)
-    }
-
-    checkUser()
-  }, [])
 
   useEffect(() => {
     const loadSubs = async () => {
