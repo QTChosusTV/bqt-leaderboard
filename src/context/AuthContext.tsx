@@ -8,6 +8,9 @@ const AuthContext = createContext<{ username: string | null, email: string | nul
   loading: true
 })
 
+console.log('[AUTH] supabase url:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+console.log('[AUTH] has key:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [username, setUsername] = useState<string | null>(null)
   const [email, setEmail] = useState<string | null>(null)
