@@ -15,6 +15,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!['SIGNED_IN', 'INITIAL_SESSION', 'TOKEN_REFRESHED', 'SIGNED_OUT'].includes(_event)) return
       console.log('[AUTH] event:', _event, 'user:', session?.user?.email)
       try {
         const user = session?.user ?? null
@@ -25,13 +26,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return
         }
 
-        const { data } = await supabase
+        console.log('[AUTH] about to fetch user from DB, id:', user.id)  // ← add
+
+        const { data, error } = await supabase  // ← capture error too
           .from('users')
           .select('username')
           .eq('id', user.id)
           .single()
 
-        console.log('[AUTH] fetched data:', data, 'for user:', user.id)
+        console.log('[AUTH] fetch result - data:', data, 'error:', error)  // ← add
         setUsername(data?.username ?? user.email?.split('@')[0] ?? null)
         setEmail(user.email ?? null)
       } catch(e) {
