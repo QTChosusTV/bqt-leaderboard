@@ -18,12 +18,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log('[AUTH] event:', _event)
       try {
         const user = session?.user ?? null
+        console.log('[AUTH] user object:', JSON.stringify(user))
 
         if (!user) {
           setUsername(null)
           setEmail(null)
           return
         }
+
+        console.log('[AUTH] proceeding to fetch...')
 
         const cachedEmail = user.email ?? null
         setEmail(cachedEmail)
