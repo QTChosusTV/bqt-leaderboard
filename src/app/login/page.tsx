@@ -61,7 +61,7 @@ export default function LoginPage() {
       }
 
       setSuccess('Login successful! Redirecting...')
-      setTimeout(() => router.push('/'), 1000) 
+      router.replace('/')
     /*} catch (err) {
       setError('An error occurred during login. Please try again.')
       console.error(err)

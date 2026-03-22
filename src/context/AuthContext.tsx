@@ -15,13 +15,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!['SIGNED_IN', 'INITIAL_SESSION', 'TOKEN_REFRESHED', 'SIGNED_OUT'].includes(_event)) return
-      console.log('[AUTH] event:', _event, 'user:', session?.user?.email)
-
-      if (_event === 'SIGNED_IN') {
-        await new Promise(resolve => setTimeout(resolve, 500))
-      }
-
+      console.log('[AUTH] event:', _event)
       try {
         const user = session?.user ?? null
 
@@ -31,17 +25,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return
         }
 
-        console.log('[AUTH] about to fetch user from DB, id:', user.id)  // ← add
+        const cachedEmail = user.email ?? null
+        setEmail(cachedEmail)
 
-        const { data, error } = await supabase  // ← capture error too
+        const { data, error } = await supabase
           .from('users')
           .select('username')
           .eq('id', user.id)
           .single()
 
-        console.log('[AUTH] fetch result - data:', data, 'error:', error)  // ← add
+        console.log('[AUTH] fetch result:', data, error)
         setUsername(data?.username ?? user.email?.split('@')[0] ?? null)
-        setEmail(user.email ?? null)
       } catch(e) {
         console.error('[AUTH] failed:', e)
       } finally {
@@ -49,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     })
 
-    return () => subscription.unsubscribe()
+    return () => subscription.unsubscribe()  // ← now subscription is defined
   }, [])
 
   return <AuthContext.Provider value={{ username, email, loading }}>{children}</AuthContext.Provider>
