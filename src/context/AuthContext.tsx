@@ -8,48 +8,46 @@ const AuthContext = createContext<{ username: string | null, email: string | nul
   loading: true
 })
 
-console.log('[AUTH] supabase url:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-console.log('[AUTH] has key:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [username, setUsername] = useState<string | null>(null)
   const [email, setEmail] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      console.log('[AUTH] event:', _event)
-      try {
-        const user = session?.user ?? null
-        console.log('[AUTH] user object:', JSON.stringify(user))
+  const loadUser = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const user = session?.user ?? null
 
-        if (!user) {
-          setUsername(null)
-          setEmail(null)
-          return
-        }
-
-        console.log('[AUTH] proceeding to fetch...')
-
-        const cachedEmail = user.email ?? null
-        setEmail(cachedEmail)
-
-        const { data, error } = await supabase
-          .from('users')
-          .select('username')
-          .eq('id', user.id)
-          .single()
-
-        console.log('[AUTH] fetch result:', data, error)
-        setUsername(data?.username ?? user.email?.split('@')[0] ?? null)
-      } catch(e) {
-        console.error('[AUTH] failed:', e)
-      } finally {
-        setLoading(false)
+      if (!user) {
+        setUsername(null)
+        setEmail(null)
+        return
       }
+
+      setEmail(user.email ?? null)
+
+      const { data } = await supabase
+        .from('users')
+        .select('username')
+        .eq('id', user.id)
+        .single()
+
+      setUsername(data?.username ?? user.email?.split('@')[0] ?? null)
+    } catch(e) {
+      console.error('[AUTH] failed:', e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      loadUser()
     })
 
-    return () => subscription.unsubscribe()  // ← now subscription is defined
+    return () => subscription.unsubscribe()
   }, [])
 
   return <AuthContext.Provider value={{ username, email, loading }}>{children}</AuthContext.Provider>
