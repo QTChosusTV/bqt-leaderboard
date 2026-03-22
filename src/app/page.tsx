@@ -8,6 +8,9 @@ import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 import { useAuth } from '@/context/AuthContext'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 const eloRanks = [
   { class: 'elo-0-400', min: 0 },
   { class: 'elo-400-800', min: 400 },
