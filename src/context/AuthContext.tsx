@@ -14,39 +14,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-  let currentUserId: string | null = null
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log('[AUTH] event:', _event, 'user:', session?.user?.email)
+      try {
+        const user = session?.user ?? null
 
-  const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-    console.log('[AUTH] event:', _event, 'user:', session?.user?.email)
-    try {
-      const user = session?.user ?? null
+        if (!user) {
+          setUsername(null)
+          setEmail(null)
+          return
+        }
 
-      if (!user) {
-        setUsername(null)
-        setEmail(null)
-        return
+        const { data } = await supabase
+          .from('users')
+          .select('username')
+          .eq('id', user.id)
+          .single()
+
+        console.log('[AUTH] fetched username:', data?.username)
+        setUsername(data?.username ?? user.email?.split('@')[0] ?? null)
+        setEmail(user.email ?? null)
+      } catch(e) {
+        console.error('[AUTH] failed:', e)
+      } finally {
+        setLoading(false)
       }
+    })
 
-      const { data } = await supabase
-        .from('users')
-        .select('username')
-        .eq('id', user.id)
-        .single()
-
-      console.log('[AUTH] fetched username:', data?.username)  // ← add this
-      setUsername(data?.username ?? user.email?.split('@')[0] ?? null)
-      setEmail(user.email ?? null)
-    } catch(e) {
-      console.error('[AUTH] failed:', e)
-    } finally {
-      setLoading(false)
-    }
-  })
-
-  return () => subscription.unsubscribe()
-}, [])
-
-
+    return () => subscription.unsubscribe()
+  }, [])
 
   return <AuthContext.Provider value={{ username, email, loading }}>{children}</AuthContext.Provider>
 }
