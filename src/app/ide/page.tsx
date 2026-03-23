@@ -23,10 +23,9 @@ export default function IDEPage() {
   const [timeExec, setTimeExec] = useState(0);
   const [isResizing, setIsResizing] = useState<'horizontal' | 'vertical' | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const autoSaveInterval = useRef<NodeJS.Timeout | null>(null);
-  const { username } = useAuth()
+  const { username, loading } = useAuth()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -181,7 +180,7 @@ export default function IDEPage() {
     }
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-gray-100">Loading...</div>
