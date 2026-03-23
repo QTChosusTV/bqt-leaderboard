@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
+
+
+
+h1, h2 {
+    color: #e0e0e0;
+}
+
+h1 span {
+    color: inherit; /* Ensure h1 doesn't override span colors */
+}
+
+
+
+.contest-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.contest-list li {
+    background-color: #5d5d5d;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+/* Top 100 users in leaderboard */
+.elo-top-100 { font-weight: bold; }
+
+
+/* Animation for the shiny effect */
+@keyframes shine {
+    0% {
+        left: -150%;
+    }
+    100% {
+        left: 150%;
+    }
+}
+
+/* Chat styles */
+#chatMessages {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #444;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #222;
+    color: #e0e0e0;
+}
+
+#chatMessages p {
+    margin: 5px 0;
+}
+
+#chatMessages strong {
+    color: #55aaff; /* Blue for usernames, consistent with Elo colors */
+}
+
+#chatInput {
+    width: 70%;
+    padding: 5px;
+    margin-right: 10px;
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+#chatInput:focus {
+    outline: none;
+    border-color: #55aaff;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #55aaff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4488cc;
+}
