@@ -52,14 +52,18 @@ Problem format:
 - Fixed format:
 "
 <Statement>
-
+$~~~~$ (each blank line needs to not leave it fully blank)
 <Statement2>
-
-- Input
-<4 spaces for spacing><Describe input>
 ...
-- Output
-<4 spaces for spacing><Describe output>
+
+- Input (MUST HAVE)
+$~~~~\cdot$<Describe input line1>
+$~~~~\cdot$<Describe input line2>
+(can increase amount of spacing by amount of "~")
+...
+- Output (MUST HAVE)
+$~~~~\cdot$<Describe output line1>
+$~~~~\cdot$<Describe output line2>
 ...
 "
 - Format example: 
