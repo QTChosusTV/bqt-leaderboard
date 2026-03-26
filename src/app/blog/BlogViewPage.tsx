@@ -5,16 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { getDisplayedElo } from "@/utils/eloAccumulation"
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import remarkBreaks from "remark-breaks";
-import rehypeHighlight from "rehype-highlight";
-import rehypeSlug from "rehype-slug";
-import remarkHeadingId from "remark-heading-id";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import MarkdownRenderer from "@/components/renderer/MarkdownRenderer";
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
+import "@/components/renderer/MarkdownRenderer.css";
 
 import "highlight.js/styles/github-dark.css"; // or any theme you like
 import "katex/dist/katex.min.css";
@@ -121,31 +114,8 @@ export default function BlogPage() {
             vào {new Date(post.created_at).toLocaleString("vi-VN")}
         </div>
 
-        <div className="
-        prose max-w-none 
-        [&_p]:my-5 
-        [&_h1]:mt-4 [&_h2]:mt-4 [&_h3]:mt-4 [&_h1]:mb-2 [&_h2]:mb-2 [&_h3]:mb-2 
-        [&_li]:my-1 
-        [&_table]:border  [&_table]:border-gray-500 
-        [&_th]:bg-gray-500 [&_th]:px-4 [&_th]:py-2 
-        [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-gray-500 
-        [&_h1]:text-4xl [&_h2]:text-3xl [&_h3]:text-2xl [&_h4]:text-xl 
-        [&_h1]:font-extrabold [&_h2]:font-bold [&_h3]:font-semibold
-        [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
-            rehypePlugins={[
-              rehypeKatex,
-              rehypeSlug,
-              [rehypeAutolinkHeadings, { behaviour: "append", properties: { className: ["heading-anchor"] } }],
-              rehypeHighlight
-            ]}
-          >
-            {post.content}
-          </ReactMarkdown>
-        </div>
-
-
+        
+        <MarkdownRenderer content={post.content} />
 
         {post.tags && post.tags.length > 0 && (
             <div className="mt-6 flex flex-wrap gap-2">

@@ -1,0 +1,202 @@
+/* MarkdownRenderer.css
+   Scoped under .md-body — won't leak into surrounding layout.
+   Pair with github-dark highlight.js theme + KaTeX CSS.
+*/
+
+/* ─── Base ─────────────────────────────────────────────── */
+.md-body {
+  --md-font-body:    "IosevkaCharon", monospace;
+  --md-font-mono:    "IosevkaCharon", monospace;
+  --md-color-text:   #e2e8f0;
+  --md-color-muted:  #94a3b8;
+  --md-color-accent: #60a5fa;       /* blue-400  */
+  --md-color-border: #334155;       /* slate-700 */
+  --md-color-surface:#1e293b;       /* slate-800 */
+  --md-color-code-bg:#0f172a;       /* slate-900 */
+  --md-color-mark:   #1e3a5f;       /* highlight bg for inline code */
+
+  font-family:    var(--md-font-body);
+  font-size:      1.0625rem;        /* 17 px — slightly larger than Tailwind default */
+  line-height:    1.85;
+  color:          var(--md-color-text);
+  word-break:     break-word;
+  overflow-wrap:  break-word;
+}
+
+/* ─── Paragraphs ────────────────────────────────────────── */
+.md-body p {
+  margin: 1.25em 0;
+}
+
+/* ─── Headings ──────────────────────────────────────────── */
+.md-body h1,
+.md-body h2,
+.md-body h3,
+.md-body h4,
+.md-body h5,
+.md-body h6 {
+  font-family:  "IosevkaCharon", monospace; /* crisp sans for headings */
+  line-height:  1.25;
+  font-weight:  700;
+  color:        #f1f5f9;            /* slate-100 */
+  margin-top:   2em;
+  margin-bottom: 0em;
+  scroll-margin-top: 5rem;          /* offset for sticky nav */
+}
+
+.md-body h1 { font-size: 2.1rem;   border-bottom: 2px solid var(--md-color-border); padding-bottom: 0.35em; }
+.md-body h2 { font-size: 1.65rem;  border-bottom: 1px solid var(--md-color-border); padding-bottom: 0.25em; }
+.md-body h3 { font-size: 1.3rem; }
+.md-body h4 { font-size: 1.1rem; }
+.md-body h5 { font-size: 1rem; }
+.md-body h6 { font-size: 0.9rem;   color: var(--md-color-muted); }
+
+/* anchor links appended by rehype-autolink-headings */
+.md-body .heading-anchor {
+  opacity:         0;
+  margin-left:     0.4em;
+  font-size:       0.8em;
+  color:           var(--md-color-accent);
+  text-decoration: none;
+  transition:      opacity 0.15s;
+}
+.md-body h1:hover .heading-anchor,
+.md-body h2:hover .heading-anchor,
+.md-body h3:hover .heading-anchor,
+.md-body h4:hover .heading-anchor {
+  opacity: 1;
+}
+
+/* ─── Links ─────────────────────────────────────────────── */
+.md-body a {
+  color:           var(--md-color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: transparent;
+  transition:      text-decoration-color 0.15s, color 0.15s;
+}
+.md-body a:hover {
+  color:                  #93c5fd;   /* blue-300 */
+  text-decoration-color:  #93c5fd;
+}
+
+/* ─── Lists ─────────────────────────────────────────────── */
+.md-body ul { list-style: disc;    padding-left: 1.6em; }
+.md-body ol { list-style: decimal; padding-left: 1.6em; }
+.md-body li { margin: 0.3em 0; }
+.md-body li > p { margin: 0.25em 0; }  /* tighter inside list items */
+
+/* task lists */
+.md-body input[type="checkbox"] {
+  accent-color: var(--md-color-accent);
+  margin-right:  0.4em;
+}
+
+/* ─── Inline code ───────────────────────────────────────── */
+.md-body :not(pre) > code {
+  font-family:      var(--md-font-mono);
+  font-size:        0.875em;
+  background:       var(--md-color-mark);
+  color:            #fbbf24;        /* amber-400 — pops against dark bg */
+  padding:          0.15em 0.4em;
+  border-radius:    4px;
+  border:           1px solid #1e40af44;
+}
+
+/* ─── Code blocks ───────────────────────────────────────── */
+.md-body pre {
+  font-family:    var(--md-font-mono);
+  font-size:      0.875rem;
+  background:     var(--md-color-code-bg) !important;
+  border:         1px solid var(--md-color-border);
+  border-radius:  8px;
+  padding:        1.1em 1.3em;
+  overflow-x:     auto;
+  margin:         1.5em 0;
+  line-height:    1.65;
+  /* subtle left accent stripe */
+  border-left:    3px solid var(--md-color-accent);
+}
+.md-body pre code {
+  background: transparent !important;
+  color:      inherit;
+  padding:    0;
+  border:     none;
+  font-size:  1em;
+}
+
+/* ─── Blockquotes ───────────────────────────────────────── */
+.md-body blockquote {
+  margin:        1.5em 0;
+  padding:       0.8em 1.2em;
+  border-left:   4px solid var(--md-color-accent);
+  background:    var(--md-color-surface);
+  border-radius: 0 6px 6px 0;
+  color:         var(--md-color-muted);
+  font-style:    italic;
+}
+.md-body blockquote p { margin: 0.3em 0; }
+.md-body blockquote strong { color: var(--md-color-text); }
+
+/* ─── Horizontal rule ───────────────────────────────────── */
+.md-body hr {
+  border:        none;
+  border-top:    1px solid var(--md-color-border);
+  margin:        2.5em 0;
+}
+
+/* ─── Tables ────────────────────────────────────────────── */
+.md-body table {
+  width:           100%;
+  border-collapse: collapse;
+  margin:          1.5em 0;
+  font-size:       0.9375rem;
+  border:          1px solid var(--md-color-border);
+  border-radius:   8px;
+  overflow:        hidden;          /* clips rounded corners */
+  display:         block;           /* allow horizontal scroll */
+  overflow-x:      auto;
+}
+.md-body thead {
+  background: var(--md-color-surface);
+}
+.md-body th {
+  padding:     0.65em 1em;
+  text-align:  left;
+  font-weight: 600;
+  color:       #f1f5f9;
+  border-bottom: 2px solid var(--md-color-border);
+}
+.md-body td {
+  padding:       0.55em 1em;
+  border-top:    1px solid var(--md-color-border);
+  border-right:  1px solid var(--md-color-border);
+}
+.md-body td:last-child { border-right: none; }
+.md-body tbody tr:hover {
+  background: #ffffff08;
+}
+
+/* ─── Images ────────────────────────────────────────────── */
+.md-body img {
+  max-width:    100%;
+  height:       auto;
+  border-radius: 6px;
+  margin:       1em 0;
+  border:       1px solid var(--md-color-border);
+}
+
+/* ─── KaTeX / Math ──────────────────────────────────────── */
+.md-body .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding:    0.5em 0;
+  margin:     1.25em 0;
+}
+.md-body .katex {
+  font-size: 1.1em;
+}
+
+/* ─── Strong / Em ───────────────────────────────────────── */
+.md-body strong { color: #f1f5f9; font-weight: 700; }
+.md-body em     { color: #cbd5e1; }

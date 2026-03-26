@@ -6,11 +6,10 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import Link from 'next/link'
-import ReactMarkdown from 'react-markdown'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
-import remarkGfm from "remark-gfm"
-import remarkBreaks from "remark-breaks"
+import MarkdownRenderer from "@/components/renderer/MarkdownRenderer"
 import styles from "./ct.module.css"
+import "@/components/renderer/MarkdownRenderer.css";
 
 interface Contest {
   id: number
@@ -252,13 +251,7 @@ export default function ContestPage() {
                 </button>
               )}
 
-              <div className="prose prose-invert" style={{ marginTop: 40 }}>
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm, remarkBreaks]}
-                >
-                  {contest.descriptions}
-                </ReactMarkdown>
-              </div>
+              <MarkdownRenderer content={contest.descriptions} className="mt-10" />
             </AnimatedContent>
           </section>
       </div>

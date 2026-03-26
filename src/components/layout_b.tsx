@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/utils/supabaseClient';
 import { useAuth } from '@/context/AuthContext'
+import "@/components/renderer/MarkdownRenderer.css";
 import Link from 'next/link';
 
 export default function AuthButtons() {

@@ -209,7 +209,7 @@ export default function OJBlogPage() {
                 <h3 className="font-semibold">Bộ lọc</h3>
                 <div className="mt-2">
                 <button
-                    onClick={() => router.push(``)}
+                    onClick={() => router.push("/blogs")}
                     className="text-sm px-2 py-1 border rounded"
                 >
                     Tất cả

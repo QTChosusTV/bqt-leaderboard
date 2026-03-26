@@ -97,12 +97,18 @@ export default function ChatPage() {
         <Link href="/blogs" className="redirect-button">Blogs</Link>
       </nav>
 
-      <h1 className="text-2xl font-bold mb-4">Community Chat</h1>
+      <h1 className="text-2xl font-bold mb-4 mt-10">Community Chat</h1>
 
       <div className="border p-3 rounded-md max-h-[60vh] overflow-y-auto bg-gray-900 text-white">
-        {messages.map((msg) => (
-         
-          <span key={msg.id} className="flex items-center mg-2">
+        {messages.map((msg, i) => (
+          <span
+            key={msg.id}
+            className={`flex items-center mg-2 px-2 py-0.5 rounded ${
+              msg.user === username
+                ? i % 2 === 0 ? "bg-green-900/50" : "bg-green-900/55"
+                : i % 2 === 0 ? "bg-white/3" : "bg-transparent"
+            }`}
+          >
             <Image 
               src={`/assets/ranks/${getEloClass(msg.elo ?? 0)}.png`}
               alt={`${getEloClass(msg.elo ?? 0)}`}
@@ -112,9 +118,13 @@ export default function ChatPage() {
            ></Image> 
             <strong className={`${getEloClass(msg.elo ?? 0)}`}>{msg.user}{':'}</strong>
             <p className="ml-1 mr-1">{msg.text}</p>
-            <span className="flex text-xs text-gray-400 ml-2 mt-1">
-              {' '}({new Date(msg.time).toLocaleString()})
+            <span className="flex text-xs text-gray-400 ml-2 mt-1 font-bold">
+              {' '}({new Date(new Date(msg.time).getTime() + 7 * 60 * 60 * 1000).toLocaleString()})
             </span>
+            <span className="flex text-xs text-gray-400 ml-2 mt-1">
+              {' (GMT +7, ICT)'}
+            </span>
+            
           </span>
         ))}
       </div>

@@ -102,32 +102,7 @@ export default function ProblemsetList() {
     
 
 
-  const allTags = [
-    "math",
-    "dp",
-    "recursion",
-    "basic",
-    "graph",
-    "counting",
-    "backtracking",
-    "all pair shortest",
-    "greedy",
-    "implementation",
-    "stack",
-    "sliding window",
-    "brute force",
-    "geometry",
-    "sweepline", 
-    "interval",
-    "number theory",
-    "dsu",
-    "offline-queries",
-    "sorting",
-    "data structures",
-    "binary search",
-    "special",
-    "divide and conquer"
-  ]
+  const allTags = ['backtracking', 'basic', 'bfs', 'binary search', 'brute force', 'combinatorics', 'contest-problem', 'counting', 'data structures', 'dijkstra', 'divide and conquer', 'dp', 'dsu', 'geometry', 'graph', 'greedy', 'heuristic', 'implementation', 'interval', 'math', 'number theory', 'offline queries', 'online queries', 'recursion', 'shortest path', 'sorting', 'special', 'stack', 'string', 'sweepline', 'two pointers']
 
   const filteredProblems = problems
     .filter(problem => {
