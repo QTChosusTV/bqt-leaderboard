@@ -3,6 +3,7 @@ import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 import { useEffect, useState } from 'react';
 import { supabase } from '@/utils/supabaseClient';
 import { getDisplayedElo } from "@/utils/eloAccumulation"
+import MarkdownRenderer from "@/components/renderer/MarkdownRenderer";
 import {
   Chart as ChartJS,
   LineElement,
@@ -588,14 +589,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
 
         </div>
 
-        <div className="prose max-w-none [&_p]:mt-4 [&_p]:mb-3 [&_h2]:mt-2 [&_li]:my-1">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
-              rehypePlugins={[rehypeKatex]}
-            >
-            {desc}
-            </ReactMarkdown>
-        </div>
+        <MarkdownRenderer content={desc} />
 
         <table id="history" className={styles.urTable} style={{width: 1480}}>
           <thead>

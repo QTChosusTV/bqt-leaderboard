@@ -39,7 +39,7 @@
   line-height:  1.25;
   font-weight:  700;
   color:        #f1f5f9;            /* slate-100 */
-  margin-top:   2em;
+  margin-top:   0.75em;
   margin-bottom: 0em;
   scroll-margin-top: 5rem;          /* offset for sticky nav */
 }
@@ -178,12 +178,14 @@
 }
 
 /* ─── Images ────────────────────────────────────────────── */
-.md-body img {
-  max-width:    100%;
-  height:       auto;
+
+
+.md-body img:not(.no-md-style) {
+  max-width:     100%;
+  height:        auto;
   border-radius: 6px;
-  margin:       1em 0;
-  border:       1px solid var(--md-color-border);
+  margin:        1em 0;
+  border:        1px solid var(--md-color-border);
 }
 
 /* ─── KaTeX / Math ──────────────────────────────────────── */
