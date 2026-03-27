@@ -25,7 +25,7 @@
 
 /* ─── Paragraphs ────────────────────────────────────────── */
 .md-body p {
-  margin: 1.25em 0;
+  margin: 0.75em 0;
 }
 
 /* ─── Headings ──────────────────────────────────────────── */
@@ -36,11 +36,11 @@
 .md-body h5,
 .md-body h6 {
   font-family:  "IosevkaCharon", monospace; /* crisp sans for headings */
-  line-height:  1.25;
+  line-height:  1.0;
   font-weight:  700;
   color:        #f1f5f9;            /* slate-100 */
-  margin-top:   0.75em;
-  margin-bottom: 0em;
+  margin-top:   1em;
+  margin-bottom: 0.5em;
   scroll-margin-top: 5rem;          /* offset for sticky nav */
 }
 
@@ -110,9 +110,9 @@
   background:     var(--md-color-code-bg) !important;
   border:         1px solid var(--md-color-border);
   border-radius:  8px;
-  padding:        1.1em 1.3em;
+  padding:        1em 1.25em;
   overflow-x:     auto;
-  margin:         1.5em 0;
+  margin:         0.5em 0;
   line-height:    1.65;
   /* subtle left accent stripe */
   border-left:    3px solid var(--md-color-accent);
