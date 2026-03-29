@@ -38,6 +38,7 @@ interface Contest {
   link: string | null
   problems: { pid: number; pname: string; score: number }[]
   descriptions: string
+  format: string
 }
 
 function formatPenalty(seconds: number): string {
@@ -67,7 +68,7 @@ export default function ContestStandingPage() {
     const fetchContest = async () => {
       const { data } = await supabase
         .from('contests')
-        .select('id, name, time_start, time_end, elo_min, elo_max, link, problems, descriptions')
+        .select('id, name, time_start, time_end, elo_min, elo_max, link, problems, descriptions, format')
         .eq('id', contestId)
         .single();
       if (data) setContest(data);
@@ -368,7 +369,7 @@ export default function ContestStandingPage() {
                     <div className="flex flex-col">
                       <span>{p.pname}</span>
                       {p.score !== undefined && (
-                        <span className="text-[10px] text-yellow-300 font-mono">
+                        <span className="text-[10px] text-yellow-300 italic">
                           ({p.score})
                         </span>
                       )}
@@ -450,9 +451,9 @@ export default function ContestStandingPage() {
                                   return ""
                                 })()}
                               </span>
-                              {info?.verdict === 'AC' && (
+                              {(info?.verdict === 'AC' || (info?.score !== undefined && info.score > 0)) && (
                                 <span
-                                  className="text-xs font-mono"
+                                  className="text-xs"
                                   style={{ color: getSolveTimeGradient(info.time, contest?.time_start ?? null, contest?.time_end ?? null) }}
                                 >
                                   <strong>{formatSolveTime(info.time, contest?.time_start ?? null)}</strong>
@@ -467,7 +468,7 @@ export default function ContestStandingPage() {
                       <strong>{s.score}</strong>
                     </td>
                     <td className="px-1 py-2 text-center border text-yellow-400">
-                      {s.penalty}
+                      {contest?.format === 'icpc' ? formatPenalty(s.penalty) : s.penalty}
                     </td>
                     {(now <= timeEnd) && (
                       <>
