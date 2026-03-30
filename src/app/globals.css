@@ -113,20 +113,19 @@ body {
 .hue-240 { filter: hue-rotate(240deg); }
 
 .redirect-button {
-  padding: 10px 68.3px;
+  padding: 10px 0;
   border: 1px outset buttonborder;
   color: #444444;
   background-color: #aaaaaa;
   text-decoration: none;
-  font-size: 16px;
+  font-size: clamp(12px, 1.2vw, 16px); /* scales with viewport */
   text-align: center;
-  justify-content: flex-start;  
-  width: 100%;
-  height: 50%;
+  flex: 1;                /* each button takes equal share */
+  white-space: nowrap;    /* prevent text wrapping */
 }
 
 .redirect-button:hover {
-    background-color: #4488cc;
+  background-color: #4488cc;
 }
 
 button {

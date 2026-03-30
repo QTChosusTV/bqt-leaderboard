@@ -2,7 +2,8 @@
 import "./globals.css";
 // import { Fira_Code } from 'next/font/google'
 import Image from 'next/image'
-import AuthButtons from '@/components/layout_b'; 
+import AuthButtons from '@/components/layout_b';
+import ContestBanner from '@/components/ContestBanner';
 import Link from 'next/link';
 import '@pitininja/cap-react-widget/dist/index.css';
 import { AuthProvider } from '@/context/AuthContext'
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <AuthButtons />
             </div>
           </nav>
+          <ContestBanner />
           {children}
         </AuthProvider>
       </body>
