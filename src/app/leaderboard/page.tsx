@@ -11,6 +11,7 @@ import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedCont
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor, ELO_TIERS } from "@/utils/eloDisplay"
+import AuthButtons, { Navbar } from '@/components/layout_b';
 
 interface User {
   username: string
@@ -94,15 +95,7 @@ export default function LeaderboardPage() {
 
   return (
     <main>
-      <nav style={{marginTop: '24px', marginLeft: '24px', marginBottom: '-20px'}}>
-        <Link href="/leaderboard" className="redirect-button" prefetch={false}>Leaderboard</Link>
-        <Link href="/chat" className="redirect-button" prefetch={false}>Chat</Link>
-        <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>
-        <Link href="/about" className="redirect-button" prefetch={false}>About</Link>
-        <Link href="/ide" className="redirect-button" prefetch={false}>Live IDE</Link>
-        <Link href="/submissions" className="redirect-button">Submissions</Link>
-        <Link href="/blogs" className="redirect-button">Blogs</Link>
-      </nav>
+      <Navbar />
 
       <div style={{ width: '100%', height: 300, marginBottom: '0px', marginTop: '50px' }}>
         <ResponsiveContainer>
