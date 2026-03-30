@@ -224,8 +224,8 @@ export default function HomePage() {
   return (
     <>
       {tick > 0 && null}
+      <Navbar />
       <main className="p-6">
-        <Navbar />
 
         <section className="mt-8 bg-neutral-900 p-6 rounded-xl shadow-md border border-neutral-700">
           <h1 className="text-3xl font-bold mb-3">

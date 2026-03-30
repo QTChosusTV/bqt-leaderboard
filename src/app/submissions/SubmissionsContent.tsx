@@ -111,95 +111,95 @@ export default function SubmissionsPage() {
   }
 
   return (
-    <main className="p-6" style={{fontSize: 15}}>
+    <main >
+      <Navbar />
+      <div style={{fontSize: 15}} className="p-6"> 
 
-      <div style={{marginBottom: -20}}>
-        <Navbar />
-      </div>
+        <h1 className="text-2xl font-bold mb-4">Submissions (page {page})</h1>
 
-      <h1 className="text-2xl font-bold mb-4 mt-10">Submissions (page {page})</h1>
+        {loading ? (
+          <p className="text-gray-400">Loading...</p>
+        ) : (
+          <div className="overflow-x-auto max-w-8xl mx-auto">
+  
+          
 
-      {loading ? (
-        <p className="text-gray-400">Loading...</p>
-      ) : (
-        <div className="overflow-x-auto max-w-8xl mx-auto">
- 
-        
-
-          <table className="w-full border border-gray-700">
-            <thead className={styles.smsTable}>
-              <tr>
-                <th className="p-2 text-left">Verdict</th>
-                <th className="p-2 text-left">Problem</th>
-                <th className="p-2 text-left">Username</th>
-                <th className="p-2 text-left">Language</th>
-                <th className="p-2 text-left">Time</th>
-                <th className="p-2 text-left">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {subs.map(s => (
-                <tr key={s.id} className="border-b border-gray-700 smsTable" style={{fontSize: 15}}>
-                  <td className={`p-2 ${verdictColor(s.overall)}`}>{s.overall}</td>
-                  <td className="p-2">
-                    <Link href={`/problems?id=${s.problem_id}`} prefetch={false}>
-                      <span
-                        className={`hover:underline cursor-pointer`}
-                      >
-                        {s.problem_id}
-                      </span>
-                    </Link>
-                  </td>
-                  <td className="p-2 flex">
-                    <Image 
-                      src={`/assets/ranks/${getEloClass(s.elo ?? 0)}.png`}
-                      alt={`${getEloClass(s.elo ?? 0)}`}
-                      width={20}
-                      height={20}
-                      className="mr-1"
-                    ></Image>
-                    <Link href={`/user?username=${s.username}`} prefetch={false}>
-                      <span
-                        className={`hover:underline cursor-pointer ${s.elo ? getEloClass(s.elo) : ''}`}
-                      >
-                        {s.username}
-                      </span>
-                    </Link>
-                  </td>
-                  <td className="p-2">{s.language}</td>
-                  <td className="p-2">{Math.floor((s.time??0)*100000)/100}ms</td>
-
-                  <td className="p-2">
-                    {s.username === username ? (
-                      <Link href={`/submission?id=${s.id}`} prefetch={false}>
-                        <span className="text-blue-400 hover:underline cursor-pointer">View</span>
-                      </Link>
-                    ) : (
-                      <span className="text-gray-600">Locked</span>
-                    )}
-                  </td>
+            <table className="w-full border border-gray-700">
+              <thead className={styles.smsTable}>
+                <tr>
+                  <th className="p-2 text-left">Verdict</th>
+                  <th className="p-2 text-left">Problem</th>
+                  <th className="p-2 text-left">Username</th>
+                  <th className="p-2 text-left">Language</th>
+                  <th className="p-2 text-left">Time</th>
+                  <th className="p-2 text-left">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody>
+                {subs.map(s => (
+                  <tr key={s.id} className="border-b border-gray-700 smsTable" style={{fontSize: 15}}>
+                    <td className={`p-2 ${verdictColor(s.overall)}`}>{s.overall}</td>
+                    <td className="p-2">
+                      <Link href={`/problems?id=${s.problem_id}`} prefetch={false}>
+                        <span
+                          className={`hover:underline cursor-pointer`}
+                        >
+                          {s.problem_id}
+                        </span>
+                      </Link>
+                    </td>
+                    <td className="p-2 flex">
+                      <Image 
+                        src={`/assets/ranks/${getEloClass(s.elo ?? 0)}.png`}
+                        alt={`${getEloClass(s.elo ?? 0)}`}
+                        width={20}
+                        height={20}
+                        className="mr-1"
+                      ></Image>
+                      <Link href={`/user?username=${s.username}`} prefetch={false}>
+                        <span
+                          className={`hover:underline cursor-pointer ${s.elo ? getEloClass(s.elo) : ''}`}
+                        >
+                          {s.username}
+                        </span>
+                      </Link>
+                    </td>
+                    <td className="p-2">{s.language}</td>
+                    <td className="p-2">{Math.floor((s.time??0)*100000)/100}ms</td>
 
-      <div className="flex justify-center gap-4 mt-4">
-        {page > 1 && (
+                    <td className="p-2">
+                      {s.username === username ? (
+                        <Link href={`/submission?id=${s.id}`} prefetch={false}>
+                          <span className="text-blue-400 hover:underline cursor-pointer">View</span>
+                        </Link>
+                      ) : (
+                        <span className="text-gray-600">Locked</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <div className="flex justify-center gap-4 mt-4">
+          {page > 1 && (
+            <button
+              onClick={() => router.push(`/submissions?page=${page - 1}`)}
+              className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600"
+            >
+              Prev
+            </button>
+          )}
           <button
-            onClick={() => router.push(`/submissions?page=${page - 1}`)}
+            onClick={() => router.push(`/submissions?page=${page + 1}`)}
             className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600"
           >
-            Prev
+            Next
           </button>
-        )}
-        <button
-          onClick={() => router.push(`/submissions?page=${page + 1}`)}
-          className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600"
-        >
-          Next
-        </button>
+        </div>
+        
       </div>
     </main>
   )

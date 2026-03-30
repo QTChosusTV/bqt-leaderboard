@@ -8,7 +8,6 @@ import Link from 'next/link';
 import Image from 'next/image'
 import { getEloClass } from '@/utils/eloDisplay'
 import { useAuth } from '@/context/AuthContext'
-
 import AuthButtons, { Navbar } from '@/components/layout_b';
 
 interface Message {
@@ -84,59 +83,59 @@ export default function ChatPage() {
   };
 
   return (
-
-    
-
-    <div className="p-4 max-w-10xl mx-auto">
+    <main>
       <Navbar />
-      <h1 className="text-2xl font-bold mb-4 mt-10">Community Chat</h1>
+      <div className="p-4 max-w-10xl mx-auto">
 
-      <div className="border p-3 rounded-md max-h-[60vh] overflow-y-auto bg-gray-900 text-white">
-        {messages.map((msg, i) => (
-          <span
-            key={msg.id}
-            className={`flex items-start flex-wrap min-w-0 gap-x-1 mg-2 px-2 py-0.5 rounded ${
-              msg.user === username
-                ? i % 2 === 0 ? "bg-green-900/50" : "bg-green-900/55"
-                : i % 2 === 0 ? "bg-white/3" : "bg-transparent"
-            }`}
+        <h1 className="text-2xl font-bold mb-4">Community Chat</h1>
+
+        <div className="border p-3 rounded-md max-h-[60vh] overflow-y-auto bg-gray-900 text-white">
+          {messages.map((msg, i) => (
+            <span
+              key={msg.id}
+              className={`flex items-start flex-wrap min-w-0 gap-x-1 mg-2 px-2 py-0.5 rounded ${
+                msg.user === username
+                  ? i % 2 === 0 ? "bg-green-900/50" : "bg-green-900/55"
+                  : i % 2 === 0 ? "bg-white/3" : "bg-transparent"
+              }`}
+            >
+              <Image 
+                src={`/assets/ranks/${getEloClass(msg.elo ?? 0)}.png`}
+                alt={`${getEloClass(msg.elo ?? 0)}`}
+                width={24}
+                height={24}
+                className="mr-1"
+            ></Image> 
+              <strong className={`${getEloClass(msg.elo ?? 0)}`}>{msg.user}{':'}</strong>
+              <p className="ml-1 mr-1 break-words min-w-0 flex-1">{msg.text}</p>
+              <span className="flex text-xs text-gray-400 ml-2 mt-1 font-bold">
+                {' '}({new Date(new Date(msg.time).getTime() + 7 * 60 * 60 * 1000).toLocaleString()})
+              </span>
+              <span className="flex text-xs text-gray-400 ml-2 mt-1">
+                {' (GMT +7, ICT)'}
+              </span>
+              
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-4 flex gap-2">
+          <input
+            type="text"
+            className="flex-1 border rounded px-3 py-2 text-gray-400"
+            placeholder="Type your message..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+          />
+          <button
+            onClick={sendMessage}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            <Image 
-              src={`/assets/ranks/${getEloClass(msg.elo ?? 0)}.png`}
-              alt={`${getEloClass(msg.elo ?? 0)}`}
-              width={24}
-              height={24}
-              className="mr-1"
-           ></Image> 
-            <strong className={`${getEloClass(msg.elo ?? 0)}`}>{msg.user}{':'}</strong>
-            <p className="ml-1 mr-1 break-words min-w-0 flex-1">{msg.text}</p>
-            <span className="flex text-xs text-gray-400 ml-2 mt-1 font-bold">
-              {' '}({new Date(new Date(msg.time).getTime() + 7 * 60 * 60 * 1000).toLocaleString()})
-            </span>
-            <span className="flex text-xs text-gray-400 ml-2 mt-1">
-              {' (GMT +7, ICT)'}
-            </span>
-            
-          </span>
-        ))}
+            Send
+          </button>
+        </div>
       </div>
-
-      <div className="mt-4 flex gap-2">
-        <input
-          type="text"
-          className="flex-1 border rounded px-3 py-2 text-gray-400"
-          placeholder="Type your message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-        />
-        <button
-          onClick={sendMessage}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Send
-        </button>
-      </div>
-    </div>
+    </main>
   );
 }

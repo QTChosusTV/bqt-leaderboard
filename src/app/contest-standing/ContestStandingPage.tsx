@@ -421,7 +421,7 @@ export default function ContestStandingPage() {
                             height='30'
                             className='mr-1 filter saturate-150'
                           />}
-                          <div className="text-lg drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)] filter saturate-150">{s.user_id}</div>
+                          <div className="drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)] filter saturate-150">{s.user_id}</div>
                         </Link>
                       </td>
                     </>

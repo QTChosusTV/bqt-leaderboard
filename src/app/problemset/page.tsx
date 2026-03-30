@@ -150,157 +150,157 @@ export default function ProblemsetList() {
 
 
   return (
-    <main className="p-6">
-      <div className="mb-2">
-        <Navbar />
-      </div>
+    <main>
       
+      <Navbar />
 
-      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-        <div>
-          <label className="mr-2 font-semibold">Sort:</label>
-          <select
-            value={sortMode}
-            onChange={e => setSortMode(e.target.value as any)}
-            className="p-2 border rounded bg-gray-500"
-          >
-            <option value="elo-asc">Easiest</option>
-            <option value="elo-desc">Hardest</option>
-            <option value="time-asc">Oldest </option>
-            <option value="time-desc">Newest</option>
-          </select>
-        </div>
-
-
-        <div className="flex items-center gap-2">
-          <label className="font-semibold">Filter by Tags:</label>
-          <select
-            multiple
-            value={selectedTags}
-            onChange={e => setSelectedTags(Array.from(e.target.selectedOptions, option => option.value))}
-            className="p-2 border rounded h-36"
-          >
-            {allTags.map(tag => (
-              <option key={tag} value={tag}>{tag}</option>
-            ))}
-          </select>
-          <button
-            onClick={() => setSelectedTags([])}
-            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            Reset
-          </button>
-        </div>
-
-        <div>
-          <label className="font-semibold">Filter by Status:  </label>
-          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value as any)} className="p-2 border rounded bg-gray-500">
-            <option value="all">All</option>
-            <option value="unsolved">Unsolved</option>
-            <option value="submitted-not-ac">Submitted</option>
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <label className="mr-2 font-semibold">Search:</label>
-
-          <input
-            type="text"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search by title..."
-            className="p-2 border rounded bg-gray-500 text-white"
-          />
-
-          <button
-            onClick={() => {
-              setSearchQuery("orzlmfaoidontknowwhatisthisgoingon")
-              setTimeout(() => {
-                setSearchQuery(searchInput)
-              }, 300)
-            }}
-            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Search
-          </button>
-
-          <button
-            onClick={() => {
-              setSearchInput("")
-              setSearchQuery("orzlmfaoidontknowwhatisthisgoingon")
-              setTimeout(() => {
-                setSearchInput("")
-                setSearchQuery("")
-              }, 300)
-            }}
-            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Reset
-          </button>
-        </div>
-
-      </div>
-
-      <div className="space-y-0">
-        {filteredProblems.map(problem => {
-
-          const baseBg = hexToRgba(getEloColor(problem.difficulty), 0.15)
-          const hoverBg = hexToRgba(getEloColor(problem.difficulty), 0.3)
-
-          return (
-            <Link
-              key={problem.id}
-              href={`/problems?id=${encodeURIComponent(problem.id)}`}
-              className="block"
+      <div className="p-6">
+        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+          <div>
+            <label className="mr-2 font-semibold">Sort:</label>
+            <select
+              value={sortMode}
+              onChange={e => setSortMode(e.target.value as any)}
+              className="p-2 border rounded bg-gray-500"
             >
-              <div
-                className="flex flex-col md:flex-row md:justify-between
-                          border p-5 bg-gray-800
-                          hover:shadow-lg transition-colors duration-200"
-                style={{
-                  backgroundColor: baseBg,
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.backgroundColor = hoverBg
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.backgroundColor = baseBg
-                }}
-              >
-                <div className="flex flex-col md:flex-row md:items-center gap-2">
-                  <span className="font-bold text-gray-400">#{problem.id}</span>
-                  <h3 className={`font-semibold text-lg ${getEloClass(problem.difficulty)}`}>
-                    {solvedProblems.has(problem.id) && '✅ '}
-                    {!solvedProblems.has(problem.id) &&
-                      submittedProblems.has(problem.id) && '❌ '}
-                    {problem.title}
-                  </h3>
-                </div>
+              <option value="elo-asc">Easiest</option>
+              <option value="elo-desc">Hardest</option>
+              <option value="time-asc">Oldest </option>
+              <option value="time-desc">Newest</option>
+            </select>
+          </div>
 
-                <div className="flex flex-col md:flex-row md:items-center gap-5 mt-2 md:mt-0">
-                  <div className="flex flex-wrap gap-1">
-                    {problem.tags?.map(tag => (
-                      <span
-                        key={tag.tagName}
-                        className="bg-blue-600 text-white px-2 py-0.5 rounded text-xs"
-                      >
-                        {tag.tagName}
-                      </span>
-                    ))}
+
+          <div className="flex items-center gap-2">
+            <label className="font-semibold">Filter by Tags:</label>
+            <select
+              multiple
+              value={selectedTags}
+              onChange={e => setSelectedTags(Array.from(e.target.selectedOptions, option => option.value))}
+              className="p-2 border rounded h-36"
+            >
+              {allTags.map(tag => (
+                <option key={tag} value={tag}>{tag}</option>
+              ))}
+            </select>
+            <button
+              onClick={() => setSelectedTags([])}
+              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Reset
+            </button>
+          </div>
+
+          <div>
+            <label className="font-semibold">Filter by Status:  </label>
+            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value as any)} className="p-2 border rounded bg-gray-500">
+              <option value="all">All</option>
+              <option value="unsolved">Unsolved</option>
+              <option value="submitted-not-ac">Submitted</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label className="mr-2 font-semibold">Search:</label>
+
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search by title..."
+              className="p-2 border rounded bg-gray-500 text-white"
+            />
+
+            <button
+              onClick={() => {
+                setSearchQuery("orzlmfaoidontknowwhatisthisgoingon")
+                setTimeout(() => {
+                  setSearchQuery(searchInput)
+                }, 300)
+              }}
+              className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              Search
+            </button>
+
+            <button
+              onClick={() => {
+                setSearchInput("")
+                setSearchQuery("orzlmfaoidontknowwhatisthisgoingon")
+                setTimeout(() => {
+                  setSearchInput("")
+                  setSearchQuery("")
+                }, 300)
+              }}
+              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+            >
+              Reset
+            </button>
+          </div>
+
+        </div>
+
+        <div className="space-y-0">
+          {filteredProblems.map(problem => {
+
+            const baseBg = hexToRgba(getEloColor(problem.difficulty), 0.15)
+            const hoverBg = hexToRgba(getEloColor(problem.difficulty), 0.3)
+
+            return (
+              <Link
+                key={problem.id}
+                href={`/problems?id=${encodeURIComponent(problem.id)}`}
+                className="block"
+              >
+                <div
+                  className="flex flex-col md:flex-row md:justify-between
+                            border p-5 bg-gray-800
+                            hover:shadow-lg transition-colors duration-200"
+                  style={{
+                    backgroundColor: baseBg,
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.backgroundColor = hoverBg
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.backgroundColor = baseBg
+                  }}
+                >
+                  <div className="flex flex-col md:flex-row md:items-center gap-2">
+                    <span className="font-bold text-gray-400">#{problem.id}</span>
+                    <h3 className={`font-semibold text-lg ${getEloClass(problem.difficulty)}`}>
+                      {solvedProblems.has(problem.id) && '✅ '}
+                      {!solvedProblems.has(problem.id) &&
+                        submittedProblems.has(problem.id) && '❌ '}
+                      {problem.title}
+                    </h3>
                   </div>
 
-                  <span className={`font-bold ${getEloClass(problem.difficulty)}`}>
-                    {problem.difficulty}
-                  </span>
+                  <div className="flex flex-col md:flex-row md:items-center gap-5 mt-2 md:mt-0">
+                    <div className="flex flex-wrap gap-1">
+                      {problem.tags?.map(tag => (
+                        <span
+                          key={tag.tagName}
+                          className="bg-blue-600 text-white px-2 py-0.5 rounded text-xs"
+                        >
+                          {tag.tagName}
+                        </span>
+                      ))}
+                    </div>
 
-                  <span className="text-gray-400 text-sm">
-                    {new Date(problem.created_at).toLocaleDateString()}
-                  </span>
+                    <span className={`font-bold ${getEloClass(problem.difficulty)}`}>
+                      {problem.difficulty}
+                    </span>
+
+                    <span className="text-gray-400 text-sm">
+                      {new Date(problem.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          )
-        })}
+              </Link>
+            )
+          })}
+        </div>  
       </div>
     </main>
   )

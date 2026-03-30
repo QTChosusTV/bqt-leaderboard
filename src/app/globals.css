@@ -112,20 +112,15 @@ body {
 .hue-210 { filter: hue-rotate(210deg); }
 .hue-240 { filter: hue-rotate(240deg); }
 
-.redirect-button {
-  padding: 10px 0;
-  border: 1px outset buttonborder;
-  color: #444444;
-  background-color: #aaaaaa;
-  text-decoration: none;
-  font-size: clamp(12px, 1.2vw, 16px); /* scales with viewport */
-  text-align: center;
-  flex: 1;                /* each button takes equal share */
-  white-space: nowrap;    /* prevent text wrapping */
-}
-
-.redirect-button:hover {
-  background-color: #4488cc;
+.nav-active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: theme('colors.blue.400');
+  border-radius: 2px 2px 0 0;
 }
 
 button {
