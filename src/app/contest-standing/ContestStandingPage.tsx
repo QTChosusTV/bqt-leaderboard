@@ -8,8 +8,9 @@ import { supabase } from '@/utils/supabaseClient'
 import './cstd.css'
 import styles from './cstd.module.css'
 import Link from 'next/link'
+import Image from 'next/image'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
-import { getEloClass, getEloColor } from "@/utils/eloDisplay"
+import { getEloClass, getEloColor, getEloIcon } from "@/utils/eloDisplay"
 import { getDisplayedElo } from '@/utils/eloAccumulation'
 
 interface Standing {
@@ -409,10 +410,18 @@ export default function ContestStandingPage() {
                       >
                         <Link
                           href={`/user?username=${encodeURIComponent(s.user_id)}`}
-                          className="no-underline hover:underline text-left"
+                          className="no-underline hover:underline text-center flex items-center"
                           prefetch={false}
                         >
-                          {s.isRated ? s.user_id : '*' + s.user_id}
+                          {s.isRated ? '' : '* '} 
+                          {<Image
+                            src={getEloIcon(getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0))}
+                            alt={getEloClass(getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0))}  
+                            width='20'
+                            height='20'
+                            className='mr-1'
+                          />}
+                          {s.user_id}
                         </Link>
                       </td>
                     </>

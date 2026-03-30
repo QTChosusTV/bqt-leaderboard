@@ -33,3 +33,9 @@ export function getEloColor(elo: number) {
   );
 }
 
+export function getEloIcon(elo: number) {
+  if (!Number.isFinite(elo)) return "/assets/ranks/elo-0-400.png"
+  return (
+    "/assets/ranks/" + (ELO_TIERS.find(t => elo >= t.min)?.class ?? "elo-0-400") + ".png"
+  );
+}
