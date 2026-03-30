@@ -60,7 +60,11 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-stretch gap-0.5 px-4 bg-[#111318] border-b border-white/[0.08] overflow-x-auto scrollbar-none w-full max-w-full">
+    <nav
+      className="flex items-stretch gap-0.5 px-4 bg-[#111318] border-b border-white/[0.08] overflow-x-auto w-full max-w-full"
+      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+    >
+      <style>{`nav::-webkit-scrollbar { display: none; }`}</style>
       {links.map(({ href, label }) => {
         const active = pathname === href;
         return (

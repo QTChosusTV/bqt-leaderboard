@@ -95,7 +95,6 @@ export default function LeaderboardPage() {
 
   return (
     <main>
-      <Navbar />
 
       <div style={{ width: '100%', height: 300, marginBottom: '0px', marginTop: '50px' }}>
         <ResponsiveContainer>

@@ -59,8 +59,6 @@ export default function AboutPage() {
 
   return (
     <main>
-      
-      <Navbar />
       <div className="p-6">
 
 

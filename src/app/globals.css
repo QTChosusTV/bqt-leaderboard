@@ -48,6 +48,15 @@ body {
   color: #ffffff;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 .bqtoj {
   color: #d900ff;
   font-weight: bold;

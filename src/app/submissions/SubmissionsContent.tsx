@@ -112,7 +112,6 @@ export default function SubmissionsPage() {
 
   return (
     <main >
-      <Navbar />
       <div style={{fontSize: 15}} className="p-6"> 
 
         <h1 className="text-2xl font-bold mb-4">Submissions (page {page})</h1>

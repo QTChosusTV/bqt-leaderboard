@@ -22,6 +22,11 @@ import "highlight.js/styles/github-dark.css";
 import "katex/dist/katex.min.css";
 import "./MarkdownRenderer.css";
 
+interface MarkdownRendererProps {
+  content: string;
+  className?: string;
+} 
+
 // ─── Remark plugin: replaces [user:username] with a custom node ───
 const remarkUserTag: Plugin<[], Root> = () => (tree) => {
   visit(tree, "text", (node: Text, index, parent: Parent | null) => {
@@ -94,11 +99,6 @@ function UserMention({ username }: { username: string }) {
       <strong style={{ color: getEloColor(elo) }}>{username}</strong>
     </Link>
   );
-}
-
-interface MarkdownRendererProps {
-  content: string;
-  className?: string;
 }
 
 export default function MarkdownRenderer({ content, className = "" }: MarkdownRendererProps) {
