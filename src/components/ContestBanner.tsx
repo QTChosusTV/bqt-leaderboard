@@ -104,7 +104,7 @@ export default function ContestBanner() {
   return (
     <div
       style={{
-        backgroundColor: '#2a2a2a',
+        backgroundColor: '#222b21',
         borderBottom: '1px solid #444',
         borderTop: '1px solid #333',
       }}
