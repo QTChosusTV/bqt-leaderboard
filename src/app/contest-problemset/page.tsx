@@ -188,8 +188,8 @@ export default function ContestProblemset() {
 
 
   return (
-    <main className="flex min-h-screen bg-gray-900" style={{margin: 0}}>
-        <aside className="w-40 bg-gray-800 p-4 flex flex-col mr-6">
+    <main className="flex min-h-screen" style={{margin: 0}}>
+        <aside className="w-40 p-4 flex flex-col mr-6" style={{ backgroundColor: '#353535' }}>
           <h2 className="text-lg font-bold mb-4">Contest</h2>
             <Link href={`/contest?id=${contestId}`} className={styles.cpButton} prefetch={false}>Info</Link>
             {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (

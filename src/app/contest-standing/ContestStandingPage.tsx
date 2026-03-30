@@ -318,9 +318,9 @@ export default function ContestStandingPage() {
 
 
   return (
-    <main className="min-h-screen flex bg-gray-900">
+    <main className="min-h-screen flex">
       {/* Sidebar */}
-      <aside className="w-40 bg-gray-800 p-4 flex flex-col">
+      <aside className="w-40 p-4 flex flex-col"  style={{ backgroundColor: '#353535' }}>
         <h2 className="text-lg font-bold mb-4">Contest</h2>
         <Link href={`/contest?id=${contestId}`} className={styles.cpButton} prefetch={false}>Info</Link>
           {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
@@ -360,7 +360,7 @@ export default function ContestStandingPage() {
               Rated only
             </button>
           </div>
-          <table className="w-full border-collapse text-xs table-auto text-center align-middle bg-gray-800">
+          <table className="w-full border-collapse text-xs table-auto text-center align-middle" style={{ backgroundColor: '#2a2a2a' }}>
             <thead className="bg-gray-700 text-white">
               <tr className={styles.cspTable}>
                 <th className={"px-4 py-2 text-center border"}>Rank</th>
@@ -417,11 +417,11 @@ export default function ContestStandingPage() {
                           {<Image
                             src={getEloIcon(getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0))}
                             alt={getEloClass(getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0))}  
-                            width='20'
-                            height='20'
-                            className='mr-1'
+                            width='30'
+                            height='30'
+                            className='mr-1 filter saturate-150'
                           />}
-                          {s.user_id}
+                          <div className="text-lg drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)] filter saturate-150">{s.user_id}</div>
                         </Link>
                       </td>
                     </>

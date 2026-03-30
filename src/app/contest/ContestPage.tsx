@@ -195,7 +195,7 @@ export default function ContestPage() {
     <main className="h-screen flex flex-col"> 
 
       <div className="flex flex-1">
-        <aside className="w-40 bg-gray-800 p-4 flex flex-col">
+        <aside className="w-40 p-4 flex flex-col" style={{ backgroundColor: '#353535' }}>
           <h2 className="text-lg font-bold mb-4">Contest</h2>
           <Link href={`/contest?id=${contest.id}`} className={styles.cpButton} prefetch={false}>Info</Link>
           {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
@@ -208,7 +208,7 @@ export default function ContestPage() {
 
         
 
-          <section className="flex-1 p-8 overflow-y-auto bg-gray-900">
+          <section className="flex-1 p-8 overflow-y-auto">
             <AnimatedContent
               distance={50}
               direction="vertical"

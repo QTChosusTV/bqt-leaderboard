@@ -103,7 +103,7 @@ export default function ChatPage() {
         {messages.map((msg, i) => (
           <span
             key={msg.id}
-            className={`flex items-center mg-2 px-2 py-0.5 rounded ${
+            className={`flex items-start flex-wrap min-w-0 gap-x-1 mg-2 px-2 py-0.5 rounded ${
               msg.user === username
                 ? i % 2 === 0 ? "bg-green-900/50" : "bg-green-900/55"
                 : i % 2 === 0 ? "bg-white/3" : "bg-transparent"
@@ -114,10 +114,10 @@ export default function ChatPage() {
               alt={`${getEloClass(msg.elo ?? 0)}`}
               width={24}
               height={24}
-              className="mb-2"
+              className="mr-1"
            ></Image> 
             <strong className={`${getEloClass(msg.elo ?? 0)}`}>{msg.user}{':'}</strong>
-            <p className="ml-1 mr-1">{msg.text}</p>
+            <p className="ml-1 mr-1 break-words min-w-0 flex-1">{msg.text}</p>
             <span className="flex text-xs text-gray-400 ml-2 mt-1 font-bold">
               {' '}({new Date(new Date(msg.time).getTime() + 7 * 60 * 60 * 1000).toLocaleString()})
             </span>
