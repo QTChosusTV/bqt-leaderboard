@@ -7,6 +7,7 @@ import './pbl.css'
 import styles from './pbl.module.css'
 import { Timestamp } from 'next/dist/server/lib/cache-handlers/types'
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
+import AuthButtons, { Navbar } from '@/components/layout_b';
 
 interface Problem {
   id: number
@@ -150,15 +151,10 @@ export default function ProblemsetList() {
 
   return (
     <main className="p-6">
-      <nav style={{marginTop: '0px', marginBottom: '20px'}}>
-        <Link href="/leaderboard" className="redirect-button" prefetch={false}>Leaderboard</Link>
-        <Link href="/chat" className="redirect-button" prefetch={false}>Chat</Link>
-        <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>
-        <Link href="/about" className="redirect-button" prefetch={false}>About</Link>
-        <Link href="/ide" className="redirect-button" prefetch={false}>Live IDE</Link>
-        <Link href="/submissions" className="redirect-button">Submissions</Link>
-        <Link href="/blogs" className="redirect-button">Blogs</Link>
-      </nav>
+      <div className="mb-2">
+        <Navbar />
+      </div>
+      
 
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
         <div>

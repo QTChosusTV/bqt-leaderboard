@@ -7,6 +7,8 @@ import GradientText from './GradientText/GradientText'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
 import CountUp from '@/components/reactbits/CountUp/CountUp'
 
+import AuthButtons, { Navbar } from '@/components/layout_b';
+
 export default function AboutPage() {
 
   const [submissionsCount, setSubmissionsCount] = useState<number | null>(0)
@@ -57,15 +59,8 @@ export default function AboutPage() {
 
   return (
     <main className="p-6">
-      <nav style={{ marginTop: '0px', marginBottom: '0px' }}>
-        <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
-        <Link href="/chat" className="redirect-button">Chat</Link>
-        <Link href="/problemset" className="redirect-button">Problemset</Link>
-        <Link href="/about" className="redirect-button">About</Link>
-        <Link href="/ide" className="redirect-button">Live IDE</Link>
-        <Link href="/submissions" className="redirect-button">Submissions</Link>
-        <Link href="/blogs" className="redirect-button">Blogs</Link>
-      </nav>
+      
+        <Navbar />
 
 
       <AnimatedContent  

@@ -11,6 +11,8 @@ import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 import { useAuth } from '@/context/AuthContext'
 
+import AuthButtons, { Navbar } from '@/components/layout_b';
+
 type Submission = {
   id: number
   username: string
@@ -111,15 +113,9 @@ export default function SubmissionsPage() {
   return (
     <main className="p-6" style={{fontSize: 15}}>
 
-      <nav style={{marginTop: '0px', marginBottom: '20px'}}>
-          <Link href="/leaderboard" className="redirect-button" prefetch={false}>Leaderboard</Link>
-          <Link href="/chat" className="redirect-button" prefetch={false}>Chat</Link>
-          <Link href="/problemset" className="redirect-button" prefetch={false}>Problemset</Link>
-          <Link href="/about" className="redirect-button" prefetch={false}>About</Link>
-          <Link href="/ide" className="redirect-button" prefetch={false}>Live IDE</Link>
-          <Link href="/submissions" className="redirect-button">Submissions</Link>
-          <Link href="/blogs" className="redirect-button">Blogs</Link>
-        </nav>
+      <div style={{marginBottom: -20}}>
+        <Navbar />
+      </div>
 
       <h1 className="text-2xl font-bold mb-4 mt-10">Submissions (page {page})</h1>
 

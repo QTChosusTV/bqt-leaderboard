@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 import { useAuth } from '@/context/AuthContext'
+import AuthButtons, { Navbar } from '@/components/layout_b';
 
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
@@ -224,15 +225,7 @@ export default function HomePage() {
     <>
       {tick > 0 && null}
       <main className="p-6">
-        <nav className="mb-0 mt-0" style={{ display: 'flex', width: '100%' }}>
-          <Link href="/leaderboard" className="redirect-button">Leaderboard</Link>
-          <Link href="/chat" className="redirect-button">Chat</Link>
-          <Link href="/problemset" className="redirect-button">Problemset</Link>
-          <Link href="/about" className="redirect-button">About</Link>
-          <Link href="/ide" className="redirect-button">Live IDE</Link>
-          <Link href="/submissions" className="redirect-button">Submissions</Link>
-          <Link href="/blogs" className="redirect-button">Blogs</Link>
-        </nav>
+        <Navbar />
 
         <section className="mt-8 bg-neutral-900 p-6 rounded-xl shadow-md border border-neutral-700">
           <h1 className="text-3xl font-bold mb-3">
