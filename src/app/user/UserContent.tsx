@@ -541,7 +541,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
     });
 
     return (
-      <div style={{padding: '20px'}}>
+      <div style={{padding: '20px', overflowX: 'hidden', maxWidth: '100%'}}>
         <div style={{
           alignItems: 'center',
           gap: '10px',
@@ -591,10 +591,10 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
 
         <MarkdownRenderer content={desc} />
 
-        <table id="history" className={styles.urTable} style={{width: 1480}}>
+        <table id="history" className={styles.urTable} style={{width: '100%', tableLayout: 'fixed'}}>
           <thead>
             <tr>
-              <th>ID</th><th>Name</th><th>Date</th><th>Rank</th><th>Elo</th><th>Change</th>
+              <th>Name</th><th>Date</th><th>Rank</th><th>Elo</th><th>Change</th>
             </tr>
           </thead>
           <tbody className={styles.contestList}>
@@ -604,8 +604,9 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
               const color = getRatingChangeColor(change);
               return (
                 <tr key={c.contestId}>
-                  <td>{c.contestId}</td>
-                  <td>{c.name}</td>
+                  <td className="hover:underline">
+                    <Link href={`/contest?id=${encodeURIComponent(c.contestId)}`} prefetch={false}>{c.name}</Link>
+                  </td>
                   <td>{c.date}</td>
                   <td>{c.rank}</td>
                   <td className={getEloClass(c.elo)}>{c.elo}</td>
@@ -694,12 +695,12 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
             </Link>
           ))}
 
-          <div style={{ width: '100%', height: 300, marginTop: '30px' }}>
+          <div style={{ width: '100%', maxWidth: '100%', height: 300, marginTop: '30px', overflowX: 'hidden' }}>
             <h3>Solved Elo Distribution</h3>
-            <ResponsiveContainer>
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={eloDistribution} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                 <XAxis dataKey="range" interval={0} angle={-45} textAnchor="end" height={60} tick={{ fontSize: 12, fill: '#fff' }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#111' }} /> 
+                <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#fff' }} />
                 <Bar dataKey="count">
                   {eloDistribution.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
