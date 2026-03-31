@@ -43,7 +43,7 @@
 }
 
 body {
-  background-color: #1e1e1e;
+  background-color: #1f1f1f;
   font-family: var(--font-source-sans);
   color: #ffffff;
 }
@@ -229,7 +229,6 @@ button:hover {
 
   body {
     font-family: 'Source Sans Pro', sans-serif;
-    @apply bg-background text-foreground;
   }
 }
 

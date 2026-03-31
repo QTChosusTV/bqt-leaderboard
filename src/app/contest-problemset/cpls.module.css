@@ -26,14 +26,44 @@
 }
 
 .cpButton {
-  padding: 10px 7px;
-  border: 1px outset buttonborder;
-  color: #444444;
-  background-color: #aaaaaa;
+  padding: 0 20px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.45);
   text-decoration: none;
-  font-size: 15px;
-  text-align: center;
-  justify-content: flex-start;
-  margin: 10px;
-  gap: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  margin-bottom: 8px;
+}
+
+.cpButton:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.cpButton.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.cpButtonActive {
+  background: rgba(74, 222, 128, 0.15);
+  color: rgba(74, 222, 128, 0.9);
+  box-shadow: 0 2px 8px rgba(74, 222, 128, 0.2), 0 0 0 1px rgba(74, 222, 128, 0.2);
+}
+
+.cpButtonActive:hover {
+  background: rgba(74, 222, 128, 0.2);
+  color: rgba(74, 222, 128, 1);
 }

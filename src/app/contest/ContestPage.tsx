@@ -1,6 +1,8 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
+
+import { usePathname } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -33,6 +35,9 @@ export default function ContestPage() {
   const { username } = useAuth()
   const [tick, setTick] = useState(0)
   const router = useRouter()
+  
+  const pathname = usePathname()
+  
 
   useEffect(() => {
     const interval = setInterval(() => setTick(prev => prev + 1), 1000)
@@ -195,16 +200,34 @@ export default function ContestPage() {
     <main className="h-screen flex flex-col"> 
 
       <div className="flex flex-1">
-        <aside className="w-40 p-4 flex flex-col" style={{ backgroundColor: '#353535' }}>
-          <h2 className="text-lg font-bold mb-4">Contest</h2>
-          <Link href={`/contest?id=${contest.id}`} className={styles.cpButton} prefetch={false}>Info</Link>
-          {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
-            <Link href="/contest-problemset" className={styles.cpButton} prefetch={false}>Problems</Link>
-          )}
-          {contest && (
-            <Link href={`/contest-standing?id=${contest.id}`} className={styles.cpButton} prefetch={false}>Standing</Link>
-          )}
-        </aside>
+        <aside className="w-40 p-4 flex flex-col" style={{ backgroundColor: '#2e2e2e' }}>
+        <h2 className="text-lg font-bold mb-4">Contest</h2>
+        <Link
+          href={`/contest?id=${contestId}`}
+          className={styles.cpButton + (pathname === '/contest' ? ' ' + styles.cpButtonActive : '')}
+          prefetch={false}
+        >
+          Info
+        </Link>
+        {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
+          <Link
+            href="/contest-problemset"
+            className={styles.cpButton + (pathname === '/contest-problemset' ? ' ' + styles.cpButtonActive : '')}
+            prefetch={false}
+          >
+            Problems
+          </Link>
+        )}
+        {contest && (
+          <Link
+            href={`/contest-standing?id=${contest.id}`}
+            className={styles.cpButton + (pathname === '/contest-standing' ? ' ' + styles.cpButtonActive : '')}
+            prefetch={false}
+          >
+            Standing
+          </Link>
+        )}
+      </aside>
 
         
 

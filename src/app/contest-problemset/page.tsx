@@ -1,5 +1,6 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import Link from 'next/link'
@@ -47,6 +48,9 @@ export default function ContestProblemset() {
   const [tick, setTick] = useState(0)
   const [currUser, setCurrUser] = useState<any>(null);
   const [contest, setContest] = useState<Contest | null>(null);
+  
+  const pathname = usePathname()
+  
 
   useEffect(() => {
     if (!contestId) return;
@@ -189,21 +193,38 @@ export default function ContestProblemset() {
 
   return (
     <main className="flex min-h-screen" style={{margin: 0}}>
-        <aside className="w-40 p-4 flex flex-col mr-6" style={{ backgroundColor: '#353535' }}>
-          <h2 className="text-lg font-bold mb-4">Contest</h2>
-            <Link href={`/contest?id=${contestId}`} className={styles.cpButton} prefetch={false}>Info</Link>
-            {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
-              <Link href="/contest-problemset" className={styles.cpButton} prefetch={false}>Problems</Link>
-            )}
-            {contest && (
-              <Link href={`/contest-standing?id=${contest.id}`} className={styles.cpButton}>
-                Standing
-              </Link>
-            )}
-        </aside>
+        
+        <aside className="w-40 p-4 flex flex-col" style={{ backgroundColor: '#2e2e2e' }}>
+        <h2 className="text-lg font-bold mb-4">Contest</h2>
+        <Link
+          href={`/contest?id=${contestId}`}
+          className={styles.cpButton + (pathname === '/contest' ? ' ' + styles.cpButtonActive : '')}
+          prefetch={false}
+        >
+          Info
+        </Link>
+        {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
+          <Link
+            href="/contest-problemset"
+            className={styles.cpButton + (pathname === '/contest-problemset' ? ' ' + styles.cpButtonActive : '')}
+            prefetch={false}
+          >
+            Problems
+          </Link>
+        )}
+        {contest && (
+          <Link
+            href={`/contest-standing?id=${contest.id}`}
+            className={styles.cpButton + (pathname === '/contest-standing' ? ' ' + styles.cpButtonActive : '')}
+            prefetch={false}
+          >
+            Standing
+          </Link>
+        )}
+      </aside>
 
         
-        <div className="flex-1 mr-6 mt-6">
+        <div className="flex-1 mr-6 mt-6 ml-6">
           {contestId && (now >= timeStart) ? (
             <div>
               <AnimatedContent

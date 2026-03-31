@@ -1,6 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
+import { usePathname } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -63,6 +64,7 @@ export default function ContestStandingPage() {
   const [contest, setContest] = useState<Contest | null>(null);
   const [ratedOnly, setRatedOnly] = useState(false); // toggle filter
   const debuggg = useState(false);
+  const pathname = usePathname()
   
   useEffect(() => {
     if (!contestId) return;
@@ -319,18 +321,33 @@ export default function ContestStandingPage() {
 
   return (
     <main className="min-h-screen flex">
-      {/* Sidebar */}
-      <aside className="w-40 p-4 flex flex-col"  style={{ backgroundColor: '#353535' }}>
+      <aside className="w-40 p-4 flex flex-col" style={{ backgroundColor: '#2e2e2e' }}>
         <h2 className="text-lg font-bold mb-4">Contest</h2>
-        <Link href={`/contest?id=${contestId}`} className={styles.cpButton} prefetch={false}>Info</Link>
-          {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
-            <Link href="/contest-problemset" className={styles.cpButton} prefetch={false}>Problems</Link>
-          )}
-          {contest && (
-            <Link href={`/contest-standing?id=${contest.id}`} className={styles.cpButton} prefetch={false}>
-              Standing
-            </Link>
-          )}
+        <Link
+          href={`/contest?id=${contestId}`}
+          className={styles.cpButton + (pathname === '/contest' ? ' ' + styles.cpButtonActive : '')}
+          prefetch={false}
+        >
+          Info
+        </Link>
+        {currUser?.current_contest_id !== 0 && (timeStart <= now) && (now <= timeEnd) && (
+          <Link
+            href="/contest-problemset"
+            className={styles.cpButton + (pathname === '/contest-problemset' ? ' ' + styles.cpButtonActive : '')}
+            prefetch={false}
+          >
+            Problems
+          </Link>
+        )}
+        {contest && (
+          <Link
+            href={`/contest-standing?id=${contest.id}`}
+            className={styles.cpButton + (pathname === '/contest-standing' ? ' ' + styles.cpButtonActive : '')}
+            prefetch={false}
+          >
+            Standing
+          </Link>
+        )}
       </aside>
 
       {/* Main content */}
@@ -402,7 +419,16 @@ export default function ContestStandingPage() {
                   >
                     {(
                     <>
-                      <td className="px-4 py-2 text-center border">{ratedOnly ? s.rank : index + 1}</td>
+                      <td className="px-4 py-2 text-center border">
+                        {s.isRated ? (
+                          <span>
+                            {s.rank}
+                            <span className="text-white/30 text-[11px] ml-1">({index + 1})</span>
+                          </span>
+                        ) : (
+                          <span className="text-white/30">*{index + 1}</span>
+                        )}
+                      </td>
                       <td
                         className={`px-4 py-2 text-center border font-bold ${getEloClass(
                           getDisplayedElo(eloMap[s.user_id] ?? 1500, s.contest_count ?? 0)
