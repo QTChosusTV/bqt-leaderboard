@@ -250,7 +250,13 @@ export default function ContestStandingPage() {
     return `hsl(${hue}, 100%, 50%)`
   }
 
-
+  function getScoreGradient(userScore: number, fullScore: number): string {
+    if (fullScore <= 0) return "gray";
+    const a = Math.min(1, Math.max(0, userScore / fullScore));
+    const r = Math.min(Math.round(500 * (1 - a)), 255);
+    const g = Math.min(Math.round(500 * (a)), 255);
+    return `rgb(${r}, ${g}, 0)`;
+  }
 
   const countdownText = () => {
     if (!contest) return ''
@@ -306,18 +312,6 @@ export default function ContestStandingPage() {
     const diffSeconds = Math.floor((solveTime - startTime) / 1000)
     return formatPenalty(diffSeconds)  // you already have formatPenalty
   }
-
-  function getScoreGradient(score: number, maxScore: number): string {
-    if (maxScore <= 0) return "gray";
-    const ratio = Math.min(1, Math.max(0, score / maxScore));
-
-    // green → yellow → red
-    const hue = 120 * ratio; 
-    return `hsl(${hue}, 100%, 60%)`;
-  }
-
-
-
 
   return (
     <main className="min-h-screen flex">
@@ -460,7 +454,7 @@ export default function ContestStandingPage() {
                       let color = "white"
 
                       if (info?.score !== undefined) {
-                        color = getScoreGradient(colScore ?? 100, info.score) 
+                        color = getScoreGradient(info.score, (p.score ?? 100) * 0.75)
                       } else if (info?.verdict === 'AC') {
                         color = "green"
                       } else if (info?.tries > 0) {
@@ -475,7 +469,7 @@ export default function ContestStandingPage() {
                         >
                           {info?.tries > 0 ? (
                             <div className="flex flex-col items-center">
-                              <span className={isFullScore ? "font-black italic" : "font-medium text-sm italic"}>
+                              <span className={isFullScore ? "font-bold italic" : "font-medium text-sm italic"}>
                                 {(() => {
                                   if (info?.verdict === "AC")
                                     return "+" + ((info?.tries ?? 1) > 1 ? info.tries - 1 : "")
