@@ -379,7 +379,7 @@ export default function ContestStandingPage() {
                 {problems.map((p, idx) => (
                   <th key={idx} className="px-4 py-2 text-center border">
                     <div className="flex flex-col">
-                      <span>{p.pname}</span>
+                      <Link href={`/problems?id=${p.pid}`} className="hover:underline text-xl">{p.pname}</Link>
                       {p.score !== undefined && (
                         <span className="text-[10px] text-yellow-300 italic">
                           ({p.score})
