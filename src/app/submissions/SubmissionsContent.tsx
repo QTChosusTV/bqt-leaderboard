@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { supabase } from '@/utils/supabaseClient'
-import "./submissions.css"
 import styles from "./submissions.module.css"
 import Image from 'next/image'
 import { getDisplayedElo } from "@/utils/eloAccumulation"
@@ -57,7 +56,8 @@ export default function SubmissionsPage() {
           overall,
           created_at,
           time,
-          memory_kb
+          memory_kb,
+          created_at
         `)
         .order("created_at", { ascending: false })
         .range(from, to)
@@ -130,7 +130,8 @@ export default function SubmissionsPage() {
                   <th className="p-2 text-left">Problem</th>
                   <th className="p-2 text-left">Username</th>
                   <th className="p-2 text-left">Language</th>
-                  <th className="p-2 text-left">Time</th>
+                  <th className="p-2 text-left">Runtime</th>
+                  <th className="p-2 text-left">Submit Time</th>
                   <th className="p-2 text-left">Action</th>
                 </tr>
               </thead>
@@ -165,7 +166,12 @@ export default function SubmissionsPage() {
                     </td>
                     <td className="p-2">{s.language}</td>
                     <td className="p-2">{Math.floor((s.time??0)*100000)/100}ms</td>
-
+                    <td className="p-2">
+                      {new Date(s.created_at).toLocaleString("vi-VN", {
+                        timeZone: "Asia/Ho_Chi_Minh",
+                        hour12: true,
+                      })}
+                    </td>
                     <td className="p-2">
                       {s.username === username ? (
                         <Link href={`/submission?id=${s.id}`} prefetch={false}>

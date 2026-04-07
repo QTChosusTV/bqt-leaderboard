@@ -195,7 +195,7 @@ export default function OJBlogPage() {
                           <a href={`/blog?id=${post.slug ?? post.id}`} className="text-xl font-semibold hover:underline">
                           {post.title}
                           </a>
-                          <p className="text-sm text-gray-500 mt-1">{new Date(post.created_at).toLocaleDateString()}</p>
+                          <p className="text-sm text-gray-300 mt-1">{new Date(post.created_at).toLocaleDateString('vi-VN')}</p>
                           <p className="mt-3 text-sm text-gray-100">
                           {post.summary ?? renderExcerpt(post.content)}
                           </p>
