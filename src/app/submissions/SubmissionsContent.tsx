@@ -166,7 +166,7 @@ export default function SubmissionsPage() {
                   new Date(s.created_at).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour12: true })
 
                 return (
-                  <div key={s.id} className="flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-800 bg-gray-950 hover:border-gray-700 transition-colors" style={{fontSize: 14}}>
+                  <div key={s.id} className="flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors" style={{fontSize: 14, backgroundColor: "#111111"}}>
                     {/* Avatar */}
                     <div className="relative w-9 h-9 shrink-0">
                       <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium bg-blue-950 text-blue-300">
@@ -199,8 +199,8 @@ export default function SubmissionsPage() {
                       </div>
                       <div className="flex items-center gap-2 flex-wrap">
                         <VerdictBadge status={s.overall} />
-                        <span className="text-sm px-2 py-0.5 rounded-full border border-gray-800 text-gray-500">{s.language}</span>
-                        <span className="text-sm px-2 py-0.5 rounded-full border border-gray-800 text-gray-500">{timeAgo}</span>
+                        <span className="text-sm px-2 py-0.5 rounded-full border border-gray-500 text-gray-100">{s.language}</span>
+                        <span className="text-sm px-2 py-0.5 rounded-full border border-gray-500 text-gray-100">{timeAgo}</span>
                       </div>
                     </div>
 
