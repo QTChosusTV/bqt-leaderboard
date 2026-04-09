@@ -608,7 +608,9 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
                     <Link href={`/contest?id=${encodeURIComponent(c.contestId)}`} prefetch={false}>{c.name}</Link>
                   </td>
                   <td>{c.date}</td>
-                  <td>{c.rank}</td>
+                  <td>
+                    {c.rank === 1 ? `#${c.rank} 🥇` : c.rank === 2 ? `#${c.rank} 🥈` : c.rank === 3 ? `#${c.rank} 🥉` : c.rank <= 10 ? `#${c.rank} 🏅` : `#${c.rank}`}
+                  </td>
                   <td className={getEloClass(c.elo)}>{c.elo}</td>
                   <td style={{ color }}>{change >= 0 ? `+${change}` : change}</td>
                 </tr>

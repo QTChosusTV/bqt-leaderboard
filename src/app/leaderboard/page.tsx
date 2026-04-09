@@ -26,6 +26,45 @@ type HistoryEntry = {
   elo: number
 }
 
+function adjustColor(hex: string, amount: number): string {
+  const r = parseInt(hex.slice(1, 3), 16) / 255
+  const g = parseInt(hex.slice(3, 5), 16) / 255
+  const b = parseInt(hex.slice(5, 7), 16) / 255
+
+  const max = Math.max(r, g, b), min = Math.min(r, g, b)
+  let h = 0, s = 0
+  const l = (max + min) / 2
+
+  if (max !== min) {
+    const d = max - min
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break
+      case g: h = ((b - r) / d + 2) / 6; break
+      case b: h = ((r - g) / d + 4) / 6; break
+    }
+  }
+
+  // Only shift lightness, never touch saturation
+  const newL = Math.min(0.95, Math.max(0.05, l + amount / 100))
+
+  const hue2rgb = (p: number, q: number, t: number) => {
+    if (t < 0) t += 1
+    if (t > 1) t -= 1
+    if (t < 1/6) return p + (q - p) * 6 * t
+    if (t < 1/2) return q
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6
+    return p
+  }
+
+  const q = newL < 0.5 ? newL * (1 + s) : newL + s - newL * s
+  const p = 2 * newL - q
+
+  const toHex = (x: number) => Math.round(x * 255).toString(16).padStart(2, '0')
+
+  return `#${toHex(hue2rgb(p, q, h + 1/3))}${toHex(hue2rgb(p, q, h))}${toHex(hue2rgb(p, q, h - 1/3))}`
+}
+
 export default function LeaderboardPage() {
   const [users, setUsers] = useState<User[]>([])
   const [tick, setTick] = useState(1)
@@ -73,22 +112,26 @@ export default function LeaderboardPage() {
     return () => clearTimeout(timer)
   }, [tick, users.length])
 
-  const eloBins: { min: number, max: number, label: string }[] = [];
-  for (let start = 0; start <= 2400; start += 50) {
-    eloBins.push({
-      min: start,
-      max: start + 49,
-      label: `${start}`
-    });
-  }
+  const sortedTiers = ELO_TIERS.slice().sort((a, b) => a.min - b.min) // ascending: 0, 400, 800...
+
+  const eloBins = sortedTiers.flatMap((tier, i) => {
+    const min = tier.min
+    const max = (sortedTiers[i + 1]?.min ?? 4000) - 1  // next tier's min - 1
+    const mid = Math.floor((min + max) / 2)
+
+    return [
+      { min, max: mid, label: `${min}–${mid}`, color: adjustColor(tier.color, 0) },
+      { min: mid + 1, max, label: `${mid + 1}–${max}`, color: adjustColor(tier.color, 5) },
+    ]
+  })
 
   const eloDistribution = eloBins.map(bin => {
     const count = users.filter(u => u.elo >= bin.min && u.elo <= bin.max).length;
-    const color = getEloColor(bin.min) ?? '#000'; // Map to color
     return {
       range: bin.label,
+      minElo: bin.min,
       count,
-      color
+      color: bin.color
     };
   });
 
@@ -119,12 +162,22 @@ export default function LeaderboardPage() {
                   return (
                     <div style={{
                       background: '#222',
-                      color: '#fff',
                       padding: '5px 8px',
                       borderRadius: '4px',
                       fontSize: '12px',
-                      boxShadow: '0 0 5px rgba(0,0,0,0.5)'
+                      boxShadow: '0 0 5px rgba(0,0,0,0.5)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      color: adjustColor(data.color, +15),
                     }}>
+                      <Image
+                        src={`/assets/ranks/${getEloClass(data.minElo)}.png`}
+                        alt=""
+                        width={18}
+                        height={18}
+                        style={{ imageRendering: 'pixelated' }}
+                      />
                       {data.range}: {data.count} user{data.count !== 1 ? 's' : ''}
                     </div>
                   );
@@ -133,13 +186,28 @@ export default function LeaderboardPage() {
               }}
             />
 
-            <Bar dataKey="count">
+            <Bar
+              dataKey="count"
+              shape={(props: any) => {
+                const { x, y, width, height, index } = props
+                const isUpper = index % 2 === 1  // upper halves are odd indexes
+                const barWidth = isUpper ? width : width * 0.6
+                const xOffset = (width - barWidth) / 2
+                return (
+                  <rect
+                    x={x + xOffset}
+                    y={y}
+                    width={barWidth}
+                    height={height}
+                    fill={eloDistribution[index]?.color}
+                  />
+                )
+              }}
+            >
               {eloDistribution.map((entry, index) => (
-                <Cell 
-                  key={`cell-${index}`} 
-                  fill={entry.color} 
-                />
+                <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
+
             </Bar>
           </BarChart>
         </ResponsiveContainer>

@@ -60,8 +60,6 @@ export default function AboutPage() {
   return (
     <main>
       <div className="p-6">
-
-
         <AnimatedContent  
           distance={50}
           direction="vertical"
