@@ -2,17 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabaseClient";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkBreaks from "remark-breaks";
-import rehypeRaw from "rehype-raw";
-import rehypeKatex from "rehype-katex";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image"
 import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
-import AuthButtons, { Navbar } from '@/components/layout_b';
 import GradientText from "@/components/reactbits/GradientText/GradientText"
 
 interface Post {

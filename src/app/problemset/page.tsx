@@ -7,8 +7,6 @@ import './pbl.css'
 import styles from './pbl.module.css'
 import { Timestamp } from 'next/dist/server/lib/cache-handlers/types'
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
-import AuthButtons, { Navbar } from '@/components/layout_b';
-
 interface Problem {
   id: number
   title: string

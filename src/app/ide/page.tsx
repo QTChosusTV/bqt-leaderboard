@@ -9,7 +9,6 @@ import { supabase } from '@/utils/supabaseClient';
 import Link from 'next/link';
 import type { editor } from 'monaco-editor';
 import type { User } from '@supabase/supabase-js';
-import AuthButtons, { Navbar } from '@/components/layout_b';
 
 export default function IDEPage() {
   const [selectedLanguage, setSelectedLanguage] = useState('cpp');

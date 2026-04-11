@@ -10,7 +10,6 @@ import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 import { useAuth } from '@/context/AuthContext'
 
-import AuthButtons, { Navbar } from '@/components/layout_b';
 
 type Submission = {
   id: number

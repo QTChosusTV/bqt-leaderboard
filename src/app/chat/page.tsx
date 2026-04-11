@@ -8,7 +8,6 @@ import Link from 'next/link';
 import Image from 'next/image'
 import { getEloClass } from '@/utils/eloDisplay'
 import { useAuth } from '@/context/AuthContext'
-import AuthButtons, { Navbar } from '@/components/layout_b';
 
 interface Message {
   id: number;
