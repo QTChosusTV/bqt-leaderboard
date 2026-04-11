@@ -1,13 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600;700;900&display=swap');
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 @import "tw-animate-css";
 
-
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-source-sans: 'IosevkaCharon', monospace;
+  --font-bvp: 'IosevkaCharon', system-ui, monospace;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -42,10 +40,11 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* ─── Base ─────────────────────────────────────────────── */
 body {
-  background-color: #1f1f1f;
-  font-family: var(--font-source-sans);
-  color: #ffffff;
+  background-color: #0d0e12;
+  font-family: var(--font-bvp);
+  color: #e0e0e0;
 }
 
 *, *::before, *::after {
@@ -57,62 +56,71 @@ html, body {
   overflow-x: hidden;
 }
 
+/* ─── BQTOJ Logo text ──────────────────────────────────── */
 .bqtoj {
-  color: #d900ff;
-  font-weight: bold;
-  font-size: 25px;
-  font-family: var(--font-source-sans), 'Source Sans Pro', sans-serif;
-  text-shadow: 1px 1px 2px black;
+  color: #a89cee;
+  font-weight: 500;
+  font-size: 20px;
+  font-family: var(--font-bvp);
 }
 
+/* ─── Auth buttons ─────────────────────────────────────── */
 .auth-button {
-  padding: 3px 10px;
-  border: 1px outset buttonborder;
-  border-radius: 10px;
-  color: #444444;
-  background-color: #aaaaaa;
+  padding: 4px 12px;
+  border: 1px solid #2a2d3a;
+  border-radius: 6px;
+  color: #8a8ea8;
+  background-color: #161827;
   text-decoration: none;
-  font-size: 15px;
-  text-align: center;
-  margin-block: auto;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  font-size: 12px;
+  display: inline-block;
+}
+.auth-button:hover {
+  background-color: #1a1c2e;
+  color: #c8ccde;
 }
 
-.elo-3000-plus { color: #8b0000; } /* Red */
-.elo-2700-3000 { color: #ff0000; } /* Red */
-.elo-2500-2700 { color: #ff7575; } /* Red */
-.elo-2300-2500 { color: #ffaa00; } /* Orange */
-.elo-2100-2300 { color: #fbff00; } /* Yellow */
-.elo-1900-2100 { color: #aa00aa; } /* Purple */
-.elo-1750-1900 { color: #7900fa; } /* Blue */
-.elo-1600-1750 { color: #55aaff; } /* Blue */
-.elo-1500-1600 { color: #15d0ff; } /* Cyan */
-.elo-1400-1500 { color: #00aaaa; } /* Cyan */
-.elo-1200-1400 { color: #00aa00; } /* Green */
-.elo-800-1200 { color: #aa5500; } /* Gray */
-.elo-400-800 { color: #aaaaaa; } /* White */
-.elo-0-400 { color: #ffffff; } /* White */
+/* ─── Redirect nav buttons (legacy, now hidden in sidebar) */
+.redirect-button {
+  display: none;
+}
 
-#currentRating.elo-3000-plus { color: #8b0000; } /* Red */
-#currentRating.elo-2700-3000 { color: #ff0000; } /* Red */
-#currentRating.elo-2500-2700 { color: #ff7575; } /* Red */
-#currentRating.elo-2300-2500 { color: #ffaa00; } /* Orange */
-#currentRating.elo-2100-2300 { color: #fbff00; } /* Yellow */
-#currentRating.elo-1900-2100 { color: #aa00aa; } /* Purple */
-#currentRating.elo-1750-1900 { color: #7900fa; } /* Blue */
-#currentRating.elo-1600-1750 { color: #55aaff; } /* Blue */
-#currentRating.elo-1500-1600 { color: #4bdbff; } /* Cyan */
-#currentRating.elo-1400-1500 { color: #00aaaa; } /* Cyan */
-#currentRating.elo-1200-1400 { color: #00aa00; } /* Green */
-#currentRating.elo-800-1200 { color: #aa5500; } /* Gray */
-#currentRating.elo-400-800 { color: #aaaaaa; } /* Write */
-#currentRating.elo-0-400 { color: #ffffff; } /* Write */
+/* ─── Elo color classes ────────────────────────────────── */
+.elo-3000-plus { color: #8b0000; }
+.elo-2700-3000 { color: #ff0000; }
+.elo-2500-2700 { color: #ff7575; }
+.elo-2300-2500 { color: #ffaa00; }
+.elo-2100-2300 { color: #fbff00; }
+.elo-1900-2100 { color: #aa00aa; }
+.elo-1750-1900 { color: #7900fa; }
+.elo-1600-1750 { color: #55aaff; }
+.elo-1500-1600 { color: #15d0ff; }
+.elo-1400-1500 { color: #00aaaa; }
+.elo-1200-1400 { color: #00aa00; }
+.elo-800-1200  { color: #aa5500; }
+.elo-400-800   { color: #aaaaaa; }
+.elo-0-400     { color: #ffffff; }
 
-.recor {filter: brightness(100%) saturate(100%);}
+/* currentRating variants */
+#currentRating.elo-3000-plus { color: #8b0000; }
+#currentRating.elo-2700-3000 { color: #ff0000; }
+#currentRating.elo-2500-2700 { color: #ff7575; }
+#currentRating.elo-2300-2500 { color: #ffaa00; }
+#currentRating.elo-2100-2300 { color: #fbff00; }
+#currentRating.elo-1900-2100 { color: #aa00aa; }
+#currentRating.elo-1750-1900 { color: #7900fa; }
+#currentRating.elo-1600-1750 { color: #55aaff; }
+#currentRating.elo-1500-1600 { color: #4bdbff; }
+#currentRating.elo-1400-1500 { color: #00aaaa; }
+#currentRating.elo-1200-1400 { color: #00aa00; }
+#currentRating.elo-800-1200  { color: #aa5500; }
+#currentRating.elo-400-800   { color: #aaaaaa; }
+#currentRating.elo-0-400     { color: #ffffff; }
+
+/* ─── Hue rotation helpers ─────────────────────────────── */
+.recor { filter: brightness(100%) saturate(100%); }
 .hue-0   { filter: hue-rotate(0deg); }
-.hue-30   { filter: hue-rotate(30deg); }
+.hue-30  { filter: hue-rotate(30deg); }
 .hue-60  { filter: hue-rotate(60deg); }
 .hue-90  { filter: hue-rotate(90deg); }
 .hue-120 { filter: hue-rotate(120deg); }
@@ -121,35 +129,32 @@ html, body {
 .hue-210 { filter: hue-rotate(210deg); }
 .hue-240 { filter: hue-rotate(240deg); }
 
-.nav-active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 12px;
-  right: 12px;
-  height: 2px;
-  background: theme('colors.blue.400');
-  border-radius: 2px 2px 0 0;
-}
+/* ─── Top 100 leaderboard ──────────────────────────────── */
+.elo-top-100 { font-weight: 500; }
 
+/* ─── Global button reset (dark) ──────────────────────── */
 button {
-    padding: 5px 10px;
-    background-color: #55aaff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
+  padding: 5px 12px;
+  background-color: #1a1c2e;
+  color: #a89cee;
+  border: 1px solid #2a2d3a;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--font-bvp);
+  font-size: 13px;
+  transition: background 0.15s;
 }
-
 button:hover {
-    background-color: #4488cc;
+  background-color: #22253a;
 }
 
-
+/* ─── Main content area ────────────────────────────────── */
 .main-top {
-  color: #444444;
-  background-color: #474747;
+  background: #10121a;
+  border-bottom: 1px solid #1e2030;
 }
 
+/* ─── Tailwind theme ───────────────────────────────────── */
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -226,72 +231,43 @@ button:hover {
   * {
     @apply border-border outline-ring/50;
   }
-
   body {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: var(--font-bvp);
   }
 }
 
+/* ─── Custom fonts ─────────────────────────────────────── */
 @font-face {
   font-family: "Oswald";
   src: url("/assets/fonts/Oswald-VariableFont_wght.ttf") format("truetype");
-  font-weight: 800; 
+  font-weight: 800;
   font-style: normal;
 }
 
 @font-face {
   font-family: "IosevkaCharon";
-  src: url("/assets/fonts/IosevkaCharon/IosevkaCharon-Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IosevkaCharon";
-  src: url("/assets/fonts/IosevkaCharon/IosevkaCharon-LightItalic.ttf") format("truetype");
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IosevkaCharon";
   src: url("/assets/fonts/IosevkaCharon/IosevkaCharon-Regular.ttf") format("truetype");
-  font-weight: 400;
+  font-weight: normal;
   font-style: normal;
-  font-display: swap;
 }
-@font-face {
-  font-family: "IosevkaCharon";
-  src: url("/assets/fonts/IosevkaCharon/IosevkaCharon-Italic.ttf") format("truetype");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
+
+/* ─── Scrollbar styling ────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-@font-face {
-  font-family: "IosevkaCharon";
-  src: url("/assets/fonts/IosevkaCharon/IosevkaCharon-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
+::-webkit-scrollbar-track {
+  background: #0d0e12;
 }
-@font-face {
-  font-family: "IosevkaCharon";
-  src: url("/assets/fonts/IosevkaCharon/IosevkaCharon-MediumItalic.ttf") format("truetype");
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
+::-webkit-scrollbar-thumb {
+  background: #2a2d3a;
+  border-radius: 3px;
 }
-@font-face {
-  font-family: "IosevkaCharon";
-  src: url("/assets/fonts/IosevkaCharon/IosevkaCharon-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3d52;
 }
-@font-face {
-  font-family: "IosevkaCharon";
-  src: url("/assets/fonts/IosevkaCharon/IosevkaCharon-BoldItalic.ttf") format("truetype");
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
+
+/* ─── Table dark defaults ──────────────────────────────── */
+table {
+  border-collapse: collapse;
 }

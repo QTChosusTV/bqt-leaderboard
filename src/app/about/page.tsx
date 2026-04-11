@@ -7,8 +7,6 @@ import GradientText from './GradientText/GradientText'
 import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedContent'
 import CountUp from '@/components/reactbits/CountUp/CountUp'
 
-import AuthButtons, { Navbar } from '@/components/layout_b';
-
 export default function AboutPage() {
 
   const [submissionsCount, setSubmissionsCount] = useState<number | null>(0)
@@ -94,7 +92,7 @@ export default function AboutPage() {
           delay={1.0}
         >
         <p className="mb-4">
-          <strong>BQTOJ</strong> (BanhQuyTeam Online Judge) is a friendly and beginner-focused coding judge created by <strong>BanhQuyTeam</strong> — a group of passionate developers who want to make competitive programming more accessible and enjoyable for newcomers.
+          <strong>BQTOJ</strong> (BanhQuyTeam Online Judge) is a friendly and beginner-focused coding judge created by <strong>BanhQuyTeam</strong>; a group of passionate developers who want to make competitive programming more accessible and enjoyable for newcomers.
         </p>
 
         <p className="mb-4">
@@ -193,14 +191,14 @@ export default function AboutPage() {
 
 
 
-        <h2 className="text-xl font-semibold mt-6 mb-2">🛠️ Built by</h2>
+        <h2 className="text-xl font-semibold mt-6 mb-2">ᯓ★ Built by</h2>
         <ul className="list-disc pl-6 mb-4">
           <li><strong style={{color: '#aa00aa'}}>QTChosusTV</strong> – Lead developer & system architect</li>
           <li><strong style={{color: '#55aaff'}}>Anhwaivo</strong> – Backend engineer, UI/UX designer & frontend</li>
           <li><strong style={{color: '#00aa00'}}>Sussy_fish</strong> – Problem setter</li>
         </ul>
 
-        <h2 className="text-xl font-semibold mt-6 mb-2">🚀 Mission</h2>
+        <h2 className="text-xl font-semibold mt-6 mb-2">ᯓ★ Mission</h2>
         <p className="mb-4">
           We want to make learning to code through contests easier, fairer, and more exciting. From training for IOI to solving your first loop problem — BQTOJ is your platform to grow and have fun while doing it.
         </p>
@@ -211,7 +209,7 @@ export default function AboutPage() {
         </p>
 
         <p className="mt-8">
-          <Link href="/" className="text-blue-500 underline">← Back to Home</Link>
+          <Link href="/" className="text-blue-500 hover:underline font-bold">← Back to Home</Link>
         </p>
         </AnimatedContent>
       </div>

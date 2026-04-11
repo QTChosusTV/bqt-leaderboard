@@ -1,154 +1,89 @@
+/* leaderboard.css */
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
 
-
 h1, h2 {
-    color: #e0e0e0;
+  color: #c8ccde;
 }
 
 h1 span {
-    color: inherit; /* Ensure h1 doesn't override span colors */
+  color: inherit;
 }
 
+.elo-top-100 { font-weight: 500; }
 
-
-
-/* Top 100 users in leaderboard */
-.elo-top-100 { font-weight: bold; }
-
-/* Leaderboard link styling */
 #leaderboard a {
-    text-decoration: none; /* Remove underline by default */
+  text-decoration: none;
 }
-
 #leaderboard a:hover {
-    text-decoration: underline; /* Show underline on hover */
+  text-decoration: underline;
 }
 
-/* Rank column styling */
 #leaderboard td:first-child {
-    width: 100px;
-    padding-right: 30px;
-    padding-left: 18px;
-    font-family: 'Roboto Condensed', sans-serif;
-    font-style: italic;
-    font-size: 15px;
-    font-weight: 700;
-    color: #e0e0e0;
-    position: relative;
-    overflow: hidden;
-    text-align: center; /* Center the rank numbers */
+  width: 100px;
+  padding-right: 30px;
+  padding-left: 18px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 700;
+  color: #6a6e88;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
 }
 
 #leaderboard td:nth-child(2) {
-    padding-left: 25px;
+  padding-left: 25px;
 }
 
 #leaderboard td:nth-child(3) {
-    text-align: center;
+  text-align: center;
 }
 
 #leaderboard tr:nth-child(1) td:first-child {
-    color: #00ddff; /* Gold for rank 1 */
-    font-size: 50px;
+  color: #00ddff;
+  font-size: 50px;
 }
-
 #leaderboard tr:nth-child(2) td:first-child {
-    color: #ffbf00; /* Silver for rank 2 */
-    font-size: 40px;
+  color: #ffbf00;
+  font-size: 40px;
 }
-
 #leaderboard tr:nth-child(3) td:first-child {
-    color: #e0e0e0; /* Bronze for rank 3 */
-    font-size: 30px;
+  color: #e0e0e0;
+  font-size: 30px;
 }
-
 #leaderboard tr:nth-child(n + 4):nth-child(-n + 10) td:first-child {
-    color: #bc7100; /* Light purple for ranks 4–10 */
-    font-size: 25px;
+  color: #bc7100;
+  font-size: 25px;
 }
-
 #leaderboard tr:nth-child(n + 11):nth-child(-n + 100) td:first-child {
-    color: #797979; /* Light gray for ranks 11–100 */
-    font-size: 20px;
+  color: #797979;
+  font-size: 20px;
 }
 
-
-/* Shiny effect for rank numbers */
 #leaderboard tr:nth-child(-n + 10) td:first-child::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -150%; /* Start further to the left */
-    width: 50%; /* Full width of the cell */
-    height: 100%;
-    background: linear-gradient(
-        to right,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.2) 23%,
-        rgba(255, 255, 255, 0) 45%,
-        rgba(255, 255, 255, 0) 55%,
-        rgba(255, 255, 255, 0.2) 82%,
-        rgba(255, 255, 255, 0) 100%
-    );
-    transform: skewX(-25deg);
-    animation: shine 4s infinite;
-    animation-timing-function: cubic-bezier(.8,0,.2,1);
-    z-index: 1; /* Ensure the shiny effect is above the text */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.12) 23%,
+    rgba(255,255,255,0) 45%,
+    rgba(255,255,255,0) 55%,
+    rgba(255,255,255,0.12) 82%,
+    rgba(255,255,255,0) 100%
+  );
+  transform: skewX(-25deg);
+  animation: shine 4s infinite;
+  animation-timing-function: cubic-bezier(.8,0,.2,1);
+  z-index: 1;
 }
 
-
-/* Animation for the shiny effect */
 @keyframes shine {
-    0% {
-        left: -150%;
-    }
-    100% {
-        left: 150%;
-    }
+  0%   { left: -150%; }
+  100% { left: 150%; }
 }
-
-/* Chat styles */
-#chatMessages {
-    max-height: 400px;
-    overflow-y: auto;
-    border: 1px solid #444;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #222;
-    color: #e0e0e0;
-}
-
-#chatMessages p {
-    margin: 5px 0;
-}
-
-#chatMessages strong {
-    color: #55aaff; /* Blue for usernames, consistent with Elo colors */
-}
-
-#chatInput {
-    width: 70%;
-    padding: 5px;
-    margin-right: 10px;
-    background-color: #333;
-    color: #e0e0e0;
-    border: 1px solid #555;
-}
-
-#chatInput:focus {
-    outline: none;
-    border-color: #55aaff;
-}
-
-button {
-    padding: 5px 10px;
-    background-color: #55aaff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #4488cc;
-}
-

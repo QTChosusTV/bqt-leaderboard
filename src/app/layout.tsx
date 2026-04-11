@@ -1,10 +1,6 @@
 import "./globals.css";
-import Image from 'next/image'
-import AuthButtons from '@/components/layout_b';
-import { Navbar } from '@/components/layout_b';
+import Sidebar from '@/components/SideBar';
 import ContestBanner from '@/components/ContestBanner';
-import Link from 'next/link';
-import '@pitininja/cap-react-widget/dist/index.css';
 import { AuthProvider } from '@/context/AuthContext'
 
 export const metadata = {
@@ -15,27 +11,36 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning>
       <head>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="antialiased overflow-x-hidden">
         <AuthProvider>
-          <nav className="px-4 py-3 flex justify-between items-center main-top w-full box-border">
-            <Link href="/" className="flex items-center gap-4 bqtoj shrink-0">
-              <Image src="/assets/web-icon.png" alt="Website Logo" width={40} height={40} />
-              BQTOJ Home
-            </Link>
-            <div className="flex gap-4 shrink-0">
-              <AuthButtons />
+          {/* Mobile top bar lives inside Sidebar component */}
+          <div style={{ display: 'flex', minHeight: '100vh' }}>
+            <Sidebar />
+            <div style={{ marginLeft: '172px', flex: 1, minHeight: '100vh', minWidth: 0, overflowX: 'hidden' }}>
+              <ContestBanner />
+              {children}
             </div>
-          </nav>
-          <Navbar />
-          <ContestBanner />
-          {children}
+          </div>
         </AuthProvider>
       </body>
     </html>

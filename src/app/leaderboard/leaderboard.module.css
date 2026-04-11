@@ -1,25 +1,35 @@
+/* ════════════════════════════════════════════════════════
+   leaderboard.module.css
+   ════════════════════════════════════════════════════════ */
+
 .sTable {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
-  background-color: #2a2a2a;
-  padding: 40px;
+  background-color: #10121a;
+  padding: 0;
 }
 
 .sTable th,
 .sTable td {
-  padding: 10px;
+  padding: 10px 14px;
   text-align: left;
-  border: 2px solid #434343;
-  font-size: 19px;
+  border: 1px solid #1e2030;
+  font-size: 14px;
+  font-family: 'IosevkaCharon', system-ui, monospace;
 }
 
 .sTable th {
-  background-color: #505050;
+  background-color: #161827;
+  color: #6a6e88;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
 .sTable tr:hover {
-  background-color: #3a3a3a !important;
+  background-color: #1a1c2e !important;
 }
 
 .contestList {
@@ -28,9 +38,9 @@
 }
 
 .contestList li {
-  background-color: #5d5d5d;
+  background-color: #161827;
   padding: 10px;
   margin: 5px 0;
-  border-radius: 5px;
+  border-radius: 6px;
+  border: 1px solid #1e2030;
 }
-

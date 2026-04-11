@@ -55,35 +55,3 @@ const links = [
   { href: '/submissions', label: 'Submissions' },
   { href: '/blogs',       label: 'Blogs' },
 ];
-
-export function Navbar() {
-  const pathname = usePathname();
-
-  return (
-    <nav
-      className="flex items-stretch gap-0.5 px-4 bg-[#111318] border-b border-white/[0.08] overflow-x-auto w-full max-w-full"
-      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-    >
-      <style>{`nav::-webkit-scrollbar { display: none; }`}</style>
-      {links.map(({ href, label }) => {
-        const active = pathname === href;
-        return (
-          <Link
-            key={href}
-            href={href}
-            className={`
-              relative flex items-center px-5 h-12 text-[16px] font-medium
-              tracking-wide whitespace-nowrap rounded-lg transition-all duration-150
-              ${active
-                ? 'text-white bg-white/10 nav-active'
-                : 'text-white/45 hover:text-white/90 hover:bg-white/[0.07]'
-              }
-            `}
-          >
-            {label}
-          </Link>
-        );
-      })}
-    </nav>
-  );
-}

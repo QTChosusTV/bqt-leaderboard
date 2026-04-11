@@ -7,7 +7,6 @@ import Image from 'next/image'
 import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor } from "@/utils/eloDisplay"
 import { useAuth } from '@/context/AuthContext'
-import AuthButtons, { Navbar } from '@/components/layout_b';
 
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'

@@ -11,7 +11,6 @@ import AnimatedContent from '@/components/reactbits/AnimatedContent/AnimatedCont
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { getDisplayedElo } from "@/utils/eloAccumulation"
 import { getEloClass, getEloColor, ELO_TIERS } from "@/utils/eloDisplay"
-import AuthButtons, { Navbar } from '@/components/layout_b';
 
 interface User {
   username: string
@@ -246,7 +245,7 @@ export default function LeaderboardPage() {
 
                 return (
                   <tr key={user.username}>
-                    <td style={{ textAlign: 'center', width: '10  0px', marginLeft: '50px', marginRight: '50px' }}>{rank}</td>
+                    <td style={{ textAlign: 'center', width: '10  0px', marginLeft: '50px', marginRight: '50px'}}>{rank}</td>
                     <td className={usernameClassList}>
                       <Link
                         href={`/user?username=${encodeURIComponent(user.username)}`}
@@ -263,7 +262,7 @@ export default function LeaderboardPage() {
                           width='80'
                           height='80'
                         />
-                        {user.username}
+                        <strong style={{"fontSize": "16px"}}>{user.username}</strong>
                       </Link>
                     </td>
                     <td style={{ textAlign: 'center' }} className={ELO_TIERS[Math.max(13-user.cnt, 0)].class}>

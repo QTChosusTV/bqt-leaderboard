@@ -219,7 +219,7 @@ function SubmissionContent() {
   if (!submission) return <p className="p-6 text-red-500">Submission not found.</p>
 
   // Only check permission once both are fully loaded
-  if (!authLoading && username && submission.username !== username) {
+  if ((!authLoading && username && submission.username !== username)) {
     return <p className="p-6 text-red-400 font-bold">You don&apos;t have permission to view this submission.</p>
   }
 
