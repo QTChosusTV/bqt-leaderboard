@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image'
 import { getEloClass } from '@/utils/eloDisplay'
 import { useAuth } from '@/context/AuthContext'
+import { getDisplayedElo } from '@/utils/eloAccumulation';
 
 interface Message {
   id: number;
@@ -22,6 +23,15 @@ export default function ChatPage() {
   const [input, setInput] = useState('');
   const { username } = useAuth()
   const [elo, setElo] = useState<number>(0);
+  const [historyLengths, setHistoryLengths] = useState<Record<string, number>>({})
+  const [userElos, setUserElos] = useState<Record<string, { elo: number; count: number }>>({})
+
+  
+  const getDisplayed = (user: string) => {
+    const u = userElos[user];
+    return u ? getDisplayedElo(u.elo, u.count) : 0;
+  }
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -50,12 +60,26 @@ export default function ChatPage() {
         .select('*')
         .order('time', { ascending: true });
 
-      if (error) {
-        console.error('Error loading messages:', error);
-        return;
-      }
+      if (error) { console.error('Error loading messages:', error); return; }
 
-      setMessages(data as Message[]);
+      const msgs = data as Message[];
+      setMessages(msgs);
+
+      const uniqueUsers = [...new Set(msgs.map(m => m.user))];
+      if (uniqueUsers.length === 0) return;
+
+      const { data: lbData } = await supabase
+        .from('leaderboard')
+        .select('username, elo, history')
+        .in('username', uniqueUsers);
+
+      if (lbData) {
+        const map: Record<string, { elo: number; count: number }> = {};
+        lbData.forEach(u => {
+          map[u.username] = { elo: u.elo ?? 0, count: u.history?.length ?? 0 };
+        });
+        setUserElos(map);
+      }
     };
 
     loadMessages();
@@ -98,13 +122,13 @@ export default function ChatPage() {
               }`}
             >
               <Image 
-                src={`/assets/ranks/${getEloClass(msg.elo ?? 0)}.png`}
-                alt={`${getEloClass(msg.elo ?? 0)}`}
+                src={`/assets/ranks/${getEloClass(getDisplayed(msg.user))}.png`}
+                alt={`${getEloClass(getDisplayed(msg.user))}`}
                 width={24}
                 height={24}
                 className="mr-1"
-            ></Image> 
-              <strong className={`${getEloClass(msg.elo ?? 0)}`}>{msg.user}{':'}</strong>
+              />
+              <strong className={`${getEloClass(getDisplayed(msg.user))}`}>{msg.user}{':'}</strong>
               <p className="ml-1 mr-1 break-words min-w-0 flex-1">{msg.text}</p>
               <span className="flex text-xs text-gray-400 ml-2 mt-1 font-bold">
                 {' '}({new Date(new Date(msg.time).getTime() + 7 * 60 * 60 * 1000).toLocaleString()})

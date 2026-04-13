@@ -309,7 +309,7 @@ export default function Sidebar() {
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
-          transform: 'translateX(-172px)',   // hide all but ~78px showing
+          transform: 'translateX(-172px)',
           transition: 'transform 0.25s ease',
           zIndex: 30,
         }}
