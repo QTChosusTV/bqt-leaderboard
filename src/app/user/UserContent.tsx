@@ -193,7 +193,9 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
       if (elo >= 1400) return 'Specialist'
       if (elo >= 1200) return 'Pupil'
       if (elo >= 800) return 'Newbie'
-      return 'Beginner'
+      if (elo >= 400) return 'Beginner'
+      if (elo > 0) return 'Initiate'
+      return 'Unranked'
     }
 
   const getCFEloColor = (elo: number) => {
@@ -565,7 +567,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
                 fontSize: '26px',
                 fontWeight: 'bold',
                 margin: 0,
-                marginTop: '25px',
+                marginTop: '17px',
                 marginLeft: '10px'
               }}
             >
@@ -591,10 +593,14 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
 
         <MarkdownRenderer content={desc} />
 
-        <table id="history" className={styles.urTable} style={{width: '100%', tableLayout: 'fixed'}}>
+        <table id="history" className={styles.urTable} style={{width: '100%'}}>
           <thead>
             <tr>
-              <th>Name</th><th>Date</th><th>Rank</th><th>Elo</th><th>Change</th>
+                <th style={{ width: '28%' }}>Name</th>
+                <th style={{ width: '12%' }}>Date</th>
+                <th style={{ width: '10%' }}>Rank</th>
+                <th style={{ width: '10%' }}>Elo</th>
+                <th style={{ width: '40%' }}>Change</th>
             </tr>
           </thead>
           <tbody className={styles.contestList}>
@@ -611,8 +617,35 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts
                   <td>
                     {c.rank === 1 ? `#${c.rank} 🥇` : c.rank === 2 ? `#${c.rank} 🥈` : c.rank === 3 ? `#${c.rank} 🥉` : c.rank <= 10 ? `#${c.rank} 🏅` : `#${c.rank}`}
                   </td>
-                  <td className={getEloClass(c.elo)}>{c.elo}</td>
-                  <td style={{ color }}>{change >= 0 ? `+${change}` : change}</td>
+                  <td className={getEloClass(c.elo)}><strong>{c.elo}</strong></td>
+                  <td className="font-bold" style={{color, fontSize: '16px'}}>
+                    {change >= 0 ? `+${change}` : change}
+                    {getEloClass(c.elo) !== getEloClass(prevElo ?? 0) && (
+                      <span style={{ marginLeft: '6px', fontSize: '14px', opacity: 0.85, display: "flex", alignItems: "center"}}>
+                        <Image
+                          src={`/assets/ranks/${getEloClass(prevElo ?? 0)}.png`}
+                          alt={getEloClass(prevElo ?? 0)}
+                          style={{
+                            verticalAlign: 'middle'
+                          }}
+                          width='24'
+                          height='24'
+                        />
+                        <span className={getEloClass(prevElo ?? 0)}>{getEloTitle(prevElo ?? 0)}</span>
+                        <div className="ml-1 mr-0.5 text-white">{" → "}</div>
+                        <Image
+                          src={`/assets/ranks/${getEloClass(c.elo ?? 0)}.png`}
+                          alt={getEloClass(c.elo ?? 0)}
+                          style={{
+                            verticalAlign: 'middle'
+                          }}
+                          width='24'
+                          height='24'
+                        />
+                        <span className={getEloClass(c.elo)}>{getEloTitle(c.elo)}</span>
+                      </span>
+                    )}
+                  </td>
                 </tr>
               );
             })}

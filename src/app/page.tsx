@@ -80,7 +80,7 @@ function RankRow({
         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
       >
         <span style={{
-          fontSize: '11px',
+          fontSize: '14px',
           color: rank === 1 ? '#00ddff' : rank === 2 ? '#ffbf00' : rank === 3 ? '#aaaaaa' : '#4a4e62',
           fontWeight: '500',
           textAlign: 'center',
@@ -93,7 +93,7 @@ function RankRow({
           style={{ imageRendering: 'pixelated' }}
         />
         <span style={{
-          fontSize: '12px',
+          fontSize: '14px',
           fontWeight: '500',
           color: getEloColor(eloForIcon),
           whiteSpace: 'nowrap',
@@ -101,7 +101,7 @@ function RankRow({
           textOverflow: 'ellipsis',
         }}>{username}</span>
         <span style={{
-          fontSize: '12px',
+          fontSize: '14px',
           fontWeight: '500',
           color: getEloColor(eloForIcon),
           textAlign: 'right',
@@ -124,7 +124,7 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
       minWidth: 0,
     }}>
       <div style={{
-        fontSize: '13px',
+        fontSize: '16px',
         fontWeight: '500',
         color: '#c8ccde',
         marginBottom: '10px',
@@ -310,18 +310,18 @@ export default function HomePage() {
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
           <div>
-            <div style={{ fontSize: '14px', fontWeight: '500', color: '#a89cee', marginBottom: '6px' }}>
+            <div style={{ fontSize: '16px', fontWeight: '500', color: '#a89cee', marginBottom: '6px' }}>
               {contest.name ?? "Unnamed Contest"}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '11px', color: '#4a4e62' }}>Rated:</span>
+              <span style={{ fontSize: '14px', color: '#4a4e62' }}>Rated:</span>
               {iconsInRange.map(rank => (
                 <Image
                   key={rank.class}
                   src={`/assets/ranks/${rank.class}.png`}
                   alt={rank.class}
-                  width={18}
-                  height={18}
+                  width={24}
+                  height={24}
                 />
               ))}
             </div>
@@ -421,7 +421,7 @@ export default function HomePage() {
               background: '#1e2030', border: '1px solid #2a2d3a',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="#555">
+              <svg width="32" height="32" viewBox="-3 -3 30 30" fill="#555">
                 <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
               </svg>
             </div>
@@ -430,17 +430,17 @@ export default function HomePage() {
                 <Image
                   src={`/assets/ranks/${getEloClass(elo)}.png`}
                   alt={getEloClass(elo)}
-                  width={16}
-                  height={16}
+                  width={20}
+                  height={20}
                 />
-                <span style={{ fontSize: '14px', fontWeight: '500' }} className={getEloClass(elo)}>
+                <span style={{ fontSize: '16px', fontWeight: '500' }} className={getEloClass(elo)}>
                   {username}
                 </span>
               </div>
-              <div style={{ fontSize: '11px', color: '#4a4e62' }}>{email}</div>
+              <div style={{ fontSize: '14px', color: '#4a4e62' }}>{email}</div>
             </div>
             <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
-              <div style={{ fontSize: '11px', color: '#4a4e62', marginBottom: '2px' }}>Rating</div>
+              <div style={{ fontSize: '14px', color: '#4a4e62', marginBottom: '2px' }}>Rating</div>
               <div style={{ fontSize: '20px', fontWeight: '500' }} className={getEloClass(elo)}>{elo}</div>
             </div>
           </div>
@@ -482,12 +482,12 @@ export default function HomePage() {
 
         {/* Past */}
         <section style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '13px', fontWeight: '500', color: '#8a8ea8', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'space-between' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: '500', color: '#8a8ea8', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'space-between' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2a2d3a', display: 'inline-block' }}/>
               Past Contests
             </span>
-            <Link href="/contests/past/1" style={{ fontSize: '11px', color: '#534AB7', textDecoration: 'none' }}>
+            <Link href="/contests/past/1" style={{ fontSize: '16px', color: '#534AB7', textDecoration: 'none' }}>
               View all →
             </Link>
           </h2>
@@ -508,7 +508,7 @@ export default function HomePage() {
           className="home-panels"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
             gap: '12px',
             alignItems: 'start',
           }}
@@ -561,7 +561,7 @@ export default function HomePage() {
           <Panel title="Top ranking (Trusted only)">
             <div style={{
               display: 'grid', gridTemplateColumns: '1fr auto',
-              fontSize: '10px', color: '#4a4e62', padding: '0 8px 6px',
+              fontSize: '14px', color: '#4a4e62', padding: '0 8px 6px',
               letterSpacing: '0.06em', textTransform: 'uppercase',
             }}>
               <span>Username</span><span>Elo</span>
@@ -590,7 +590,7 @@ export default function HomePage() {
           <Panel title={`Top AC (${monthLabel})`}>
             <div style={{
               display: 'grid', gridTemplateColumns: '1fr auto',
-              fontSize: '10px', color: '#4a4e62', padding: '0 8px 6px',
+              fontSize: '14px', color: '#4a4e62', padding: '0 8px 6px',
               letterSpacing: '0.06em', textTransform: 'uppercase',
             }}>
               <span>Username</span><span>Solved</span>
@@ -609,7 +609,7 @@ export default function HomePage() {
             }
           </Panel>
  
-          {/* ── Panel 4: Active (placeholder) ── */}
+          {/* ── Panel 4: Active (placeholder) ── 
           <Panel title="Active">
             <div style={{
               display: 'flex', flexDirection: 'column',
@@ -625,7 +625,8 @@ export default function HomePage() {
                 Live active users will appear here
               </div>
             </div>
-          </Panel>
+          </Panel>*/}
+
         </div>
         </section>
       </AnimatedContent>
