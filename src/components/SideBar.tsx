@@ -296,22 +296,32 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside style={{
-        width: '172px',
-        flexShrink: 0,
-        background: '#10121a',
-        borderRight: '1px solid #1e2030',
-        height: '100vh',
-        position: 'fixed',
-        top: 0,
-        overflowY: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-      }} className="bqt-sidebar-desktop">
+      <aside
+        className="bqt-sidebar-desktop"
+        style={{
+          width: '250px',
+          flexShrink: 0,
+          background: '#10121a',
+          borderRight: '1px solid #1e2030',
+          height: '100vh',
+          position: 'fixed',
+          top: 0,
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          transform: 'translateX(-172px)',   // hide all but ~78px showing
+          transition: 'transform 0.25s ease',
+          zIndex: 30,
+        }}
+        onMouseEnter={e => (e.currentTarget.style.transform = 'translateX(0)')}
+        onMouseLeave={e => (e.currentTarget.style.transform = 'translateX(-172px)')}
+      >
         <SidebarContent />
       </aside>
 
-      {/* Mobile top bar */}
+      {/* Spacer so main content doesn't go under the peeking sidebar */}
+
+      {/* Mobile top bar — unchanged */}
       <div style={{
         display: 'none',
         position: 'sticky',
@@ -354,7 +364,7 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer — unchanged */}
       {mobileOpen && (
         <div style={{
           display: 'none',
@@ -374,6 +384,7 @@ export default function Sidebar() {
       <style>{`
         @media (max-width: 768px) {
           .bqt-sidebar-desktop { display: none !important; }
+          .bqt-sidebar-spacer  { display: none !important; }
           .bqt-mobile-bar { display: flex !important; }
           .bqt-mobile-drawer { display: block !important; }
         }
