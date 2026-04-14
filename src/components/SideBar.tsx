@@ -109,6 +109,7 @@ export default function Sidebar() {
   const [delta, setDelta] = useState<number | null>(null)
   const [lastContest, setLastContest] = useState<string>('')
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     if (!username) return
@@ -296,28 +297,36 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside
+      <div
         className="bqt-sidebar-desktop"
         style={{
-          width: '250px',
-          flexShrink: 0,
-          background: '#10121a',
-          borderRight: '1px solid #1e2030',
-          height: '100vh',
           position: 'fixed',
           top: 0,
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          transform: 'translateX(-172px)',
-          transition: 'transform 0.25s ease',
+          left: 0,
+          width: sidebarOpen ? '250px' : '75px',
+          height: '100vh',
           zIndex: 30,
         }}
-        onMouseEnter={e => (e.currentTarget.style.transform = 'translateX(0)')}
-        onMouseLeave={e => (e.currentTarget.style.transform = 'translateX(-172px)')}
+        onMouseEnter={() => setSidebarOpen(true)}
+        onMouseLeave={() => setSidebarOpen(false)}
       >
-        <SidebarContent />
-      </aside>
+        <aside
+          style={{
+            width: '250px',
+            flexShrink: 0,
+            background: '#121420',
+            borderRight: '1px solid #1e2030',
+            height: '100vh',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            transform: sidebarOpen ? 'translateX(0)' : 'translateX(-242px)',
+            transition: 'transform 0.25s ease',
+          }}
+        >
+          <SidebarContent />
+        </aside>
+      </div>
 
       {/* Spacer so main content doesn't go under the peeking sidebar */}
 

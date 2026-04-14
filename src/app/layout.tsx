@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* Mobile top bar lives inside Sidebar component */}
           <div style={{ display: 'flex', minHeight: '100vh' }}>
             <Sidebar />
-            <div style={{ marginLeft: '78px', flex: 1, minHeight: '100vh', minWidth: 0, overflowX: 'hidden' }}>
+            <div style={{ marginLeft: '10px', flex: 1, minHeight: '100vh', minWidth: 0, overflowX: 'hidden' }}>
               <ContestBanner />
               {children}
             </div>
