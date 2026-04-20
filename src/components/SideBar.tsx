@@ -303,7 +303,7 @@ export default function Sidebar() {
           position: 'fixed',
           top: 0,
           left: 0,
-          width: sidebarOpen ? '250px' : '75px',
+          width: sidebarOpen ? '250px' : '10px',
           height: '100vh',
           zIndex: 30,
         }}
