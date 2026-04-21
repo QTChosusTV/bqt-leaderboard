@@ -48,7 +48,7 @@ export default function ProblemViewPage() {
       if (!id) return
       const { data, error } = await supabase
         .from('problems')
-        .select('id, title, tags, statement, examples, created_at, explaination, time_out, constrains, difficulty')
+        .select('*')
         .eq('id', Number(id))
         .single()
 
