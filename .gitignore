@@ -24,6 +24,10 @@ sinh_test/
 /sinh_test/
 /sinh_test
 
+.claude/
+/.claude/
+/.claude
+
 # misc
 .DS_Store
 *.pem
@@ -45,3 +49,4 @@ yarn-error.log*
 next-env.d.ts
 
 .py
+
